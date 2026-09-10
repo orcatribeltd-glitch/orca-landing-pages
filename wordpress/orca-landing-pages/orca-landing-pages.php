@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.1.0
+ * Version:     1.2.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,8 +17,10 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.1.0';
+    const VERSION     = '1.2.0';
+    const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
+    const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
 
     public static function defaults(): array
     {
@@ -52,9 +54,58 @@ final class Orca_Landing_Pages
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('admin_post_olp_purge', [__CLASS__, 'handle_purge']);
         add_action('rest_api_init', [__CLASS__, 'rest_routes']);
+        add_action('send_headers', [__CLASS__, 'short_page_cache']);
+    }
+
+    /* ---------- server page cache ---------- */
+
+    /** Does this post render a landing page? Elementor keeps the shortcode in
+     *  post meta, the block editor keeps it in post_content; check both. */
+    public static function post_uses_landing_page(int $post_id): bool
+    {
+        if ($post_id <= 0) {
+            return false;
+        }
+        $post = get_post($post_id);
+        if ($post && strpos((string) $post->post_content, '[landing_page') !== false) {
+            return true;
+        }
+        $elementor = get_post_meta($post_id, '_elementor_data', true);
+        return is_string($elementor) && strpos($elementor, 'landing_page') !== false;
+    }
+
+    /**
+     * The host's full-page cache (nginx in front of PHP) otherwise keeps the old
+     * HTML for minutes after GitHub changed. Pages that render a landing page tell
+     * that cache to keep them only briefly, so a push is visible within a minute.
+     */
+    public static function short_page_cache(): void
+    {
+        if (is_admin() || !is_singular() || headers_sent()) {
+            return;
+        }
+        if (!self::post_uses_landing_page((int) get_queried_object_id())) {
+            return;
+        }
+        $ttl = (int) apply_filters('olp_page_cache_seconds', self::PAGE_CACHE_SECONDS);
+        header('X-Accel-Expires: ' . $ttl);
+        header('Cache-Control: public, max-age=0, s-maxage=' . $ttl);
+        header('X-OLP-Page: landing');
     }
 
     /* ---------- fetching ---------- */
+
+    /**
+     * raw.githubusercontent.com sits behind a CDN that keeps a branch URL for up
+     * to five minutes. A commit SHA URL is immutable, so it is never stale. The
+     * push webhook hands us the new SHA; until one is known we use the branch.
+     */
+    public static function git_ref(): string
+    {
+        $s   = self::settings();
+        $ref = (string) get_option(self::REF_OPTION, '');
+        return preg_match('/^[0-9a-f]{7,40}$/', $ref) ? $ref : $s['branch'];
+    }
 
     public static function raw_url(string $name, string $file = 'index.html'): string
     {
@@ -62,10 +113,29 @@ final class Orca_Landing_Pages
         return sprintf(
             'https://raw.githubusercontent.com/%s/%s/pages/%s/%s',
             trim($s['repo'], '/'),
-            rawurlencode($s['branch']),
+            rawurlencode(self::git_ref()),
             rawurlencode($name),
             $file
         );
+    }
+
+    /** Ask GitHub for the branch head. Used by the manual purge button, when no
+     *  webhook payload told us the SHA. Unauthenticated calls are rate-limited
+     *  to 60/hour, which a button click never approaches. */
+    public static function resolve_head_sha(): string
+    {
+        $s    = self::settings();
+        $args = ['timeout' => 8, 'headers' => ['Accept' => 'application/vnd.github+json', 'User-Agent' => 'orca-landing-pages/' . self::VERSION]];
+        if (!empty($s['token'])) {
+            $args['headers']['Authorization'] = 'token ' . $s['token'];
+        }
+        $res = wp_remote_get(sprintf('https://api.github.com/repos/%s/commits/%s', trim($s['repo'], '/'), rawurlencode($s['branch'])), $args);
+        if (is_wp_error($res) || (int) wp_remote_retrieve_response_code($res) !== 200) {
+            return '';
+        }
+        $data = json_decode((string) wp_remote_retrieve_body($res), true);
+        $sha  = is_array($data) ? (string) ($data['sha'] ?? '') : '';
+        return preg_match('/^[0-9a-f]{7,40}$/', $sha) ? $sha : '';
     }
 
     public static function generation(): int
@@ -77,7 +147,7 @@ final class Orca_Landing_Pages
     {
         $s   = self::settings();
         $gen = $prefix === self::CACHE_PFX ? self::generation() : 0;
-        return $prefix . md5($s['repo'] . '|' . $s['branch'] . '|' . $name . '|' . $gen);
+        return $prefix . md5($s['repo'] . '|' . $s['branch'] . '|' . self::git_ref() . '|' . $name . '|' . $gen);
     }
 
     /**
@@ -205,8 +275,15 @@ final class Orca_Landing_Pages
      * cache (Redis / Memcached), where a SQL LIKE over wp_options finds nothing.
      * Returns the new generation number.
      */
-    public static function purge_all(): int
+    public static function purge_all(string $sha = ''): int
     {
+        if ($sha === '') {
+            $sha = self::resolve_head_sha();
+        }
+        if (preg_match('/^[0-9a-f]{7,40}$/', $sha)) {
+            update_option(self::REF_OPTION, $sha, false);
+            wp_cache_delete(self::REF_OPTION, 'options');
+        }
         $next = self::generation() + 1;
         update_option(self::GEN_OPTION, $next, false);
         wp_cache_delete(self::GEN_OPTION, 'options');
@@ -244,7 +321,10 @@ final class Orca_Landing_Pages
                 if ($secret === '' || !hash_equals($secret, $given)) {
                     return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => self::purge_all()], 200);
+                $payload = $req->get_json_params();
+                $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
+                $gen     = self::purge_all($sha);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref()], 200);
             },
         ]);
     }
@@ -283,6 +363,7 @@ final class Orca_Landing_Pages
             <?php if ($purged !== null): ?>
                 <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
+            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code></p>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
                כדי לראות שינוי מיד: להוסיף <code>?olp_refresh=1</code> לכתובת הדף (כמנהל מחובר), או ללחוץ על הכפתור למטה.</p>
