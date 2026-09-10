@@ -6,6 +6,11 @@ Everything that ACTS is a native Elementor widget so Jonathan edits it in the pa
 the Form (leads), the WhatsApp Button (link), the footer Text Editor (privacy link).
 The HTML widgets carry only CSS and a decorative divider.
 Re-run after any change:  python3 templates/build_rachel_form.py
+
+Field IDs must never collide with Elementor's own submission meta keys
+(date, time, page_url, user_agent, remote_ip, powered_by, form_id, form_name):
+the webhook payload is a flat merge and the meta wins. "date" for the visit date
+silently became the submission date in Zapier (2026-09-10).
 """
 import json, pathlib, secrets
 
@@ -55,7 +60,7 @@ FIELDS = [
   {"_id":"name","custom_id":"name","field_type":"text","field_label":"שם *","placeholder":"","required":"true","width":"50","width_mobile":"100"},
   {"_id":"phone","custom_id":"phone","field_type":"tel","field_label":"טלפון *","placeholder":"","required":"true","width":"50","width_mobile":"100"},
   {"_id":"guests","custom_id":"guests","field_type":"text","field_label":"כמה אתם?","placeholder":"למשל: 4 מבוגרים + 2 ילדים","required":"","width":"50","width_mobile":"100"},
-  {"_id":"date","custom_id":"date","field_type":"text","field_label":"תאריך משוער","placeholder":"למשל: סוף השבוע הקרוב","required":"","width":"50","width_mobile":"100"},
+  {"_id":"visit_date","custom_id":"visit_date","field_type":"text","field_label":"תאריך משוער","placeholder":"למשל: סוף השבוע הקרוב","required":"","width":"50","width_mobile":"100"},
   {"_id":"workshop","custom_id":"workshop","field_type":"select","field_label":"איזו סדנה מעניינת אתכם?","required":"","width":"100","width_mobile":"100",
    "field_options":"בחרו סדנה...|\nקדרות ופיסול (330₪ לאדם)|pottery\nציור על כלי קרמיקה (180₪ לאדם)|painting\nעדיין מתלבטים|undecided"},
 ]

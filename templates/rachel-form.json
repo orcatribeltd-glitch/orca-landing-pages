@@ -5,12 +5,12 @@
   "page_settings": [],
   "content": [
     {
-      "id": "ddb86138",
+      "id": "1fd4a2d9",
       "elType": "container",
       "isInner": false,
       "elements": [
         {
-          "id": "1f5bc751",
+          "id": "d1f81a9b",
           "elType": "widget",
           "widgetType": "html",
           "elements": [],
@@ -19,7 +19,7 @@
           }
         },
         {
-          "id": "f92935fa",
+          "id": "aa3a9106",
           "elType": "widget",
           "widgetType": "form",
           "elements": [],
@@ -57,8 +57,8 @@
                 "width_mobile": "100"
               },
               {
-                "_id": "date",
-                "custom_id": "date",
+                "_id": "visit_date",
+                "custom_id": "visit_date",
                 "field_type": "text",
                 "field_label": "תאריך משוער",
                 "placeholder": "למשל: סוף השבוע הקרוב",
@@ -96,7 +96,7 @@
           }
         },
         {
-          "id": "5ed32078",
+          "id": "5e98f554",
           "elType": "widget",
           "widgetType": "html",
           "elements": [],
@@ -105,7 +105,7 @@
           }
         },
         {
-          "id": "cba52154",
+          "id": "9e46f678",
           "elType": "widget",
           "widgetType": "button",
           "elements": [],
@@ -133,7 +133,7 @@
           }
         },
         {
-          "id": "b681094e",
+          "id": "dfc1448d",
           "elType": "widget",
           "widgetType": "text-editor",
           "elements": [],
