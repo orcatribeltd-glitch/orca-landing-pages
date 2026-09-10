@@ -1,66 +1,50 @@
 # Orca Landing Pages
 
-דפי נחיתה מסונכרנים עם WordPress דרך GitHub.
+דפי נחיתה שמוצגים בוורדפרס ישירות מהריפו הזה. כל commit לתיקיית `pages/` מתעדכן באתר תוך דקות. בלי FTP, בלי GitHub Actions.
+
+## איך זה עובד
+
+```
+Claude Design → HTML → commit ל-pages/<שם>/index.html → וורדפרס מושך ומציג
+```
+
+באתר מותקן תוסף קטן (`wordpress/orca-landing-pages/`). בעמוד באלמנטור שמים ווידג'ט Shortcode:
+
+```
+[landing_page name="rachel-pottery"]
+```
+
+התוסף מושך את `pages/rachel-pottery/index.html` מגיטהאב, שומר בזיכרון ל-5 דקות, ומציג. אם גיטהאב לא זמין, מוצג העותק האחרון שנשמר.
 
 ## מבנה
 
 ```
 pages/
-├── mashpian/
-│   └── index.html
-├── influence-club/
-│   └── index.html
-└── [שם-דף-חדש]/
-    └── index.html
+├── rachel-pottery/index.html
+├── mashpian/index.html
+└── <שם-דף-חדש>/index.html
+wordpress/
+└── orca-landing-pages/orca-landing-pages.php   ← התוסף
 ```
 
-## התקנה (פעם אחת)
+## הוספת דף חדש
 
-### 1. WordPress - הוספת Shortcode
+1. תיקייה חדשה תחת `pages/` עם `index.html` (מסמך HTML מלא או קטע, שניהם עובדים).
+2. תמונות: או כתובות מלאות (העלאה למדיה של וורדפרס), או קבצים בתיקיית הדף עם נתיב יחסי (`images/x.jpg`). נתיב יחסי עובד רק אם הריפו ציבורי.
+3. טופס לידים **לא** נכנס ל-HTML. הוא נשאר ווידג'ט Form של אלמנטור מתחת ל-Shortcode, כדי שהלידים יישמרו.
+4. Push ל-main.
 
-העתק את הקובץ `wordpress/landing-page-shortcode.php` לתיקייה:
-```
-wp-content/mu-plugins/landing-page-shortcode.php
-```
+## תיקון דף קיים
 
-(אם התיקייה `mu-plugins` לא קיימת - צור אותה)
+עורכים את ה-HTML, commit, push. תוך 5 דקות זה באתר. לראות מיד: להוסיף `?olp_refresh=1` לכתובת הדף כשמחוברים כמנהל, או "נקה זיכרון" במסך ההגדרות בוורדפרס (הגדרות → דפי נחיתה (GitHub)).
 
-### 2. GitHub Secrets
+## התקנת התוסף (פעם אחת לכל אתר)
 
-ב-Settings → Secrets → Actions, הוסף:
+1. לארוז: `cd wordpress && zip -r orca-landing-pages.zip orca-landing-pages`
+2. וורדפרס → תוספים → העלאת תוסף → לבחור את ה-zip → הפעלה.
+3. אם הריפו פרטי: הגדרות → דפי נחיתה (GitHub) → להדביק טוקן גיטהאב עם הרשאת קריאה לריפו. אם ציבורי, אין מה להגדיר.
 
-| Secret | ערך |
-|--------|-----|
-| `FTP_SERVER` | כתובת השרת מ-Fast Cloud |
-| `FTP_USERNAME` | שם משתמש FTP |
-| `FTP_PASSWORD` | סיסמת FTP |
+## אופציונלי: עדכון מיידי בכל push
 
-### 3. יצירת תיקייה בשרת
-
-צור תיקייה ריקה:
-```
-wp-content/landing-pages/
-```
-
-## שימוש
-
-### הוספת דף נחיתה חדש
-
-1. צור תיקייה חדשה תחת `pages/`
-2. הוסף קובץ `index.html` עם ה-HTML
-3. Push ל-main
-
-### שימוש באלמנטור
-
-1. צור דף חדש
-2. הוסף Shortcode widget
-3. כתוב: `[landing_page name="שם-התיקייה"]`
-4. מתחתיו הוסף Form widget (לשמירת לידים)
-
-## דוגמה
-
-```
-[landing_page name="mashpian"]
-```
-
-יטען את הקובץ: `wp-content/landing-pages/mashpian/index.html`
+במסך ההגדרות לקבוע "סוד ל-webhook", ובגיטהאב Settings → Webhooks להוסיף:
+`https://<האתר>/wp-json/olp/v1/refresh?secret=<הסוד>` על אירוע push.

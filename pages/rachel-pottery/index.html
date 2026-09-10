@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סדנאות קדרות וקרמיקה | רחל בסוק, מושבה כנרת</title>
+  <meta name="description" content="סדנאות קדרות, פיסול וציור על קרמיקה למשפחות, זוגות ואירועי חברה. בסטודיו קטן וממוזג במושבה כנרת.">
+
+  <!-- Google Fonts - Heebo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       Rachel Bassook - Landing Page Styles
+       ========================================================================== */
+
+    :root {
+      --color-primary: #C4A962;
+      --color-primary-dark: #A68B45;
+      --color-whatsapp: #25D366;
+      --color-bg-white: #FFFFFF;
+      --color-bg-light: #FAF8F5;
+      --color-bg-cream: #F5EFE6;
+      --color-text: #3D3D3D;
+      --color-text-light: #6B6B6B;
+      --color-border: #E5E5E5;
+      --font-main: 'Heebo', sans-serif;
+      --section-padding: 80px 20px;
+      --container-width: 1100px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --transition: all 0.3s ease;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-main);
+      color: var(--color-text);
+      background-color: var(--color-bg-white);
+      line-height: 1.7;
+      direction: rtl;
+      text-align: right;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+
+    ul { list-style: none; }
+
+    .container {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 14px 36px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      font-family: var(--font-main);
+      text-align: center;
+    }
+
+    .btn--primary {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn--whatsapp {
+      background-color: var(--color-whatsapp);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn--whatsapp:hover {
+      background-color: #1da851;
+    }
+
+    .btn--outline {
+      background-color: transparent;
+      border: 2px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn--outline:hover {
+      background-color: var(--color-primary);
+      color: white;
+    }
+
+    /* ========== 1. HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-color: var(--color-bg-light);
+      padding: 60px 20px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='300' height='300' viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M150 30 Q200 80 150 150 Q100 220 150 270' stroke='%23E5DFD5' fill='none' stroke-width='1.5'/%3E%3Cpath d='M120 50 Q160 100 120 170 Q80 240 120 280' stroke='%23E5DFD5' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+      background-position: left 10% center;
+      background-repeat: no-repeat;
+      background-size: 250px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .hero__content {
+      max-width: 850px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero__title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+
+    .hero__subtitle {
+      font-size: 1.15rem;
+      color: var(--color-text-light);
+      margin-bottom: 2.5rem;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.8;
+    }
+
+    .hero__cta {
+      margin-bottom: 2rem;
+    }
+
+    .hero__trust {
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      max-width: 500px;
+      margin: 0 auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* ========== 2. PROBLEM (הכאב) ========== */
+    .problem {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-cream);
+    }
+
+    .problem__content {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .problem__text {
+      font-size: 1.2rem;
+      line-height: 2;
+      color: var(--color-text);
+    }
+
+    /* ========== 3. SOLUTION (ההבטחה) ========== */
+    .solution {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-white);
+    }
+
+    .solution__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .solution__image img {
+      border-radius: var(--radius-lg);
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .solution__content p {
+      font-size: 1.1rem;
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+
+    @media (max-width: 768px) {
+      .solution__grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    /* ========== 4. SERVICES (סדנאות) ========== */
+    .services {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-light);
+    }
+
+    .services__header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .services__header h2 {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .services__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      background: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+      transition: var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+
+    .service-card__image {
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .service-card__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .service-card:hover .service-card__image img {
+      transform: scale(1.05);
+    }
+
+    .service-card__content {
+      padding: 30px;
+    }
+
+    .service-card__title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--color-text);
+    }
+
+    .service-card__description {
+      font-size: 1rem;
+      color: var(--color-text-light);
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    .service-card__price {
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .services__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========== 5. SOCIAL PROOF ========== */
+    .social-proof {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-cream);
+      text-align: center;
+    }
+
+    .social-proof__image {
+      max-width: 800px;
+      margin: 0 auto 40px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+
+    .social-proof__image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .social-proof__content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .social-proof__text {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: var(--color-text);
+      margin-bottom: 30px;
+    }
+
+    .social-proof__logos {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0.7;
+    }
+
+    .social-proof__logos span {
+      font-size: 1rem;
+      color: var(--color-text-light);
+      padding: 10px 20px;
+      background: var(--color-bg-white);
+      border-radius: var(--radius-sm);
+    }
+
+    /* ========== 6. USE CASES ========== */
+    .use-cases {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-white);
+    }
+
+    .use-cases__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .use-cases__content h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .use-cases__content p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--color-text-light);
+      margin-bottom: 2rem;
+    }
+
+    .use-cases__image img {
+      border-radius: var(--radius-lg);
+      width: 100%;
+      height: 350px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+      .use-cases__grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========== 7. FAQ ========== */
+    .faq {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-light);
+    }
+
+    .faq__header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .faq__header h2 {
+      color: var(--color-primary);
+      font-size: 1.8rem;
+    }
+
+    .faq__list {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .faq__item {
+      background: var(--color-bg-white);
+      border-radius: var(--radius-md);
+      padding: 25px 30px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .faq__question {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 10px;
+    }
+
+    .faq__answer {
+      font-size: 1rem;
+      color: var(--color-text-light);
+      line-height: 1.7;
+    }
+
+    /* ========== 8. CONTACT FORM ========== */
+    .contact {
+      padding: var(--section-padding);
+      background-color: var(--color-bg-white);
+    }
+
+    .contact__inner {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact__header h2 {
+      color: var(--color-text);
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .contact__header p {
+      color: var(--color-text-light);
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .contact__form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: right;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: var(--color-text);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-main);
+      font-size: 1rem;
+      transition: var(--transition);
+      direction: rtl;
+      background: var(--color-bg-white);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(196, 169, 98, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .contact__buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .contact__divider {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: var(--color-text-light);
+      font-size: 0.9rem;
+    }
+
+    .contact__divider::before,
+    .contact__divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    @media (max-width: 576px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      background-color: var(--color-bg-light);
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .footer__content p {
+      color: var(--color-text-light);
+      font-size: 0.9rem;
+    }
+
+    .footer__content a {
+      color: var(--color-primary);
+    }
+
+    /* ========== WHATSAPP FLOATING ========== */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 60px;
+      height: 60px;
+      background-color: var(--color-whatsapp);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+      z-index: 1000;
+      transition: var(--transition);
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    }
+
+    .whatsapp-float svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== 1. HERO ========== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__content">
+        <h1 class="hero__title">סדנאות קדרות, פיסול וציור על קרמיקה<br>למשפחות, זוגות ואירועי חברה</h1>
+        <p class="hero__subtitle">
+          בסטודיו קטן וממוזג במושבה כנרת אנחנו יושבים יחד, מלכלכים את הידיים, צוחקים, ולוקחים הביתה כלי שיצרתם בעצמכם. מתאים למשפחות, לזוגות ולקבוצות ולחברות.
+        </p>
+        <div class="hero__cta">
+          <a href="#contact" class="btn btn--primary">שריינו לנו מקום ›</a>
+        </div>
+        <p class="hero__trust">
+          כבר אירחנו כאן משפחות בחופשה, זוגות, ועובדים של תנובה, חברות הייטק והסוכנות היהודית.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. PROBLEM (הכאב) ========== -->
+  <section class="problem">
+    <div class="container">
+      <div class="problem__content">
+        <p class="problem__text">
+          באים לכינרת לחופשה, ואחרי היום השני כבר נגמרו הרעיונות.<br>
+          הים, הבריכה, עוד ארוחה בחוץ, והילדים שוב על המסך.<br><br>
+          <strong>אתם מחפשים משהו אחר.</strong><br>
+          משהו שבאמת יחבר את כולם, ולא עוד פעילות ששוכחים ממנה עד הערב.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 3. SOLUTION (ההבטחה) ========== -->
+  <section class="solution">
+    <div class="container">
+      <div class="solution__grid">
+        <div class="solution__image">
+          <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/07/solution.jpg" alt="זוג מחייך עם הכלים שיצרו בסדנה">
+        </div>
+        <div class="solution__content">
+          <p>
+            <strong>אצל רחל יושבים יחד סביב האובניים.</strong>
+          </p>
+          <p>
+            היא מדריכה אתכם צעד אחרי צעד, גם אם מעולם לא נגעתם בחימר, ותוך כמה דקות אתם כבר מרימים כלי משלכם.
+          </p>
+          <p>
+            הידיים מתלכלכות, כולם צוחקים, והזמן פשוט נעצר.
+          </p>
+          <p>
+            <strong>יוצאים משם עם כלי שיצרתם בעצמכם, ועם שעתיים שתזכרו הרבה אחרי שהחופשה נגמרה.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 4. SERVICES (שתי סדנאות) ========== -->
+  <section id="workshops" class="services">
+    <div class="container">
+      <div class="services__header">
+        <h2>שתי סדנאות, לבחירתכם</h2>
+      </div>
+
+      <div class="services__grid">
+        <!-- Card 1: קדרות ופיסול -->
+        <div class="service-card">
+          <div class="service-card__image">
+            <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/07/pottery.jpg" alt="סדנת קדרות ופיסול">
+          </div>
+          <div class="service-card__content">
+            <h3 class="service-card__title">סדנת קדרות ופיסול — לשבת אל האובניים</h3>
+            <p class="service-card__description">
+              כל אחד מקבל מקום משלו וגוש חימר, ורחל מלווה אתכם עד שיוצא כלי אמיתי מהידיים. זו חוויה משפחתית של ממש, שמתאימה לזוגות ולמשפחות עם ילדים קצת יותר בוגרים.
+            </p>
+            <div class="service-card__price">330 ₪ לאדם</div>
+            <a href="#contact" class="btn btn--primary">מתאים לנו, דברו איתי ›</a>
+          </div>
+        </div>
+
+        <!-- Card 2: ציור על כלי קרמיקה -->
+        <div class="service-card">
+          <div class="service-card__image">
+            <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/07/painting.jpg" alt="סדנת ציור על קרמיקה">
+          </div>
+          <div class="service-card__content">
+            <h3 class="service-card__title">סדנת ציור על כלי קרמיקה — לבחור, לצייר, לקחת הביתה</h3>
+            <p class="service-card__description">
+              כל אחד בוחר לעצמו כלי ומצייר אותו בדיוק כמו שבא לו. פשוט, כיפי, וכולם מצליחים, אז זה מושלם למשפחות עם ילדים קטנים (מגיל 3).
+            </p>
+            <div class="service-card__price">180 ₪ לאדם</div>
+            <a href="#contact" class="btn btn--primary">זה בדיוק בשבילנו ›</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 5. SOCIAL PROOF (לא רק משפחות) ========== -->
+  <section class="social-proof">
+    <div class="container">
+      <div class="social-proof__image">
+        <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/07/group.jpg" alt="קבוצה גדולה בסדנת קרמיקה">
+      </div>
+      <div class="social-proof__content">
+        <p class="social-proof__text">
+          <strong>הסטודיו הקטן של רחל אירח כבר קבוצות שלמות.</strong><br><br>
+          45 עובדים של תנובה ישבו כאן יחד, וגם חברות הייטק וטכנולוגיה והסוכנות היהודית.<br>
+          באים לגיבוש, ויוצאים עם חוויה שכולם עוד מדברים עליה אחר כך במשרד.
+        </p>
+        <div class="social-proof__logos">
+          <span>תנובה</span>
+          <span>חברות הייטק</span>
+          <span>הסוכנות היהודית</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 6. USE CASES ========== -->
+  <section class="use-cases">
+    <div class="container">
+      <div class="use-cases__grid">
+        <div class="use-cases__content">
+          <h2>מתאים לכל רגע שרוצים לזכור</h2>
+          <p>
+            יום הולדת, יום נישואין, גיבוש צוות, ערב של חברים, או סתם כי בא לכם משהו אחר.<br><br>
+            הסטודיו קטן, ממוזג ואינטימי, ומרגישים בו מהרגע הראשון בבית.
+          </p>
+          <a href="#contact" class="btn btn--outline">בואו נתאם תאריך ›</a>
+        </div>
+        <div class="use-cases__image">
+          <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/07/studio.jpg" alt="סטודיו קרמיקה אינטימי">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 7. FAQ ========== -->
+  <section class="faq">
+    <div class="container">
+      <div class="faq__header">
+        <h2>שאלות ששואלים אותנו</h2>
+      </div>
+
+      <div class="faq__list">
+        <div class="faq__item">
+          <div class="faq__question">צריך ניסיון קודם?</div>
+          <div class="faq__answer">בכלל לא. רחל מלווה אתכם צעד אחרי צעד, גם אם זו הפעם הראשונה שאתם נוגעים בחימר.</div>
+        </div>
+
+        <div class="faq__item">
+          <div class="faq__question">מאיזה גיל מתאים?</div>
+          <div class="faq__answer">לסדנת הכלים מגיל 3. סדנת הקדרות מתאימה יותר לילדים בוגרים, לזוגות ולמבוגרים.</div>
+        </div>
+
+        <div class="faq__item">
+          <div class="faq__question">איפה זה נמצא?</div>
+          <div class="faq__answer">במושבה כנרת, בסטודיו קטן וממוזג. מקום מושלם לברוח אליו מהחום של החוץ.</div>
+        </div>
+
+        <div class="faq__item">
+          <div class="faq__question">אפשר להגיע כקבוצה?</div>
+          <div class="faq__answer">בשמחה. ימי הולדת, גיבושים ואירועי חברה, רחל תתאים לכם את הסדנה למספר האנשים.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 8. CONTACT FORM ========== -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="contact__inner">
+        <div class="contact__header">
+          <h2>בואו ניצור משהו יחד</h2>
+          <p>השאירו פרטים ורחל תחזור אליכם עם התאריכים הפנויים. או פשוט שלחו הודעה בוואטסאפ, ונסגור לכם מקום.</p>
+        </div>
+
+        <form class="contact__form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">שם *</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">טלפון *</label>
+              <input type="tel" id="phone" name="phone" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="guests">כמה אתם?</label>
+              <input type="text" id="guests" name="guests" placeholder="למשל: 4 מבוגרים + 2 ילדים">
+            </div>
+            <div class="form-group">
+              <label for="date">תאריך משוער</label>
+              <input type="text" id="date" name="date" placeholder="למשל: סוף השבוע הקרוב">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="workshop">איזו סדנה מעניינת אתכם?</label>
+            <select id="workshop" name="workshop">
+              <option value="">בחרו סדנה...</option>
+              <option value="pottery">קדרות ופיסול (330₪ לאדם)</option>
+              <option value="painting">ציור על כלי קרמיקה (180₪ לאדם)</option>
+              <option value="undecided">עדיין מתלבטים</option>
+            </select>
+          </div>
+
+          <div class="contact__buttons">
+            <button type="submit" class="btn btn--primary">שריינו לנו מקום ›</button>
+            <div class="contact__divider">או</div>
+            <a href="https://wa.me/972534255780?text=היי רחל, אנחנו מתעניינים בסדנה..." class="btn btn--whatsapp">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              דברו עם רחל בוואטסאפ
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__content">
+        <p>רחל בסוק | סדנאות קדרות וקרמיקה | מושבה כנרת</p>
+        <p>© 2024 כל הזכויות שמורות | <a href="#">מדיניות פרטיות</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/972534255780?text=היי רחל, אנחנו מתעניינים בסדנה..." class="whatsapp-float" aria-label="שלחו הודעה בוואטסאפ">
+    <svg viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
+</body>
+</html>
