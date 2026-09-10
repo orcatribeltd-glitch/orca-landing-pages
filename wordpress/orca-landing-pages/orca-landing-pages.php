@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.2.0
+ * Version:     1.3.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.2.0';
+    const VERSION     = '1.3.0';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -58,6 +58,46 @@ final class Orca_Landing_Pages
     }
 
     /* ---------- server page cache ---------- */
+
+    /** Every published page or post that renders a landing page. */
+    public static function landing_page_ids(): array
+    {
+        global $wpdb;
+        $ids = $wpdb->get_col(
+            "SELECT p.ID FROM {$wpdb->posts} p
+             LEFT JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = '_elementor_data'
+             WHERE p.post_status = 'publish' AND p.post_type IN ('page', 'post')
+               AND (p.post_content LIKE '%[landing_page%' OR m.meta_value LIKE '%landing_page%')"
+        );
+        return array_values(array_unique(array_map('intval', (array) $ids)));
+    }
+
+    /**
+     * The host's full-page cache (nginx in front of PHP on FastCloud) kept the
+     * old HTML for over 15 minutes after GitHub changed, and only let go when
+     * the page was published from the editor. So a purge does what the editor
+     * does: it saves each landing page again, unchanged, which fires the same
+     * save_post / transition_post_status hooks the host's cache listens to.
+     * Also clears WordPress' own post cache and, when present, the common
+     * caching plugins' full-purge hooks.
+     */
+    public static function touch_landing_pages(): array
+    {
+        $ids = self::landing_page_ids();
+        foreach ($ids as $id) {
+            clean_post_cache($id);
+            wp_update_post(['ID' => $id]);
+        }
+        foreach (['litespeed_purge_all', 'w3tc_flush_all', 'wp_cache_clear_cache', 'rocket_clean_domain', 'cache_enabler_clear_complete_cache', 'breeze_clear_all_cache', 'swcfpc_purge_cache'] as $hook) {
+            if (has_action($hook) || has_filter($hook)) {
+                do_action($hook);
+            }
+        }
+        if (function_exists('wp_cache_flush')) {
+            wp_cache_flush();
+        }
+        return $ids;
+    }
 
     /** Does this post render a landing page? Elementor keeps the shortcode in
      *  post meta, the block editor keeps it in post_content; check both. */
@@ -288,6 +328,8 @@ final class Orca_Landing_Pages
         update_option(self::GEN_OPTION, $next, false);
         wp_cache_delete(self::GEN_OPTION, 'options');
 
+        self::touch_landing_pages();
+
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
         $like = $wpdb->esc_like('_transient_' . self::CACHE_PFX) . '%';
@@ -324,7 +366,7 @@ final class Orca_Landing_Pages
                 $payload = $req->get_json_params();
                 $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
                 $gen     = self::purge_all($sha);
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref()], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids()], 200);
             },
         ]);
     }
