@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.0.0
+ * Version:     1.1.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,8 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.0.0';
+    const VERSION     = '1.1.0';
+    const GEN_OPTION  = 'olp_cache_generation';
 
     public static function defaults(): array
     {
@@ -67,10 +68,16 @@ final class Orca_Landing_Pages
         );
     }
 
+    public static function generation(): int
+    {
+        return (int) get_option(self::GEN_OPTION, 1);
+    }
+
     private static function cache_key(string $prefix, string $name): string
     {
-        $s = self::settings();
-        return $prefix . md5($s['repo'] . '|' . $s['branch'] . '|' . $name);
+        $s   = self::settings();
+        $gen = $prefix === self::CACHE_PFX ? self::generation() : 0;
+        return $prefix . md5($s['repo'] . '|' . $s['branch'] . '|' . $name . '|' . $gen);
     }
 
     /**
@@ -191,15 +198,27 @@ final class Orca_Landing_Pages
 
     /* ---------- cache purge ---------- */
 
+    /**
+     * Invalidate every cached page by moving to a new cache generation. Old
+     * transients simply stop being read and expire on their own. This works
+     * whether transients live in the options table or in a persistent object
+     * cache (Redis / Memcached), where a SQL LIKE over wp_options finds nothing.
+     * Returns the new generation number.
+     */
     public static function purge_all(): int
     {
+        $next = self::generation() + 1;
+        update_option(self::GEN_OPTION, $next, false);
+        wp_cache_delete(self::GEN_OPTION, 'options');
+
+        // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
         $like = $wpdb->esc_like('_transient_' . self::CACHE_PFX) . '%';
         $rows = $wpdb->get_col($wpdb->prepare("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $like));
         foreach ($rows as $row) {
             delete_transient(substr($row, strlen('_transient_')));
         }
-        return count($rows);
+        return $next;
     }
 
     public static function handle_purge(): void
@@ -208,8 +227,8 @@ final class Orca_Landing_Pages
             wp_die('forbidden');
         }
         check_admin_referer('olp_purge');
-        $n = self::purge_all();
-        wp_safe_redirect(add_query_arg(['page' => 'orca-landing-pages', 'purged' => $n], admin_url('options-general.php')));
+        $gen = self::purge_all();
+        wp_safe_redirect(add_query_arg(['page' => 'orca-landing-pages', 'purged' => $gen], admin_url('options-general.php')));
         exit;
     }
 
@@ -225,7 +244,7 @@ final class Orca_Landing_Pages
                 if ($secret === '' || !hash_equals($secret, $given)) {
                     return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
                 }
-                return new WP_REST_Response(['ok' => true, 'purged' => self::purge_all()], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => self::purge_all()], 200);
             },
         ]);
     }
@@ -262,7 +281,7 @@ final class Orca_Landing_Pages
         <div class="wrap" dir="rtl">
             <h1>דפי נחיתה מגיטהאב</h1>
             <?php if ($purged !== null): ?>
-                <div class="notice notice-success"><p>הזיכרון נוקה (<?php echo $purged; ?> דפים). הטעינה הבאה תמשוך מגיטהאב.</p></div>
+                <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
