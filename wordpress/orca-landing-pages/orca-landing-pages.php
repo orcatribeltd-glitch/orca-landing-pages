@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.7
+ * Version:     1.7.8
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.7';
+    const VERSION     = '1.7.8';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -488,6 +488,59 @@ final class Orca_Landing_Pages
         return $out;
     }
 
+
+    /** Pages whose Elementor data holds no form widget while their footer backup does. */
+    public static function pages_missing_forms(): array
+    {
+        $out = [];
+        foreach ((array) get_posts(['post_type' => 'page', 'post_status' => ['publish', 'draft', 'private', 'pending', 'future'], 'numberposts' => -1, 'fields' => 'ids']) as $pid) {
+            $pid = (int) $pid;
+            $backup = get_post_meta($pid, '_olp_footer_backup', true);
+            if (!is_array($backup)) { continue; }
+            $has_form_backup = false;
+            foreach ($backup as $run) {
+                foreach ((array) ($run['elements'] ?? []) as $el) {
+                    if (is_array($el) && self::subtree_has_widget($el, ['form'])) { $has_form_backup = true; break 2; }
+                }
+            }
+            if (!$has_form_backup) { continue; }
+            $data = json_decode((string) get_post_meta($pid, '_elementor_data', true), true);
+            $has_form = false;
+            foreach ((array) $data as $el) { if (is_array($el) && self::subtree_has_widget($el, ['form'])) { $has_form = true; break; } }
+            if (!$has_form) { $out[] = $pid; }
+        }
+        return $out;
+    }
+
+    /** Exact string replacement in every string value of the page's Elementor data, at any depth. */
+    public static function replace_in_page(int $pid, string $find, string $repl): array
+    {
+        $json = get_post_meta($pid, '_elementor_data', true);
+        $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
+        if (!is_array($data)) {
+            return ['error' => 'no elementor data'];
+        }
+        $count = 0;
+        $walk = function (&$node) use (&$walk, $find, $repl, &$count) {
+            if (is_array($node)) {
+                foreach ($node as &$v) { $walk($v); }
+                unset($v);
+            } elseif (is_string($node) && strpos($node, $find) !== false) {
+                $count += substr_count($node, $find);
+                $node = str_replace($find, $repl, $node);
+            }
+        };
+        $walk($data);
+        if ($count > 0) {
+            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            self::clear_elementor_cache($pid);
+            self::refresh_plain_text($pid);
+            clean_post_cache($pid);
+            self::purge_page_cache_plugins($pid);
+        }
+        return ['page' => $pid, 'replacements' => $count];
+    }
+
     public static function restore_forms(int $pid, array $remove_ids = []): array
     {
         $json = get_post_meta($pid, '_elementor_data', true);
@@ -510,6 +563,16 @@ final class Orca_Landing_Pages
         if ($remove_ids) {
             $data = self::remove_ids_deep($data, $remove_ids, $removed);
         }
+        // empty wrappers left behind by a replaced form (no widgets at any depth) go too
+        $before = count($data);
+        $data = array_values(array_filter($data, function ($el) use (&$removed) {
+            if (!is_array($el) || ($el['elType'] ?? '') === 'widget') { return true; }
+            $has_widget = false;
+            $probe = function ($n) use (&$probe, &$has_widget) { if (($n['elType'] ?? '') === 'widget') { $has_widget = true; return; } foreach ((array) ($n['elements'] ?? []) as $c) { if (is_array($c)) { $probe($c); } } };
+            $probe($el);
+            if (!$has_widget && !empty($el['id'])) { $removed[] = (string) $el['id'] . ' (empty)'; return false; }
+            return true;
+        }));
         $inserted = 0;
         if ($forms) {
             $pos = count($data);
@@ -907,6 +970,25 @@ final class Orca_Landing_Pages
 
     public static function rest_routes(): void
     {
+        register_rest_route('olp/v1', '/replace', [
+            'methods'             => ['POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                $pid  = (int) $req->get_param('page');
+                $find = (string) $req->get_param('find');
+                $repl = (string) $req->get_param('replace');
+                if ($pid <= 0 || $find === '') {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'page and find required'], 400);
+                }
+                return new WP_REST_Response(['ok' => true] + self::replace_in_page($pid, $find, $repl), 200);
+            },
+        ]);
         register_rest_route('olp/v1', '/restore', [
             'methods'             => ['POST'],
             'permission_callback' => '__return_true',
@@ -917,8 +999,15 @@ final class Orca_Landing_Pages
                 if ($secret === '' || !hash_equals($secret, $given)) {
                     return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
                 }
-                $pid    = (int) $req->get_param('page');
                 $remove = array_values(array_filter(array_map('trim', explode(',', (string) $req->get_param('remove')))));
+                if ((string) $req->get_param('page') === 'all') {
+                    $report = [];
+                    foreach (self::pages_missing_forms() as $pid) {
+                        $report[] = self::restore_forms($pid, []);
+                    }
+                    return new WP_REST_Response(['ok' => true, 'restored' => $report], 200);
+                }
+                $pid = (int) $req->get_param('page');
                 if ($pid <= 0) {
                     return new WP_REST_Response(['ok' => false, 'error' => 'page required'], 400);
                 }
