@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.8.1
+ * Version:     1.8.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.8.1';
+    const VERSION     = '1.8.2';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -343,23 +343,28 @@ final class Orca_Landing_Pages
      */
     private static function visible_text(array $el): string
     {
+        static $keys = ['editor', 'html', 'title', 'text', 'description', 'shortcode', 'content', 'caption', 'button_text',
+                        'field_label', 'placeholder', 'acceptance_text', 'success_message', 'error_message', 'sub_heading',
+                        'heading', 'title_text', 'description_text', 'tab_title', 'tab_content', 'item_title', 'item_description'];
         $parts = [];
-        $walk = function ($node) use (&$walk, &$parts) {
+        $walk = function ($node) use (&$walk, &$parts, $keys) {
             if (!is_array($node)) { return; }
             foreach ((array) ($node['settings'] ?? []) as $k => $v) {
-                if (is_string($v) && strlen($v) >= 20 && (strpos($v, ' ') !== false || preg_match('/[\x{0590}-\x{05FF}]/u', $v))) {
-                    $s = html_entity_decode(wp_strip_all_tags($v), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                    if (!preg_match('#^https?://\S+$#', trim($s))) { $parts[] = $s; }
+                if (is_string($v) && in_array((string) $k, $keys, true)) {
+                    $parts[] = html_entity_decode(wp_strip_all_tags($v), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 } elseif (is_array($v)) {
                     foreach ($v as $item) {
-                        if (is_array($item)) { foreach ($item as $iv) { if (is_string($iv) && strlen($iv) >= 20 && strpos($iv, ' ') !== false) { $parts[] = html_entity_decode(wp_strip_all_tags($iv), ENT_QUOTES | ENT_HTML5, 'UTF-8'); } } }
+                        if (!is_array($item)) { continue; }
+                        foreach ($item as $ik => $iv) {
+                            if (is_string($iv) && in_array((string) $ik, $keys, true)) { $parts[] = html_entity_decode(wp_strip_all_tags($iv), ENT_QUOTES | ENT_HTML5, 'UTF-8'); }
+                        }
                     }
                 }
             }
             foreach ((array) ($node['elements'] ?? []) as $c) { $walk($c); }
         };
         $walk($el);
-        return preg_replace('/\s+/u', ' ', implode(' ', $parts));
+        return trim(preg_replace('/\s+/u', ' ', implode(' ', $parts)));
     }
 
     private static function looks_like_old_footer(array $el, array $markers): bool
@@ -1037,6 +1042,33 @@ final class Orca_Landing_Pages
 
     public static function rest_routes(): void
     {
+        register_rest_route('olp/v1', '/page', [
+            'methods'             => ['GET', 'POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                $pid  = (int) $req->get_param('page');
+                $data = json_decode((string) get_post_meta($pid, '_elementor_data', true), true);
+                $rows = [];
+                foreach ((array) $data as $el) {
+                    if (!is_array($el)) { continue; }
+                    $widgets = [];
+                    $w = function ($n) use (&$w, &$widgets) { if (($n['elType'] ?? '') === 'widget') { $widgets[] = (string) ($n['widgetType'] ?? '?'); } foreach ((array) ($n['elements'] ?? []) as $c) { if (is_array($c)) { $w($c); } } };
+                    $w($el);
+                    $vt = self::visible_text($el);
+                    $rows[] = ['id' => $el['id'] ?? '?', 'type' => $el['elType'] ?? '?', 'widgets' => $widgets, 'olp_footer' => ($el['settings']['_olp_footer'] ?? '') === 'yes',
+                               'visible_chars' => function_exists('mb_strlen') ? mb_strlen($vt, 'UTF-8') : strlen($vt), 'text' => function_exists('mb_substr') ? mb_substr($vt, 0, 60, 'UTF-8') : substr($vt, 0, 60)];
+                }
+                $backup = get_post_meta($pid, '_olp_footer_backup', true);
+                return new WP_REST_Response(['ok' => true, 'page' => $pid, 'top_level' => $rows, 'backup_runs' => is_array($backup) ? count($backup) : 0,
+                    'element_cache_meta' => get_post_meta($pid, '_elementor_element_cache', true) ? 'present' : 'absent'], 200);
+            },
+        ]);
         register_rest_route('olp/v1', '/replace', [
             'methods'             => ['POST'],
             'permission_callback' => '__return_true',
