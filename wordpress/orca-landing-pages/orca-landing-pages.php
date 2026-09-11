@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.3
+ * Version:     1.7.4
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.3';
+    const VERSION     = '1.7.4';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -431,6 +431,60 @@ final class Orca_Landing_Pages
         return $log;
     }
 
+
+    /* ---------- restore what a footer sync removed ---------- */
+
+    /**
+     * Re-insert, from _olp_footer_backup, the elements that hold a lead form
+     * (the only thing the sync should never have taken). They go right before
+     * the first repo footer, or at the end. Optionally remove top-level
+     * elements by id (leftover hand-pasted HTML widgets). Secret-protected REST:
+     *   POST /wp-json/olp/v1/restore?secret=…&page=485[&remove=32821c0,85ccef9]
+     */
+    public static function restore_forms(int $pid, array $remove_ids = []): array
+    {
+        $json = get_post_meta($pid, '_elementor_data', true);
+        $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
+        if (!is_array($data)) {
+            return ['error' => 'no elementor data'];
+        }
+        $backup  = get_post_meta($pid, '_olp_footer_backup', true);
+        $backup  = is_array($backup) ? $backup : [];
+        $current = (string) wp_json_encode($data, JSON_UNESCAPED_UNICODE);
+        $forms   = [];
+        foreach ($backup as $run) {
+            foreach ((array) ($run['elements'] ?? []) as $el) {
+                if (is_array($el) && self::subtree_has_widget($el, ['form']) && strpos($current, '"' . ($el['id'] ?? '?') . '"') === false) {
+                    $forms[] = $el;
+                }
+            }
+        }
+        $removed = [];
+        if ($remove_ids) {
+            $data = array_values(array_filter($data, function ($el) use ($remove_ids, &$removed) {
+                $id = is_array($el) ? (string) ($el['id'] ?? '') : '';
+                if ($id !== '' && in_array($id, $remove_ids, true) && !self::subtree_has_widget($el, ['form'])) { $removed[] = $id; return false; }
+                return true;
+            }));
+        }
+        $inserted = 0;
+        if ($forms) {
+            $pos = count($data);
+            foreach ($data as $i => $el) {
+                if (is_array($el) && (($el['settings']['_olp_footer'] ?? '') === 'yes')) { $pos = $i; break; }
+            }
+            array_splice($data, $pos, 0, $forms);
+            $inserted = count($forms);
+        }
+        if ($inserted || $removed) {
+            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            self::clear_elementor_cache($pid);
+            clean_post_cache($pid);
+            self::purge_page_cache_plugins($pid);
+        }
+        return ['page' => $pid, 'forms_restored' => $inserted, 'removed' => $removed, 'top_level' => count($data)];
+    }
+
     /* ---------- server page cache ---------- */
 
     /**
@@ -809,6 +863,24 @@ final class Orca_Landing_Pages
 
     public static function rest_routes(): void
     {
+        register_rest_route('olp/v1', '/restore', [
+            'methods'             => ['POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                $pid    = (int) $req->get_param('page');
+                $remove = array_values(array_filter(array_map('trim', explode(',', (string) $req->get_param('remove')))));
+                if ($pid <= 0) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'page required'], 400);
+                }
+                return new WP_REST_Response(['ok' => true] + self::restore_forms($pid, $remove), 200);
+            },
+        ]);
         register_rest_route('olp/v1', '/refresh', [
             'methods'             => ['POST', 'GET'],
             'permission_callback' => '__return_true',
