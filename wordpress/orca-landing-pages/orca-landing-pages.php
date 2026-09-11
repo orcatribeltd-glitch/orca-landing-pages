@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.2
+ * Version:     1.7.3
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.2';
+    const VERSION     = '1.7.3';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -306,6 +306,20 @@ final class Orca_Landing_Pages
         return strpos(self::element_text($el), self::normalize_marker('[landing_page name="' . $name . '"]')) !== false;
     }
 
+    /** True when the element is, or contains, a widget of one of these types (e.g. a lead form). */
+    private static function subtree_has_widget(array $el, array $types): bool
+    {
+        if (($el['elType'] ?? '') === 'widget' && in_array((string) ($el['widgetType'] ?? ''), $types, true)) {
+            return true;
+        }
+        foreach ((array) ($el['elements'] ?? []) as $child) {
+            if (is_array($child) && self::subtree_has_widget($child, $types)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Depth-first over an Elementor element tree. The first element (at any
      * depth) that is the repo footer or carries an old-footer marker becomes
@@ -325,6 +339,10 @@ final class Orca_Landing_Pages
                 if ($m !== '' && strpos($text, $m) !== false) { $hit = true; break; }
             }
             if ($hit) {
+                // A lead form is never a footer, even when its settings carry a marker (the
+                // notification email, the acceptance text). 1.7.1 replaced buyplan's whole
+                // form container this way. Leave such subtrees exactly as they are.
+                if (self::subtree_has_widget($el, ['form'])) { $st['what'][] = 'form-protected'; $out[] = $el; continue; }
                 // does the marker sit in this element itself, or only in a child? descend first
                 $own = $el; $own['elements'] = [];
                 $own_text = self::element_text($own); $own_hit = false;
