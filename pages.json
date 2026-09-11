@@ -1,0 +1,9 @@
+[
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-cancel",
+    "slug": "cancel",
+    "title": "משפיען בדיגיטל – ביטול מנוי",
+    "template": "templates/mashpian-cancel.json"
+  }
+]

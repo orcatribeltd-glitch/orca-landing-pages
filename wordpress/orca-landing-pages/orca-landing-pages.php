@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
- * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.5.0
+ * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
+ * Version:     1.6.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.5.0';
+    const VERSION     = '1.6.0';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -58,6 +58,100 @@ final class Orca_Landing_Pages
         add_action('admin_post_olp_purge', [__CLASS__, 'handle_purge']);
         add_action('rest_api_init', [__CLASS__, 'rest_routes']);
         add_action('send_headers', [__CLASS__, 'short_page_cache']);
+    }
+
+
+    /* ---------- pages declared in the repo ---------- */
+
+    /** The site's host without www, used to match `site` in pages.json. */
+    public static function site_host(): string
+    {
+        $host = (string) wp_parse_url(home_url('/'), PHP_URL_HOST);
+        return strtolower(preg_replace('/^www\./', '', $host));
+    }
+
+    /** Fetch a repo file at the pinned ref (any path, not only pages/). */
+    public static function fetch_repo_file(string $path): string
+    {
+        $s    = self::settings();
+        $url  = sprintf('https://raw.githubusercontent.com/%s/%s/%s', trim($s['repo'], '/'), rawurlencode(self::git_ref()), ltrim($path, '/'));
+        $args = ['timeout' => 12, 'headers' => ['Cache-Control' => 'no-cache', 'User-Agent' => 'orca-landing-pages/' . self::VERSION]];
+        if (!empty($s['token'])) {
+            $args['headers']['Authorization'] = 'token ' . $s['token'];
+        }
+        $res = wp_remote_get($url, $args);
+        if (is_wp_error($res) || (int) wp_remote_retrieve_response_code($res) !== 200) {
+            return '';
+        }
+        return (string) wp_remote_retrieve_body($res);
+    }
+
+    /**
+     * pages.json at the repo root lists pages that should exist on a site:
+     *   [{"site":"influence-club.co.il","name":"mashpian-cancel","slug":"cancel",
+     *     "title":"משפיען בדיגיטל – ביטול מנוי","template":"templates/mashpian-cancel.json"}]
+     * A page whose slug does not exist yet is created as a DRAFT from the
+     * Elementor template (content + page settings). Existing pages are never
+     * touched: what Jonathan edits in the editor (form recipient, publish)
+     * stays his. Returns a list of what happened, also stored in an option.
+     */
+    public static function sync_pages(): array
+    {
+        $raw = self::fetch_repo_file('pages.json');
+        $log = [];
+        $list = $raw !== '' ? json_decode($raw, true) : null;
+        if (!is_array($list)) {
+            $log[] = 'pages.json: none';
+            update_option('olp_last_sync', gmdate('c') . ' ' . implode('; ', $log), false);
+            return $log;
+        }
+        $host = self::site_host();
+        foreach ($list as $entry) {
+            if (!is_array($entry) || empty($entry['site']) || empty($entry['slug']) || empty($entry['template'])) {
+                continue;
+            }
+            if (strtolower(preg_replace('/^www\./', '', (string) $entry['site'])) !== $host) {
+                continue;
+            }
+            $slug = sanitize_title((string) $entry['slug']);
+            $existing = get_page_by_path($slug, OBJECT, 'page');
+            if ($existing) {
+                $log[] = $slug . ': exists (#' . $existing->ID . ')';
+                continue;
+            }
+            $tpl = json_decode(self::fetch_repo_file((string) $entry['template']), true);
+            if (!is_array($tpl) || empty($tpl['content']) || !is_array($tpl['content'])) {
+                $log[] = $slug . ': template unreadable';
+                continue;
+            }
+            $page_settings = isset($tpl['page_settings']) && is_array($tpl['page_settings']) ? $tpl['page_settings'] : [];
+            $wp_template   = !empty($page_settings['template']) ? (string) $page_settings['template'] : 'elementor_canvas';
+            unset($page_settings['template']);
+
+            $post_id = wp_insert_post([
+                'post_type'    => 'page',
+                'post_status'  => 'draft',
+                'post_title'   => (string) ($entry['title'] ?? $tpl['title'] ?? $slug),
+                'post_name'    => $slug,
+                'post_content' => '',
+            ], true);
+            if (is_wp_error($post_id) || !$post_id) {
+                $log[] = $slug . ': insert failed';
+                continue;
+            }
+            update_post_meta($post_id, '_elementor_edit_mode', 'builder');
+            update_post_meta($post_id, '_elementor_template_type', 'wp-page');
+            update_post_meta($post_id, '_elementor_data', wp_slash(wp_json_encode($tpl['content'], JSON_UNESCAPED_UNICODE)));
+            update_post_meta($post_id, '_elementor_page_settings', $page_settings);
+            update_post_meta($post_id, '_wp_page_template', $wp_template);
+            if (defined('ELEMENTOR_VERSION')) {
+                update_post_meta($post_id, '_elementor_version', ELEMENTOR_VERSION);
+            }
+            update_post_meta($post_id, '_olp_created_from', (string) $entry['template'] . '@' . self::git_ref());
+            $log[] = $slug . ': created draft #' . $post_id;
+        }
+        update_option('olp_last_sync', gmdate('c') . ' ' . implode('; ', $log), false);
+        return $log;
     }
 
     /* ---------- server page cache ---------- */
@@ -412,6 +506,7 @@ final class Orca_Landing_Pages
 
         self::touch_landing_pages();
         self::cpanel_clear_cache();
+        self::sync_pages();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
@@ -453,7 +548,7 @@ final class Orca_Landing_Pages
                 foreach (self::landing_page_ids() as $pid) {
                     $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured')], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', '')], 200);
             },
         ]);
     }
@@ -495,7 +590,7 @@ final class Orca_Landing_Pages
             <?php if ($purged !== null): ?>
                 <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
-            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code></p>
+            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code></p>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
                כדי לראות שינוי מיד: להוסיף <code>?olp_refresh=1</code> לכתובת הדף (כמנהל מחובר), או ללחוץ על הכפתור למטה.</p>
