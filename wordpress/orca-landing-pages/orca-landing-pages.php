@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.4
+ * Version:     1.7.5
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.4';
+    const VERSION     = '1.7.5';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -441,6 +441,23 @@ final class Orca_Landing_Pages
      * elements by id (leftover hand-pasted HTML widgets). Secret-protected REST:
      *   POST /wp-json/olp/v1/restore?secret=…&page=485[&remove=32821c0,85ccef9]
      */
+
+    /** Remove elements by id at any depth, never one that holds a form. */
+    private static function remove_ids_deep(array $elements, array $ids, array &$removed): array
+    {
+        $out = [];
+        foreach ($elements as $el) {
+            if (!is_array($el)) { $out[] = $el; continue; }
+            $id = (string) ($el['id'] ?? '');
+            if ($id !== '' && in_array($id, $ids, true) && !self::subtree_has_widget($el, ['form'])) { $removed[] = $id; continue; }
+            if (!empty($el['elements']) && is_array($el['elements'])) {
+                $el['elements'] = self::remove_ids_deep($el['elements'], $ids, $removed);
+            }
+            $out[] = $el;
+        }
+        return $out;
+    }
+
     public static function restore_forms(int $pid, array $remove_ids = []): array
     {
         $json = get_post_meta($pid, '_elementor_data', true);
@@ -461,11 +478,7 @@ final class Orca_Landing_Pages
         }
         $removed = [];
         if ($remove_ids) {
-            $data = array_values(array_filter($data, function ($el) use ($remove_ids, &$removed) {
-                $id = is_array($el) ? (string) ($el['id'] ?? '') : '';
-                if ($id !== '' && in_array($id, $remove_ids, true) && !self::subtree_has_widget($el, ['form'])) { $removed[] = $id; return false; }
-                return true;
-            }));
+            $data = self::remove_ids_deep($data, $remove_ids, $removed);
         }
         $inserted = 0;
         if ($forms) {
