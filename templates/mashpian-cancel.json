@@ -1,0 +1,138 @@
+{
+  "version": "0.4",
+  "title": "משפיען בדיגיטל – ביטול מנוי",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#0A0A0D"
+  },
+  "content": [
+    {
+      "id": "1f1cbec3",
+      "elType": "container",
+      "isInner": false,
+      "elements": [
+        {
+          "id": "187a3bd4",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"mashpian-cancel\"]"
+          }
+        }
+      ],
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      }
+    },
+    {
+      "id": "02b0d290",
+      "elType": "container",
+      "isInner": false,
+      "elements": [
+        {
+          "id": "1af60b7f",
+          "elType": "widget",
+          "widgetType": "form",
+          "elements": [],
+          "settings": {
+            "form_name": "ביטול מנוי - משפיען בדיגיטל",
+            "form_fields": [
+              {
+                "_id": "full_name",
+                "custom_id": "full_name",
+                "field_type": "text",
+                "field_label": "שם מלא",
+                "placeholder": "שם מלא",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "id_number",
+                "custom_id": "id_number",
+                "field_type": "text",
+                "field_label": "תעודת זהות",
+                "placeholder": "תעודת זהות",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "email",
+                "custom_id": "email",
+                "field_type": "email",
+                "field_label": "המייל שאיתו נרשמת",
+                "placeholder": "המייל שאיתו נרשמת",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "phone",
+                "custom_id": "phone",
+                "field_type": "tel",
+                "field_label": "טלפון",
+                "placeholder": "טלפון",
+                "required": "true",
+                "width": "100"
+              }
+            ],
+            "show_labels": "",
+            "mark_required": "",
+            "button_text": "שליחת בקשת ביטול",
+            "button_size": "md",
+            "button_width": "100",
+            "submit_actions": [
+              "email"
+            ],
+            "email_subject": "בקשת ביטול מנוי: [field id=\"full_name\"]",
+            "email_content": "[all-fields]",
+            "email_to": "",
+            "email_from_name": "משפיען בדיגיטל - ביטול מנוי",
+            "success_message": "בקשת הביטול התקבלה. בכפוף להוראות הדין, הביטול ייכנס לתוקף בתוך עד 3 ימי עסקים.",
+            "error_message": "משהו השתבש, נסו שוב.",
+            "required_field_message": "שדה חובה",
+            "invalid_message": "הפרטים לא תקינים"
+          }
+        }
+      ],
+      "settings": {
+        "_css_classes": "lp-formcard lp-cancel",
+        "content_width": "boxed",
+        "flex_direction": "column",
+        "content_position": "center",
+        "margin": {
+          "unit": "px",
+          "top": "-10",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": false
+        }
+      }
+    },
+    {
+      "id": "b0c866f7",
+      "elType": "container",
+      "isInner": false,
+      "elements": [],
+      "settings": {
+        "content_width": "full",
+        "min_height": {
+          "unit": "px",
+          "size": 80,
+          "sizes": []
+        }
+      }
+    }
+  ]
+}
