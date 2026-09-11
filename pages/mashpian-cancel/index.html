@@ -55,3 +55,6 @@ html,body{max-width:100%;overflow-x:hidden;}
 <div class="lp-cancel-note">*בכפוף להוראות הדין, הביטול ייכנס לתוקף בתוך עד 3 ימי עסקים ממועד מסירת בקשת הביטול.</div>
 </div>
 </div>
+
+<!-- חלק 4: הצמדת מחלקות הכרטיס לקונטיינר של הטופס. אלמנטור משמיט לפעמים _css_classes בעמוד שנוצר מתבנית; הסקריפט לא תלוי בזה. -->
+<script>(function(){var f=function(){document.querySelectorAll('.elementor-widget-form').forEach(function(w){var c=w.closest('.e-con');if(c&&!c.classList.contains('lp-formcard')){c.classList.add('lp-formcard','lp-cancel');}});};if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',f);}else{f();}if(window.MutationObserver){new MutationObserver(f).observe(document.body||document.documentElement,{childList:true,subtree:true});}})();</script>
