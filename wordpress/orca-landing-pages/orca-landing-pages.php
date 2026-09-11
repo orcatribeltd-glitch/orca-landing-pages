@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.1
+ * Version:     1.7.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.1';
+    const VERSION     = '1.7.2';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -58,6 +58,101 @@ final class Orca_Landing_Pages
         add_action('admin_post_olp_purge', [__CLASS__, 'handle_purge']);
         add_action('rest_api_init', [__CLASS__, 'rest_routes']);
         add_action('send_headers', [__CLASS__, 'short_page_cache']);
+        add_filter('pre_set_site_transient_update_plugins', [__CLASS__, 'inject_update']);
+        add_filter('plugins_api', [__CLASS__, 'plugin_info'], 10, 3);
+    }
+
+    /* ---------- self-update from the repo ---------- */
+
+    const UPDATE_CACHE = 'olp_remote_version';
+
+    /** wordpress/version.json in the repo: {"version":"1.7.2","package":"https://…/orca-landing-pages-1.7.2.zip"} */
+    public static function remote_version(bool $force = false): array
+    {
+        $cached = get_transient(self::UPDATE_CACHE);
+        if (!$force && is_array($cached)) {
+            return $cached;
+        }
+        $s   = self::settings();
+        $url = sprintf('https://raw.githubusercontent.com/%s/%s/wordpress/version.json', trim($s['repo'], '/'), rawurlencode($s['branch']));
+        $res = wp_remote_get($url, ['timeout' => 10, 'headers' => ['Cache-Control' => 'no-cache', 'User-Agent' => 'orca-landing-pages/' . self::VERSION]]);
+        $info = [];
+        if (!is_wp_error($res) && (int) wp_remote_retrieve_response_code($res) === 200) {
+            $data = json_decode((string) wp_remote_retrieve_body($res), true);
+            if (is_array($data) && !empty($data['version']) && !empty($data['package'])) {
+                $info = ['version' => (string) $data['version'], 'package' => (string) $data['package']];
+            }
+        }
+        set_transient(self::UPDATE_CACHE, $info, 6 * HOUR_IN_SECONDS);
+        return $info;
+    }
+
+    public static function inject_update($transient)
+    {
+        if (!is_object($transient)) {
+            return $transient;
+        }
+        $info = self::remote_version();
+        if (!$info || version_compare($info['version'], self::VERSION, '<=')) {
+            return $transient;
+        }
+        $basename = plugin_basename(__FILE__);
+        $transient->response[$basename] = (object) [
+            'slug'        => 'orca-landing-pages',
+            'plugin'      => $basename,
+            'new_version' => $info['version'],
+            'package'     => $info['package'],
+            'url'         => 'https://github.com/' . trim(self::settings()['repo'], '/'),
+            'tested'      => get_bloginfo('version'),
+        ];
+        return $transient;
+    }
+
+    public static function plugin_info($result, $action, $args)
+    {
+        if ($action !== 'plugin_information' || empty($args->slug) || $args->slug !== 'orca-landing-pages') {
+            return $result;
+        }
+        $info = self::remote_version();
+        return (object) [
+            'name' => 'Orca Landing Pages (GitHub)', 'slug' => 'orca-landing-pages', 'version' => $info['version'] ?? self::VERSION,
+            'author' => 'Orca Tribe', 'homepage' => 'https://github.com/' . trim(self::settings()['repo'], '/'),
+            'download_link' => $info['package'] ?? '', 'sections' => ['description' => 'דפי נחיתה מריפו GitHub. עדכונים מגיעים מהריפו.'],
+        ];
+    }
+
+    /**
+     * Called from the webhook: if the repo says a newer plugin exists, install it
+     * right now, so a push of a new version updates every site by itself.
+     */
+    public static function self_update(): string
+    {
+        delete_transient(self::UPDATE_CACHE);
+        $info = self::remote_version(true);
+        if (!$info || version_compare($info['version'], self::VERSION, '<=')) {
+            return 'up to date (' . self::VERSION . ')';
+        }
+        if (!function_exists('get_filesystem_method')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        if (get_filesystem_method() !== 'direct') {
+            return 'newer ' . $info['version'] . ' available, filesystem not direct — update from the plugins screen';
+        }
+        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        delete_site_transient('update_plugins');
+        wp_update_plugins();
+        $skin     = new WP_Ajax_Upgrader_Skin();
+        $upgrader = new Plugin_Upgrader($skin);
+        $basename = plugin_basename(__FILE__);
+        $was_active = is_plugin_active($basename);
+        $ok = $upgrader->upgrade($basename);
+        if ($was_active && !is_plugin_active($basename)) {
+            activate_plugin($basename);
+        }
+        $msg = ($ok === true ? 'updated to ' . $info['version'] : 'update failed: ' . implode(' | ', array_map('strval', (array) $skin->get_errors()->get_error_messages())));
+        update_option('olp_last_self_update', gmdate('c') . ' ' . $msg, false);
+        return $msg;
     }
 
 
@@ -211,6 +306,58 @@ final class Orca_Landing_Pages
         return strpos(self::element_text($el), self::normalize_marker('[landing_page name="' . $name . '"]')) !== false;
     }
 
+    /**
+     * Depth-first over an Elementor element tree. The first element (at any
+     * depth) that is the repo footer or carries an old-footer marker becomes
+     * THE footer; every later one is removed. Old copies go to $st['backup'].
+     */
+    private static function footer_walk(array $elements, string $name, array $markers, array &$st): array
+    {
+        $out = [];
+        foreach ($elements as $el) {
+            if (!is_array($el)) { $out[] = $el; continue; }
+            if (self::is_repo_footer($el, $name)) {
+                if ($st['seen']) { $st['deduped']++; $st['what'][] = 'dedupe'; continue; }
+                $st['seen'] = true; $out[] = $el; continue;
+            }
+            $text = self::element_text($el); $hit = false;
+            foreach ($markers as $m) {
+                if ($m !== '' && strpos($text, $m) !== false) { $hit = true; break; }
+            }
+            if ($hit) {
+                // does the marker sit in this element itself, or only in a child? descend first
+                $own = $el; $own['elements'] = [];
+                $own_text = self::element_text($own); $own_hit = false;
+                foreach ($markers as $m) { if ($m !== '' && strpos($own_text, $m) !== false) { $own_hit = true; break; } }
+                if (!$own_hit && !empty($el['elements']) && is_array($el['elements'])) {
+                    $el['elements'] = self::footer_walk($el['elements'], $name, $markers, $st);
+                    if (empty($el['elements'])) { $st['what'][] = 'empty-wrapper-removed'; continue; } // held only the old footer
+                    $out[] = $el; continue;
+                }
+                $st['backup'][] = $el;
+                if ($st['seen']) { $st['deduped']++; $st['what'][] = 'old-dup-removed'; continue; }
+                $st['seen'] = true; $st['replaced']++; $st['what'][] = 'replaced';
+                $out[] = self::footer_element($name); continue;
+            }
+            if (!empty($el['elements']) && is_array($el['elements'])) {
+                $el['elements'] = self::footer_walk($el['elements'], $name, $markers, $st);
+                if (empty($el['elements'])) { $st['what'][] = 'empty-wrapper-removed'; continue; }
+            }
+            $out[] = $el;
+        }
+        return $out;
+    }
+
+    /** Elementor keeps rendered output and CSS per page; drop both so a data change is visible at once. */
+    private static function clear_elementor_cache(int $pid): void
+    {
+        delete_post_meta($pid, '_elementor_css');
+        delete_post_meta($pid, '_elementor_element_cache');
+        if (class_exists('\Elementor\Plugin') && isset(\Elementor\Plugin::$instance->files_manager) && method_exists(\Elementor\Plugin::$instance->files_manager, 'clear_cache')) {
+            \Elementor\Plugin::$instance->files_manager->clear_cache();
+        }
+    }
+
     public static function sync_footer(): array
     {
         $raw   = self::fetch_repo_file('sites.json');
@@ -240,24 +387,11 @@ final class Orca_Landing_Pages
                 $detail[] = $pid . ':bad-json';
                 continue;
             }
-            $changed = false; $backup = []; $seen_footer = false; $out = []; $what = [];
-            foreach ($data as $el) {
-                if (!is_array($el)) { $out[] = $el; continue; }
-                if (self::is_repo_footer($el, $name)) {
-                    if ($seen_footer) { $deduped++; $changed = true; $what[] = 'dedupe'; continue; } // drop duplicate repo footers
-                    $seen_footer = true; $out[] = $el; continue;
-                }
-                $text = self::element_text($el); $hit = false;
-                foreach ($markers as $m) {
-                    if ($m !== '' && strpos($text, $m) !== false) { $hit = true; break; }
-                }
-                if ($hit) {
-                    $backup[] = $el; $changed = true;
-                    if ($seen_footer) { $deduped++; $what[] = 'old-dup-removed'; continue; } // second old copy (e.g. mobile) → removed
-                    $seen_footer = true; $out[] = self::footer_element($name); $replaced++; $what[] = 'replaced'; continue;
-                }
-                $out[] = $el;
-            }
+            $st = ['seen' => false, 'backup' => [], 'what' => [], 'replaced' => 0, 'deduped' => 0];
+            $out = self::footer_walk($data, $name, $markers, $st);
+            $changed = !empty($st['what']);
+            $replaced += $st['replaced']; $deduped += $st['deduped'];
+            $seen_footer = $st['seen']; $backup = $st['backup']; $what = $st['what'];
             if (!$seen_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
                 $out[] = self::footer_element($name); $changed = true; $appended++; $what[] = 'appended';
             }
@@ -268,7 +402,7 @@ final class Orca_Landing_Pages
                 update_post_meta($pid, '_olp_footer_backup', array_merge($old, [['at' => gmdate('c'), 'elements' => $backup]]));
             }
             update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($out, JSON_UNESCAPED_UNICODE)));
-            delete_post_meta($pid, '_elementor_css');
+            self::clear_elementor_cache($pid);
             clean_post_cache($pid);
             self::purge_page_cache_plugins($pid);
             $detail[] = $pid . ':' . implode('+', $what);
@@ -670,11 +804,12 @@ final class Orca_Landing_Pages
                 $payload = $req->get_json_params();
                 $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
                 $gen     = self::purge_all($sha);
+                $update = self::self_update();
                 $caches = [];
                 foreach (self::landing_page_ids() as $pid) {
                     $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', '')], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', ''), 'plugin' => self::VERSION . ' — ' . $update], 200);
             },
         ]);
     }
