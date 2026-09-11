@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.8.2
+ * Version:     1.8.3
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.8.2';
+    const VERSION     = '1.8.3';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -405,7 +405,13 @@ final class Orca_Landing_Pages
             if (!is_array($el)) { $out[] = $el; continue; }
             if (self::is_repo_footer($el, $name)) {
                 if ($st['seen']) { $st['deduped']++; $st['what'][] = 'dedupe'; continue; }
-                $st['seen'] = true; $out[] = $el; continue;
+                $st['seen'] = true;
+                // a wrapper whose only content is the repo footer (left by the 1.7.x descend) collapses to the footer itself
+                if (($el['settings']['_olp_footer'] ?? '') !== 'yes' && count((array) ($el['elements'] ?? [])) === 1) {
+                    $only = $el['elements'][0];
+                    if (is_array($only) && ($only['settings']['_olp_footer'] ?? '') === 'yes') { $el = $only; $el['isInner'] = false; $st['what'][] = 'wrapper-collapsed'; }
+                }
+                $out[] = $el; continue;
             }
             $text = self::element_text($el); $hit = false;
             foreach ($markers as $m) {
