@@ -1,0 +1,40 @@
+{
+  "version": "0.4",
+  "title": "משפיען בדיגיטל – תודה על בקשת הביטול",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#0A0A0D"
+  },
+  "content": [
+    {
+      "id": "ad511e97",
+      "elType": "container",
+      "isInner": false,
+      "elements": [
+        {
+          "id": "8a0a7f8d",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"mashpian-cancel-thanks\"]"
+          }
+        }
+      ],
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      }
+    }
+  ]
+}

@@ -5,5 +5,12 @@
     "slug": "cancel",
     "title": "משפיען בדיגיטל – ביטול מנוי",
     "template": "templates/mashpian-cancel.json"
+  },
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-cancel-thanks",
+    "slug": "cancel-thanks",
+    "title": "משפיען בדיגיטל – תודה על בקשת הביטול",
+    "template": "templates/mashpian-cancel-thanks.json"
   }
 ]
