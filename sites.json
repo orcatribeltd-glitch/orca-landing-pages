@@ -3,8 +3,9 @@
     "footer": {
       "name": "influence-footer",
       "replace_containing": [
-        "אורקה טרייב בע״מ",
-        "orcatribeltd@gmail.com"
+        "orcatribeltd@gmail.com",
+        "not a part of the Facebook",
+        "אורקה טרייב בע״מ"
       ],
       "append_to_pages_created_from_repo": true
     }

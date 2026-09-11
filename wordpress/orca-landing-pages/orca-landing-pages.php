@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.0
+ * Version:     1.7.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.0';
+    const VERSION     = '1.7.1';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -185,6 +185,32 @@ final class Orca_Landing_Pages
      * post meta _olp_footer_backup. Pages created from the repo that have no
      * footer get one appended. Nothing else in the page is touched.
      */
+    /** Text of an element tree, lowercased, tags/entities/quotes/whitespace removed — for marker matching. */
+    private static function element_text(array $el): string
+    {
+        $blob = (string) wp_json_encode($el, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $blob = html_entity_decode($blob, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $blob = preg_replace('/<[^>]+>/u', ' ', $blob);
+        $blob = preg_replace('/[\x{05F4}\x{05F3}"\'“”‘’`\\\\]/u', '', $blob);
+        $blob = preg_replace('/\s+/u', ' ', $blob);
+        return function_exists('mb_strtolower') ? mb_strtolower($blob, 'UTF-8') : strtolower($blob);
+    }
+
+    private static function normalize_marker(string $m): string
+    {
+        $m = preg_replace('/[\x{05F4}\x{05F3}"\'“”‘’`\\\\]/u', '', $m);
+        $m = preg_replace('/\s+/u', ' ', trim($m));
+        return function_exists('mb_strtolower') ? mb_strtolower($m, 'UTF-8') : strtolower($m);
+    }
+
+    private static function is_repo_footer(array $el, string $name): bool
+    {
+        if (($el['settings']['_olp_footer'] ?? '') === 'yes') {
+            return true;
+        }
+        return strpos(self::element_text($el), self::normalize_marker('[landing_page name="' . $name . '"]')) !== false;
+    }
+
     public static function sync_footer(): array
     {
         $raw   = self::fetch_repo_file('sites.json');
@@ -197,61 +223,58 @@ final class Orca_Landing_Pages
             return $log;
         }
         $name    = sanitize_title((string) $cfg['name']);
-        $markers = array_values(array_filter(array_map('strval', (array) ($cfg['replace_containing'] ?? []))));
+        $markers = array_values(array_filter(array_map([__CLASS__, 'normalize_marker'], array_map('strval', (array) ($cfg['replace_containing'] ?? [])))));
         $append  = !empty($cfg['append_to_pages_created_from_repo']);
-        $tag     = '[landing_page name="' . $name . '"]';
-        // inside a JSON blob the quotes are escaped, so search for the encoded form
-        $tag_json = trim((string) wp_json_encode($tag, JSON_UNESCAPED_UNICODE), '"');
 
         $pages = get_posts(['post_type' => 'page', 'post_status' => ['publish', 'draft', 'private', 'pending', 'future'], 'numberposts' => -1, 'fields' => 'ids']);
-        $replaced = 0; $appended = 0; $skipped = 0;
+        $replaced = 0; $appended = 0; $deduped = 0; $skipped = 0; $detail = [];
         foreach ((array) $pages as $pid) {
             $pid  = (int) $pid;
             $json = get_post_meta($pid, '_elementor_data', true);
             if (!is_string($json) || $json === '') {
+                $detail[] = $pid . ':no-elementor';
                 continue;
             }
             $data = json_decode($json, true);
             if (!is_array($data)) {
+                $detail[] = $pid . ':bad-json';
                 continue;
             }
-            $changed = false; $backup = [];
-            foreach ($data as $i => $el) {
-                $blob = wp_json_encode($el, JSON_UNESCAPED_UNICODE);
-                if (strpos($blob, $tag_json) !== false) {
-                    continue; // already the repo footer
+            $changed = false; $backup = []; $seen_footer = false; $out = []; $what = [];
+            foreach ($data as $el) {
+                if (!is_array($el)) { $out[] = $el; continue; }
+                if (self::is_repo_footer($el, $name)) {
+                    if ($seen_footer) { $deduped++; $changed = true; $what[] = 'dedupe'; continue; } // drop duplicate repo footers
+                    $seen_footer = true; $out[] = $el; continue;
                 }
+                $text = self::element_text($el); $hit = false;
                 foreach ($markers as $m) {
-                    if ($m !== '' && strpos($blob, $m) !== false) {
-                        $backup[] = $el;
-                        $data[$i] = self::footer_element($name);
-                        $changed  = true;
-                        break;
-                    }
+                    if ($m !== '' && strpos($text, $m) !== false) { $hit = true; break; }
                 }
+                if ($hit) {
+                    $backup[] = $el; $changed = true;
+                    if ($seen_footer) { $deduped++; $what[] = 'old-dup-removed'; continue; } // second old copy (e.g. mobile) → removed
+                    $seen_footer = true; $out[] = self::footer_element($name); $replaced++; $what[] = 'replaced'; continue;
+                }
+                $out[] = $el;
             }
-            $has_footer = strpos((string) wp_json_encode($data, JSON_UNESCAPED_UNICODE), $tag_json) !== false;
-            if (!$has_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
-                $data[]  = self::footer_element($name);
-                $changed = true;
-                $appended++;
+            if (!$seen_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
+                $out[] = self::footer_element($name); $changed = true; $appended++; $what[] = 'appended';
             }
-            if (!$changed) {
-                $skipped++;
-                continue;
-            }
+            if (!$changed) { $skipped++; $detail[] = $pid . ':' . ($seen_footer ? 'ok' : 'no-footer'); continue; }
             if ($backup) {
                 $old = get_post_meta($pid, '_olp_footer_backup', true);
                 $old = is_array($old) ? $old : [];
                 update_post_meta($pid, '_olp_footer_backup', array_merge($old, [['at' => gmdate('c'), 'elements' => $backup]]));
-                $replaced++;
             }
-            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($out, JSON_UNESCAPED_UNICODE)));
             delete_post_meta($pid, '_elementor_css');
             clean_post_cache($pid);
             self::purge_page_cache_plugins($pid);
+            $detail[] = $pid . ':' . implode('+', $what);
         }
-        $log[] = "footer '$name': replaced on $replaced pages, appended to $appended, untouched $skipped";
+        $log[] = "footer '$name': replaced $replaced, appended $appended, duplicates removed $deduped, untouched $skipped";
+        $log[] = implode(' ', $detail);
         update_option('olp_last_footer', gmdate('c') . ' ' . implode('; ', $log), false);
         return $log;
     }
