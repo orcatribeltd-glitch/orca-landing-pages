@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.6.0
+ * Version:     1.7.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.6.0';
+    const VERSION     = '1.7.0';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -151,6 +151,108 @@ final class Orca_Landing_Pages
             $log[] = $slug . ': created draft #' . $post_id;
         }
         update_option('olp_last_sync', gmdate('c') . ' ' . implode('; ', $log), false);
+        return $log;
+    }
+
+
+    /* ---------- shared footer declared in the repo ---------- */
+
+    private static function new_id(): string
+    {
+        return substr(md5(uniqid('', true)), 0, 7);
+    }
+
+    private static function footer_element(string $name): array
+    {
+        return [
+            'id' => self::new_id(), 'elType' => 'container', 'isInner' => false,
+            'settings' => ['content_width' => 'full', 'flex_direction' => 'column', '_olp_footer' => 'yes'],
+            'elements' => [[
+                'id' => self::new_id(), 'elType' => 'widget', 'widgetType' => 'shortcode', 'elements' => [],
+                'settings' => ['shortcode' => '[landing_page name="' . $name . '"]'],
+            ]],
+        ];
+    }
+
+    /**
+     * sites.json in the repo:
+     *   {"influence-club.co.il": {"footer": {"name": "influence-footer",
+     *      "replace_containing": ["אורקה טרייב בע״מ", "orcatribeltd@gmail.com"],
+     *      "append_to_pages_created_from_repo": true}}}
+     * For every page of this site: a TOP-LEVEL Elementor element whose content
+     * contains one of the markers (the old hand-copied footer) is replaced by a
+     * container with the footer shortcode. The original element is kept in
+     * post meta _olp_footer_backup. Pages created from the repo that have no
+     * footer get one appended. Nothing else in the page is touched.
+     */
+    public static function sync_footer(): array
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $log   = [];
+        $cfg   = is_array($sites) ? ($sites[self::site_host()]['footer'] ?? null) : null;
+        if (!is_array($cfg) || empty($cfg['name'])) {
+            $log[] = 'no footer config for ' . self::site_host();
+            update_option('olp_last_footer', gmdate('c') . ' ' . implode('; ', $log), false);
+            return $log;
+        }
+        $name    = sanitize_title((string) $cfg['name']);
+        $markers = array_values(array_filter(array_map('strval', (array) ($cfg['replace_containing'] ?? []))));
+        $append  = !empty($cfg['append_to_pages_created_from_repo']);
+        $tag     = '[landing_page name="' . $name . '"]';
+        // inside a JSON blob the quotes are escaped, so search for the encoded form
+        $tag_json = trim((string) wp_json_encode($tag, JSON_UNESCAPED_UNICODE), '"');
+
+        $pages = get_posts(['post_type' => 'page', 'post_status' => ['publish', 'draft', 'private', 'pending', 'future'], 'numberposts' => -1, 'fields' => 'ids']);
+        $replaced = 0; $appended = 0; $skipped = 0;
+        foreach ((array) $pages as $pid) {
+            $pid  = (int) $pid;
+            $json = get_post_meta($pid, '_elementor_data', true);
+            if (!is_string($json) || $json === '') {
+                continue;
+            }
+            $data = json_decode($json, true);
+            if (!is_array($data)) {
+                continue;
+            }
+            $changed = false; $backup = [];
+            foreach ($data as $i => $el) {
+                $blob = wp_json_encode($el, JSON_UNESCAPED_UNICODE);
+                if (strpos($blob, $tag_json) !== false) {
+                    continue; // already the repo footer
+                }
+                foreach ($markers as $m) {
+                    if ($m !== '' && strpos($blob, $m) !== false) {
+                        $backup[] = $el;
+                        $data[$i] = self::footer_element($name);
+                        $changed  = true;
+                        break;
+                    }
+                }
+            }
+            $has_footer = strpos((string) wp_json_encode($data, JSON_UNESCAPED_UNICODE), $tag_json) !== false;
+            if (!$has_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
+                $data[]  = self::footer_element($name);
+                $changed = true;
+                $appended++;
+            }
+            if (!$changed) {
+                $skipped++;
+                continue;
+            }
+            if ($backup) {
+                $old = get_post_meta($pid, '_olp_footer_backup', true);
+                $old = is_array($old) ? $old : [];
+                update_post_meta($pid, '_olp_footer_backup', array_merge($old, [['at' => gmdate('c'), 'elements' => $backup]]));
+                $replaced++;
+            }
+            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            delete_post_meta($pid, '_elementor_css');
+            clean_post_cache($pid);
+            self::purge_page_cache_plugins($pid);
+        }
+        $log[] = "footer '$name': replaced on $replaced pages, appended to $appended, untouched $skipped";
+        update_option('olp_last_footer', gmdate('c') . ' ' . implode('; ', $log), false);
         return $log;
     }
 
@@ -507,6 +609,7 @@ final class Orca_Landing_Pages
         self::touch_landing_pages();
         self::cpanel_clear_cache();
         self::sync_pages();
+        self::sync_footer();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
@@ -548,7 +651,7 @@ final class Orca_Landing_Pages
                 foreach (self::landing_page_ids() as $pid) {
                     $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', '')], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', '')], 200);
             },
         ]);
     }
@@ -590,7 +693,7 @@ final class Orca_Landing_Pages
             <?php if ($purged !== null): ?>
                 <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
-            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code></p>
+            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code><br>פוטר מהריפו (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_footer', 'עדיין לא')); ?></code></p>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
                כדי לראות שינוי מיד: להוסיף <code>?olp_refresh=1</code> לכתובת הדף (כמנהל מחובר), או ללחוץ על הכפתור למטה.</p>

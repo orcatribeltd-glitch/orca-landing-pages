@@ -1,0 +1,12 @@
+{
+  "influence-club.co.il": {
+    "footer": {
+      "name": "influence-footer",
+      "replace_containing": [
+        "אורקה טרייב בע״מ",
+        "orcatribeltd@gmail.com"
+      ],
+      "append_to_pages_created_from_repo": true
+    }
+  }
+}

@@ -133,6 +133,26 @@
           "sizes": []
         }
       }
+    },
+    {
+      "id": "a6b17ad3",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column"
+      },
+      "elements": [
+        {
+          "id": "d458f71b",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"influence-footer\"]"
+          }
+        }
+      ]
     }
   ]
 }

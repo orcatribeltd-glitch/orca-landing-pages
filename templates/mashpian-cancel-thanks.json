@@ -35,6 +35,26 @@
           "isLinked": true
         }
       }
+    },
+    {
+      "id": "c7a2e69f",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column"
+      },
+      "elements": [
+        {
+          "id": "b2c74011",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"influence-footer\"]"
+          }
+        }
+      ]
     }
   ]
 }
