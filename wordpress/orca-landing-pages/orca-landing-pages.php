@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.4.0
+ * Version:     1.5.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.4.0';
+    const VERSION     = '1.5.0';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -61,6 +61,46 @@ final class Orca_Landing_Pages
     }
 
     /* ---------- server page cache ---------- */
+
+    /**
+     * Page-cache plugins keep a static copy of the page; ask each one that is
+     * installed to drop this page. SpeedyCache (Softaculous) is what runs on
+     * influence-club.co.il: it stamps "Cache by SpeedyCache" at the end of the
+     * HTML and strips comments, so measure with a visible marker, not a comment.
+     */
+    public static function purge_page_cache_plugins(int $id): array
+    {
+        $done = [];
+        if (class_exists('\\SpeedyCache\\Delete') && method_exists('\\SpeedyCache\\Delete', 'cache')) {
+            \SpeedyCache\Delete::cache($id);
+            $done[] = 'speedycache';
+        }
+        if (function_exists('rocket_clean_post')) {
+            rocket_clean_post($id);
+            $done[] = 'wp-rocket';
+        }
+        if (function_exists('w3tc_flush_post')) {
+            w3tc_flush_post($id);
+            $done[] = 'w3tc';
+        }
+        if (function_exists('wpsc_delete_post_cache')) {
+            wpsc_delete_post_cache($id);
+            $done[] = 'wp-super-cache';
+        }
+        if (has_action('litespeed_purge_post')) {
+            do_action('litespeed_purge_post', $id);
+            $done[] = 'litespeed';
+        }
+        if (has_action('cache_enabler_clear_page_cache_by_post')) {
+            do_action('cache_enabler_clear_page_cache_by_post', $id);
+            $done[] = 'cache-enabler';
+        }
+        if (has_action('wphb_clear_page_cache')) {
+            do_action('wphb_clear_page_cache', $id);
+            $done[] = 'hummingbird';
+        }
+        return $done;
+    }
 
     /**
      * FastCloud (cPanel + NGINX caching) keeps the rendered page until the cache
@@ -128,6 +168,7 @@ final class Orca_Landing_Pages
         foreach ($ids as $id) {
             clean_post_cache($id);
             wp_update_post(['ID' => $id]);
+            self::purge_page_cache_plugins($id);
         }
         foreach (['litespeed_purge_all', 'w3tc_flush_all', 'wp_cache_clear_cache', 'rocket_clean_domain', 'cache_enabler_clear_complete_cache', 'breeze_clear_all_cache', 'swcfpc_purge_cache'] as $hook) {
             if (has_action($hook) || has_filter($hook)) {
@@ -343,7 +384,7 @@ final class Orca_Landing_Pages
             return $msg;
         }
 
-        return '<div class="olp-page" data-olp-page="' . esc_attr($name) . '" data-olp-source="' . esc_attr($source) . '">'
+        return '<div class="olp-page" data-olp-page="' . esc_attr($name) . '" data-olp-source="' . esc_attr($source) . '" data-olp-ref="' . esc_attr(substr(self::git_ref(), 0, 7)) . '">'
             . $html . '</div>';
     }
 
@@ -408,7 +449,11 @@ final class Orca_Landing_Pages
                 $payload = $req->get_json_params();
                 $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
                 $gen     = self::purge_all($sha);
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured')], 200);
+                $caches = [];
+                foreach (self::landing_page_ids() as $pid) {
+                    $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
+                }
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured')], 200);
             },
         ]);
     }
