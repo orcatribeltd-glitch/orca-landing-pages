@@ -26,5 +26,12 @@
     "slug": "accessibility-statement",
     "title": "נגישות האתר",
     "template": "templates/mashpian-accessibility.json"
+  },
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-privacy",
+    "slug": "privcacy-policy",
+    "title": "מדיניות פרטיות",
+    "template": "templates/mashpian-privacy.json"
   }
 ]
