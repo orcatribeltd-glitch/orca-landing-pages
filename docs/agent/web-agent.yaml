@@ -1,0 +1,6 @@
+name: Web
+description: Landing pages and client websites — design to Jonathan's standard, build in the orca-landing-pages repo, deploy through the orca-landing-pages WordPress plugin, verify on the live site. Owns pages, form templates, shared footers and the plugin. Never edits existing client pages without explicit approval.
+
+telegram_bot_token_env: WEB_BOT_TOKEN
+
+model: claude-sonnet-4-6
