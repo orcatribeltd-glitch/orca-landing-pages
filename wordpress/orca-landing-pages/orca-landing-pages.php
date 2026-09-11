@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub. שימוש: [landing_page name="rachel-pottery"]. כל commit לריפו מתעדכן באתר תוך דקות, בלי FTP.
- * Version:     1.3.0
+ * Version:     1.4.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.3.0';
+    const VERSION     = '1.4.0';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -30,6 +30,9 @@ final class Orca_Landing_Pages
             'token'          => '',
             'ttl'            => 300,
             'webhook_secret' => '',
+            'cpanel_host'    => '',
+            'cpanel_user'    => '',
+            'cpanel_token'   => '',
         ];
     }
 
@@ -58,6 +61,44 @@ final class Orca_Landing_Pages
     }
 
     /* ---------- server page cache ---------- */
+
+    /**
+     * FastCloud (cPanel + NGINX caching) keeps the rendered page until the cache
+     * is cleared; TTL and save hooks did not do it. cPanel's own API can:
+     * UAPI NginxCaching::clear_cache, authenticated with a cPanel API token
+     * (cPanel → Manage API Tokens). Configured in the settings page; a no-op
+     * until host, user and token are all set. Returns a short status string.
+     */
+    public static function cpanel_clear_cache(): string
+    {
+        $s = self::settings();
+        if ($s['cpanel_host'] === '' || $s['cpanel_user'] === '' || $s['cpanel_token'] === '') {
+            return 'not configured';
+        }
+        $host = preg_replace('#^https?://#', '', $s['cpanel_host']);
+        $host = rtrim($host, '/');
+        if (strpos($host, ':') === false) {
+            $host .= ':2083';
+        }
+        $res = wp_remote_get('https://' . $host . '/execute/NginxCaching/clear_cache', [
+            'timeout'   => 15,
+            'sslverify' => true,
+            'headers'   => [
+                'Authorization' => 'cpanel ' . $s['cpanel_user'] . ':' . $s['cpanel_token'],
+                'User-Agent'    => 'orca-landing-pages/' . self::VERSION,
+            ],
+        ]);
+        if (is_wp_error($res)) {
+            $out = 'error: ' . $res->get_error_message();
+        } else {
+            $code = (int) wp_remote_retrieve_response_code($res);
+            $data = json_decode((string) wp_remote_retrieve_body($res), true);
+            $ok   = is_array($data) && !empty($data['status']);
+            $out  = $ok ? 'cleared' : ('failed: HTTP ' . $code . ' ' . substr((string) wp_remote_retrieve_body($res), 0, 120));
+        }
+        update_option('olp_last_cpanel_purge', gmdate('c') . ' ' . $out, false);
+        return $out;
+    }
 
     /** Every published page or post that renders a landing page. */
     public static function landing_page_ids(): array
@@ -329,6 +370,7 @@ final class Orca_Landing_Pages
         wp_cache_delete(self::GEN_OPTION, 'options');
 
         self::touch_landing_pages();
+        self::cpanel_clear_cache();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
@@ -366,7 +408,7 @@ final class Orca_Landing_Pages
                 $payload = $req->get_json_params();
                 $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
                 $gen     = self::purge_all($sha);
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids()], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured')], 200);
             },
         ]);
     }
@@ -390,6 +432,9 @@ final class Orca_Landing_Pages
                     'token'          => trim((string) ($in['token'] ?? '')),
                     'ttl'            => max(30, (int) ($in['ttl'] ?? $d['ttl'])),
                     'webhook_secret' => trim((string) ($in['webhook_secret'] ?? '')),
+                    'cpanel_host'    => trim((string) ($in['cpanel_host'] ?? '')),
+                    'cpanel_user'    => trim((string) ($in['cpanel_user'] ?? '')),
+                    'cpanel_token'   => trim((string) ($in['cpanel_token'] ?? '')),
                 ];
             },
         ]);
@@ -420,6 +465,12 @@ final class Orca_Landing_Pages
                     <tr><th>זמן שמירה בזיכרון (שניות)</th><td><input type="number" min="30" name="<?php echo self::OPTION; ?>[ttl]" value="<?php echo (int) $s['ttl']; ?>"></td></tr>
                     <tr><th>סוד ל-webhook (אופציונלי)</th><td><input type="text" class="regular-text" dir="ltr" name="<?php echo self::OPTION; ?>[webhook_secret]" value="<?php echo esc_attr($s['webhook_secret']); ?>">
                         <p class="description">אם מוגדר: <code dir="ltr"><?php echo esc_url(rest_url('olp/v1/refresh')); ?>?secret=…</code> מנקה את הזיכרון. אפשר לחבר כ-webhook בגיטהאב כדי שכל push יתעדכן מיד.</p></td></tr>
+                    <tr><th colspan="2"><h2 style="margin:18px 0 4px">ניקוי זיכרון השרת (cPanel)</h2>
+                        <p class="description" style="font-weight:normal">FastCloud שומר את העמוד המוכן עד שמנקים אותו. עם טוקן API של cPanel התוסף מנקה אותו בכל push. יצירת טוקן: cPanel → Manage API Tokens → Create. מספיק טוקן ללא הרשאות מיוחדות.</p></th></tr>
+                    <tr><th>כתובת cPanel</th><td><input type="text" class="regular-text" dir="ltr" name="<?php echo self::OPTION; ?>[cpanel_host]" value="<?php echo esc_attr($s['cpanel_host']); ?>" placeholder="fast208.fcsrv.com:2083"></td></tr>
+                    <tr><th>שם משתמש cPanel</th><td><input type="text" class="regular-text" dir="ltr" name="<?php echo self::OPTION; ?>[cpanel_user]" value="<?php echo esc_attr($s['cpanel_user']); ?>"></td></tr>
+                    <tr><th>טוקן API של cPanel</th><td><input type="password" class="regular-text" dir="ltr" name="<?php echo self::OPTION; ?>[cpanel_token]" value="<?php echo esc_attr($s['cpanel_token']); ?>" autocomplete="new-password">
+                        <p class="description">ניקוי אחרון: <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_cpanel_purge', 'עדיין לא')); ?></code></p></td></tr>
                 </table>
                 <?php submit_button('שמירה'); ?>
             </form>
