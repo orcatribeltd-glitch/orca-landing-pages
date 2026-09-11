@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.8
+ * Version:     1.7.9
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.8';
+    const VERSION     = '1.7.9';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -434,6 +434,15 @@ final class Orca_Landing_Pages
             $seen_footer = $st['seen']; $backup = $st['backup']; $what = $st['what'];
             if (!$seen_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
                 $out[] = self::footer_element($name); $changed = true; $appended++; $what[] = 'appended';
+            }
+            // the footer is always the last top-level element (a replaced mid-page block left it in the middle)
+            $footer_idx = null;
+            foreach ($out as $i => $el) {
+                if (is_array($el) && self::is_repo_footer($el, $name)) { $footer_idx = $i; break; }
+            }
+            if ($footer_idx !== null && $footer_idx !== count($out) - 1) {
+                $f = $out[$footer_idx]; array_splice($out, $footer_idx, 1); $out[] = $f;
+                $changed = true; $what[] = 'footer-moved-to-end';
             }
             if (!$changed) {
                 $post = get_post($pid);
