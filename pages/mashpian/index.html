@@ -20,7 +20,12 @@ html,body{max-width:100%;overflow-x:hidden;}
 .lp-formcard button[type="submit"]{display:flex !important;align-items:center;justify-content:center;gap:10px;} .lp-formcard button[type="submit"]::before{content:"";flex:none;width:18px;height:18px;background-color:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%274%27%20y%3D%2710%27%20width%3D%2716%27%20height%3D%2711%27%20rx%3D%272%27%2F%3E%3Cpath%20d%3D%27M8%2010V7a4%204%200%200%201%208%200v3%27%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%274%27%20y%3D%2710%27%20width%3D%2716%27%20height%3D%2711%27%20rx%3D%272%27%2F%3E%3Cpath%20d%3D%27M8%2010V7a4%204%200%200%201%208%200v3%27%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;} 
 .lp-formcard{align-items:center !important;} .lp-formcard .elementor-widget-html{width:100% !important;} .lp-formcard .elementor-widget-html > div,
 .lp-formcard .elementor-widget-html > p, .lp-formcard .elementor-widget-html > h2, .lp-formcard .elementor-widget-html > ol{margin-left:auto !important;margin-right:auto !important;} 
-.lp-formcard .elementor-widget-html > div:first-child{margin-top:-92px !important;}</style>
+.lp-formcard .elementor-widget-html > div:first-child{margin-top:-92px !important;}
+/* --- הוספה 11/09/2026: ראש הטופס מגיע דרך Shortcode (.olp-page) ולא ווידג'ט HTML --- */
+.lp-formcard .elementor-widget-shortcode{width:100% !important;}
+.lp-formcard .olp-page > div, .lp-formcard .olp-page > p, .lp-formcard .olp-page > h2, .lp-formcard .olp-page > ol{margin-left:auto !important;margin-right:auto !important;}
+.lp-formcard .olp-page > div:first-child{margin-top:-92px !important;}
+</style>
 
 <!-- חלק 3: גוף הדף (הירו, סטטיסטיקות, מה מקבלים) -->
 <div class="lp-page" dir="rtl">
