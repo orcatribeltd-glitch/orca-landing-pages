@@ -12,5 +12,12 @@
     "slug": "cancel-thanks",
     "title": "משפיען בדיגיטל – תודה על בקשת הביטול",
     "template": "templates/mashpian-cancel-thanks.json"
+  },
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-purchase-terms",
+    "slug": "purchase-terms",
+    "title": "משפיען בדיגיטל – תנאי הצטרפות ורכישה",
+    "template": "templates/mashpian-purchase-terms.json"
   }
 ]
