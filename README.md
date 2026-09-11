@@ -40,7 +40,7 @@ wordpress/
 
 ## התקנת התוסף (פעם אחת לכל אתר)
 
-1. לארוז: `cd wordpress && zip -r orca-landing-pages.zip orca-landing-pages`
+1. לארוז (שם הקובץ תמיד עם מספר הגרסה): `cd wordpress && v=$(grep -m1 Version: orca-landing-pages/orca-landing-pages.php | awk '{print $3}') && zip -r orca-landing-pages-$v.zip orca-landing-pages`
 2. וורדפרס → תוספים → העלאת תוסף → לבחור את ה-zip → הפעלה.
 3. אם הריפו פרטי: הגדרות → דפי נחיתה (GitHub) → להדביק טוקן גיטהאב עם הרשאת קריאה לריפו. אם ציבורי, אין מה להגדיר.
 
