@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.8.0
+ * Version:     1.8.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.8.0';
+    const VERSION     = '1.8.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -334,16 +334,45 @@ final class Orca_Landing_Pages
      * the company and its email too; on 2026-09-11 three of them were wiped
      * because the marker alone decided. Length is the guard.
      */
+
+    /**
+     * What a visitor would read: the text-bearing setting values of every
+     * widget in the subtree (editor, html, titles, labels …), tags stripped.
+     * Ids, colours, units and urls are ignored, so the length reflects
+     * content, not Elementor's settings bulk.
+     */
+    private static function visible_text(array $el): string
+    {
+        $parts = [];
+        $walk = function ($node) use (&$walk, &$parts) {
+            if (!is_array($node)) { return; }
+            foreach ((array) ($node['settings'] ?? []) as $k => $v) {
+                if (is_string($v) && strlen($v) >= 20 && (strpos($v, ' ') !== false || preg_match('/[\x{0590}-\x{05FF}]/u', $v))) {
+                    $s = html_entity_decode(wp_strip_all_tags($v), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    if (!preg_match('#^https?://\S+$#', trim($s))) { $parts[] = $s; }
+                } elseif (is_array($v)) {
+                    foreach ($v as $item) {
+                        if (is_array($item)) { foreach ($item as $iv) { if (is_string($iv) && strlen($iv) >= 20 && strpos($iv, ' ') !== false) { $parts[] = html_entity_decode(wp_strip_all_tags($iv), ENT_QUOTES | ENT_HTML5, 'UTF-8'); } } }
+                    }
+                }
+            }
+            foreach ((array) ($node['elements'] ?? []) as $c) { $walk($c); }
+        };
+        $walk($el);
+        return preg_replace('/\s+/u', ' ', implode(' ', $parts));
+    }
+
     private static function looks_like_old_footer(array $el, array $markers): bool
     {
         if (self::subtree_has_widget($el, ['form'])) {
             return false;
         }
-        $text = self::element_text($el);
-        $len  = function_exists('mb_strlen') ? mb_strlen($text, 'UTF-8') : strlen($text);
+        $visible = self::visible_text($el);
+        $len     = function_exists('mb_strlen') ? mb_strlen($visible, 'UTF-8') : strlen($visible);
         if ($len > self::FOOTER_MAX_CHARS) {
             return false;
         }
+        $text = self::element_text($el);
         foreach ($markers as $m) {
             if ($m !== '' && strpos($text, $m) !== false) {
                 return true;

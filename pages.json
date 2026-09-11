@@ -19,5 +19,12 @@
     "slug": "purchase-terms",
     "title": "משפיען בדיגיטל – תנאי הצטרפות ורכישה",
     "template": "templates/mashpian-purchase-terms.json"
+  },
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-accessibility",
+    "slug": "accessibility-statement",
+    "title": "נגישות האתר",
+    "template": "templates/mashpian-accessibility.json"
   }
 ]

@@ -1,0 +1,60 @@
+{
+ "version": "0.4",
+ "title": "נגישות האתר",
+ "type": "page",
+ "page_settings": {
+  "template": "elementor_canvas",
+  "background_background": "classic",
+  "background_color": "#0A0A0D"
+ },
+ "content": [
+  {
+   "id": "c4a11e02",
+   "elType": "container",
+   "isInner": false,
+   "elements": [
+    {
+     "id": "d7f30b9e",
+     "elType": "widget",
+     "widgetType": "shortcode",
+     "elements": [],
+     "settings": {
+      "shortcode": "[landing_page name=\"mashpian-accessibility\"]"
+     }
+    }
+   ],
+   "settings": {
+    "content_width": "full",
+    "flex_direction": "column",
+    "padding": {
+     "unit": "px",
+     "top": "0",
+     "right": "0",
+     "bottom": "0",
+     "left": "0",
+     "isLinked": true
+    }
+   }
+  },
+  {
+   "id": "c7a2e69f",
+   "elType": "container",
+   "isInner": false,
+   "settings": {
+    "content_width": "full",
+    "flex_direction": "column"
+   },
+   "elements": [
+    {
+     "id": "b2c74011",
+     "elType": "widget",
+     "widgetType": "shortcode",
+     "elements": [],
+     "settings": {
+      "shortcode": "[landing_page name=\"influence-footer\"]"
+     }
+    }
+   ]
+  }
+ ]
+}
