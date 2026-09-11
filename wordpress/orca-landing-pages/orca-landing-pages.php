@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.6
+ * Version:     1.7.7
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.6';
+    const VERSION     = '1.7.7';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -377,6 +377,27 @@ final class Orca_Landing_Pages
         }
     }
 
+
+    /**
+     * Elementor keeps a plain-text copy of the page in post_content (used by
+     * search, excerpts and SEO plugins for the meta description). It is only
+     * rewritten when the page is saved in the editor, so after a programmatic
+     * data change the old footer text (old email) lingers there. Ask Elementor
+     * to regenerate it.
+     */
+    private static function refresh_plain_text(int $pid): bool
+    {
+        if (!class_exists('\Elementor\Plugin') || !isset(\Elementor\Plugin::$instance->documents)) {
+            return false;
+        }
+        $doc = \Elementor\Plugin::$instance->documents->get($pid);
+        if ($doc && method_exists($doc, 'save_plain_text')) {
+            $doc->save_plain_text();
+            return true;
+        }
+        return false;
+    }
+
     public static function sync_footer(): array
     {
         $raw   = self::fetch_repo_file('sites.json');
@@ -414,7 +435,14 @@ final class Orca_Landing_Pages
             if (!$seen_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
                 $out[] = self::footer_element($name); $changed = true; $appended++; $what[] = 'appended';
             }
-            if (!$changed) { $skipped++; $detail[] = $pid . ':' . ($seen_footer ? 'ok' : 'no-footer'); continue; }
+            if (!$changed) {
+                $post = get_post($pid);
+                $pc   = $post ? self::normalize_marker(wp_strip_all_tags((string) $post->post_content)) : '';
+                foreach ($markers as $m) {
+                    if ($m !== '' && $pc !== '' && strpos($pc, $m) !== false) { self::refresh_plain_text($pid); $what[] = 'plain-text-refreshed'; break; }
+                }
+                $skipped++; $detail[] = $pid . ':' . ($seen_footer ? 'ok' : 'no-footer') . ($what ? '+' . implode('+', $what) : ''); continue;
+            }
             if ($backup) {
                 $old = get_post_meta($pid, '_olp_footer_backup', true);
                 $old = is_array($old) ? $old : [];
@@ -422,6 +450,7 @@ final class Orca_Landing_Pages
             }
             update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($out, JSON_UNESCAPED_UNICODE)));
             self::clear_elementor_cache($pid);
+            self::refresh_plain_text($pid);
             clean_post_cache($pid);
             self::purge_page_cache_plugins($pid);
             $detail[] = $pid . ':' . implode('+', $what);
@@ -493,6 +522,7 @@ final class Orca_Landing_Pages
         if ($inserted || $removed) {
             update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
             self::clear_elementor_cache($pid);
+            self::refresh_plain_text($pid);
             clean_post_cache($pid);
             self::purge_page_cache_plugins($pid);
         }
