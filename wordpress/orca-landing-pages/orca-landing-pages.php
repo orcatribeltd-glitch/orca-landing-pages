@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.9
+ * Version:     1.8.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,8 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.9';
+    const VERSION     = '1.8.0';
+    const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -326,6 +327,43 @@ final class Orca_Landing_Pages
      * depth) that is the repo footer or carries an old-footer marker becomes
      * THE footer; every later one is removed. Old copies go to $st['backup'].
      */
+
+    /**
+     * Is this element the old hand-pasted footer? Marker text present, no form
+     * inside, and SHORT. Legal pages (privacy, terms, accessibility) mention
+     * the company and its email too; on 2026-09-11 three of them were wiped
+     * because the marker alone decided. Length is the guard.
+     */
+    private static function looks_like_old_footer(array $el, array $markers): bool
+    {
+        if (self::subtree_has_widget($el, ['form'])) {
+            return false;
+        }
+        $text = self::element_text($el);
+        $len  = function_exists('mb_strlen') ? mb_strlen($text, 'UTF-8') : strlen($text);
+        if ($len > self::FOOTER_MAX_CHARS) {
+            return false;
+        }
+        foreach ($markers as $m) {
+            if ($m !== '' && strpos($text, $m) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Footer markers of this site from sites.json (normalized). */
+    private static function footer_markers(): array
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $cfg   = is_array($sites) ? ($sites[self::site_host()]['footer'] ?? null) : null;
+        if (!is_array($cfg)) {
+            return [];
+        }
+        return array_values(array_filter(array_map([__CLASS__, 'normalize_marker'], array_map('strval', (array) ($cfg['replace_containing'] ?? [])))));
+    }
+
     private static function footer_walk(array $elements, string $name, array $markers, array &$st): array
     {
         $out = [];
@@ -340,23 +378,22 @@ final class Orca_Landing_Pages
                 if ($m !== '' && strpos($text, $m) !== false) { $hit = true; break; }
             }
             if ($hit) {
-                // A lead form is never a footer, even when its settings carry a marker (the
-                // notification email, the acceptance text). 1.7.1 replaced buyplan's whole
-                // form container this way. Leave such subtrees exactly as they are.
+                // A lead form is never a footer, even when its settings carry a marker.
                 if (self::subtree_has_widget($el, ['form'])) { $st['what'][] = 'form-protected'; $out[] = $el; continue; }
-                // does the marker sit in this element itself, or only in a child? descend first
-                $own = $el; $own['elements'] = [];
-                $own_text = self::element_text($own); $own_hit = false;
-                foreach ($markers as $m) { if ($m !== '' && strpos($own_text, $m) !== false) { $own_hit = true; break; } }
-                if (!$own_hit && !empty($el['elements']) && is_array($el['elements'])) {
+                if (self::looks_like_old_footer($el, $markers)) {
+                    // the whole element is the old footer (short, marker, no form): replace it as one block
+                    $st['backup'][] = $el;
+                    if ($st['seen']) { $st['deduped']++; $st['what'][] = 'old-dup-removed'; continue; }
+                    $st['seen'] = true; $st['replaced']++; $st['what'][] = 'replaced';
+                    $out[] = self::footer_element($name); continue;
+                }
+                if (!empty($el['elements']) && is_array($el['elements'])) {
+                    // a long wrapper (legal text + footer, hero + footer …): look inside, keep the rest
                     $el['elements'] = self::footer_walk($el['elements'], $name, $markers, $st);
-                    if (empty($el['elements'])) { $st['what'][] = 'empty-wrapper-removed'; continue; } // held only the old footer
+                    if (empty($el['elements'])) { $st['what'][] = 'empty-wrapper-removed'; continue; }
                     $out[] = $el; continue;
                 }
-                $st['backup'][] = $el;
-                if ($st['seen']) { $st['deduped']++; $st['what'][] = 'old-dup-removed'; continue; }
-                $st['seen'] = true; $st['replaced']++; $st['what'][] = 'replaced';
-                $out[] = self::footer_element($name); continue;
+                $out[] = $el; $st['what'][] = 'long-text-protected'; continue; // a long text that merely mentions the company
             }
             if (!empty($el['elements']) && is_array($el['elements'])) {
                 $el['elements'] = self::footer_walk($el['elements'], $name, $markers, $st);
@@ -503,20 +540,8 @@ final class Orca_Landing_Pages
     {
         $out = [];
         foreach ((array) get_posts(['post_type' => 'page', 'post_status' => ['publish', 'draft', 'private', 'pending', 'future'], 'numberposts' => -1, 'fields' => 'ids']) as $pid) {
-            $pid = (int) $pid;
-            $backup = get_post_meta($pid, '_olp_footer_backup', true);
-            if (!is_array($backup)) { continue; }
-            $has_form_backup = false;
-            foreach ($backup as $run) {
-                foreach ((array) ($run['elements'] ?? []) as $el) {
-                    if (is_array($el) && self::subtree_has_widget($el, ['form'])) { $has_form_backup = true; break 2; }
-                }
-            }
-            if (!$has_form_backup) { continue; }
-            $data = json_decode((string) get_post_meta($pid, '_elementor_data', true), true);
-            $has_form = false;
-            foreach ((array) $data as $el) { if (is_array($el) && self::subtree_has_widget($el, ['form'])) { $has_form = true; break; } }
-            if (!$has_form) { $out[] = $pid; }
+            $backup = get_post_meta((int) $pid, '_olp_footer_backup', true);
+            if (is_array($backup) && $backup) { $out[] = (int) $pid; } // restore_forms() decides per element what is missing
         }
         return $out;
     }
@@ -561,10 +586,14 @@ final class Orca_Landing_Pages
         $backup  = is_array($backup) ? $backup : [];
         $current = (string) wp_json_encode($data, JSON_UNESCAPED_UNICODE);
         $forms   = [];
+        $markers = self::footer_markers();
         foreach ($backup as $run) {
             foreach ((array) ($run['elements'] ?? []) as $el) {
-                if (is_array($el) && self::subtree_has_widget($el, ['form']) && strpos($current, '"' . ($el['id'] ?? '?') . '"') === false) {
-                    $forms[] = $el;
+                if (!is_array($el) || strpos($current, '"' . ($el['id'] ?? '?') . '"') !== false) {
+                    continue; // still in the page
+                }
+                if (self::subtree_has_widget($el, ['form']) || !self::looks_like_old_footer($el, $markers)) {
+                    $forms[] = $el; // forms, legal text, anything that is not the old footer itself
                 }
             }
         }
