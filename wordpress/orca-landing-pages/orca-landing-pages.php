@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.7.5
+ * Version:     1.7.6
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.7.5';
+    const VERSION     = '1.7.6';
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
@@ -74,7 +74,8 @@ final class Orca_Landing_Pages
             return $cached;
         }
         $s   = self::settings();
-        $url = sprintf('https://raw.githubusercontent.com/%s/%s/wordpress/version.json', trim($s['repo'], '/'), rawurlencode($s['branch']));
+        // at the pinned commit (set by the push webhook) the file is immutable, so the raw CDN can never hand back a stale version.json
+        $url = sprintf('https://raw.githubusercontent.com/%s/%s/wordpress/version.json', trim($s['repo'], '/'), rawurlencode(self::git_ref()));
         $res = wp_remote_get($url, ['timeout' => 10, 'headers' => ['Cache-Control' => 'no-cache', 'User-Agent' => 'orca-landing-pages/' . self::VERSION]]);
         $info = [];
         if (!is_wp_error($res) && (int) wp_remote_retrieve_response_code($res) === 200) {
