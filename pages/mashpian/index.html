@@ -31,6 +31,15 @@ html,body{max-width:100%;overflow-x:hidden;} body{background:#0F2A44 !important;
 </style>
 
 <span data-build="mk-2" hidden></span>
+<!-- חלק 2ג: דריסת ה-CSS המותאם של עמוד הרכישה באלמנטור (נשאר מההעברה, צבעים ישנים). ספציפיות גבוהה יותר, אז הריפו מנצח. -->
+<style>
+.lp-formcard .elementor-widget-form .elementor-button[type="submit"]{color:#FFFFFF !important;background-color:#E8590C !important;background-image:linear-gradient(90deg,#E8590C,#FF7A1A) !important;box-shadow:0 0 40px rgba(232,89,12,0.35) !important;}
+.lp-formcard .elementor-widget-form .elementor-button[type="submit"]:hover{box-shadow:0 0 56px rgba(232,89,12,0.55) !important;}
+.lp-formcard .elementor-widget-form .elementor-field-group .elementor-field-textual:focus{border-color:#FF7A1A !important;box-shadow:0 0 22px rgba(255,122,26,0.2) !important;}
+.lp-formcard .elementor-widget-form .elementor-field-type-acceptance a{color:#FF7A1A !important;}
+.lp-formcard .elementor-widget-form input[type="checkbox"]{accent-color:#FF7A1A !important;}
+</style>
+
 <!-- חלק 3: גוף הדף (הירו, סטטיסטיקות, מה מקבלים) -->
 <div class="lp-page" dir="rtl">
 <div class="lp-page-tex"></div><div class="lp-page-glow"></div><div class="lp-heroin" style="position:relative; max-width:1180px; margin:0 auto; padding:88px 64px 72px; display:flex; flex-direction:column; align-items:center; gap:30px; text-align:center">
