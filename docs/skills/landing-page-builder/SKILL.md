@@ -149,18 +149,20 @@ HTML מלא עם טופס שמתחבר לשירות חיצוני (Make/Zapier we
 ## Reference: Color Palette Template
 
 ```css
-/* Influence Club style */
---bg-deep: #08080B;
---bg-section: #0A0A0D;
---accent-gold: #F2C230;
---accent-gold-light: #FFDE7A;
---accent-cyan: #38E1C6;
---accent-green: #2ED47A;
+/* משפיען בדיגיטל (influence-club.co.il) — פלטת המותג, מחייבת מ-13/09/2026 (לוגו 1c של יהונתן) */
+--brand-orange: #FF7A1A;        /* הדגשת המילה בכותרת, ספרות, כפתורים משניים */
+--brand-orange-deep: #E8590C;   /* כפתורי פעולה ראשיים (טקסט לבן) */
+--brand-navy: #0F2A44;          /* רקע בסיס. גרדיאנט: #0D2440 → #0B1F33 → #0F2A44 */
+--brand-sky: #7FC6E0;           /* תגיות, קו משני, קיקרים */
 --text-primary: #FFFFFF;
---text-secondary: #A6A6B2;
---text-muted: #8E8E9A;
+--text-secondary: #B7C4D3;
+--text-muted: #93A3B5;
 --border-subtle: rgba(255,255,255,0.1);
+/* הפלטה הישנה (זהב F2C230 / טורקיז 38E1C6 / ירוק 2ED47A על שחור) הוחלפה בכל דפי הריפו
+   בסקריפט tools/rebrand_mashpian.py. לא משתמשים בה יותר לדפי משפיען. */
 ```
+
+**מלכודת (13/09/2026):** עמוד שהועבר "כמו שהוא" מאלמנטור עלול לשאת CSS מותאם משלו בהגדרות העמוד (post-<id>.css) עם צבעים ישנים ו-`!important`. הריפו לא רואה אותו. הפתרון: בלוק דריסה בדף עם ספציפיות גבוהה יותר (`.lp-formcard .elementor-widget-form .elementor-button[type="submit"]`), ואימות בדפדפן של הצבע המחושב של הכפתור, לא רק של ה-HTML.
 
 ---
 
@@ -187,5 +189,5 @@ HTML מלא עם טופס שמתחבר לשירות חיצוני (Make/Zapier we
 
 ---
 
-*Last updated: 2026-08-30*
+*Last updated: 2026-09-13*
 *Based on research: modern designers use HTML directly, not JSON/Playwright*

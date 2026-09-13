@@ -105,3 +105,7 @@ node /root/claudeclaw/dist/mission-cli.js create --agent <automations|content|pp
 - `gh` (מחובר לחשבון orcatribeltd-glitch), `git`, `python3`, `node`, `docker` (לבדיקות PHP: `php:8.2-cli`), Playwright לצילומים ומדידות.
 - סודות ב-`/root/claudeclaw/.env`: `OLP_SECRET_INFLUENCE`, `OLP_SECRET_RACHEL`, `MONDAY_API_TOKEN` (קריאה בלבד ללוחות; יצירת לוחות רק לבקשת יהונתן).
 - Monday: וורקספייס "משפיען בדיגיטל" 9050659, לוח "ביטולי מנוי" 18430658502 (עמודות: ת.ז `text_mm73748z`, מייל `email_mm736rvr`, טלפון `phone_mm73r9rv`, תאריך `date_mm73ehgk`, סטטוס `color_mm73np17`, מקור `text_mm73x4sp`).
+
+## פלטת משפיען בדיגיטל (מ-13/09/2026)
+
+כתום `#FF7A1A`, כתום שרוף `#E8590C` (כפתורי פעולה, טקסט לבן), כחול כהה `#0F2A44` (רקע), תכלת `#7FC6E0` (תגיות). הזהב/טורקיז/ירוק על שחור בוטלו. שני העמודים שלא בריפו (הרשמה לשידור ודף התודה שלה) נשארים כמו שהם, בכוונה. פירוט: `docs/skills/landing-page-builder/SKILL.md`.
