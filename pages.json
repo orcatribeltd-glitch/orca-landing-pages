@@ -33,5 +33,12 @@
     "slug": "privcacy-policy",
     "title": "מדיניות פרטיות",
     "template": "templates/mashpian-privacy.json"
+  },
+  {
+    "site": "influence-club.co.il",
+    "name": "mashpian-purchase-thanks",
+    "slug": "purchase-thanks",
+    "title": "משפיען בדיגיטל – תודה על הרכישה",
+    "template": "templates/mashpian-purchase-thanks.json"
   }
 ]

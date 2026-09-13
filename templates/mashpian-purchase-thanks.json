@@ -1,0 +1,60 @@
+{
+  "version": "0.4",
+  "title": "משפיען בדיגיטל – תודה על הרכישה",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#0A0A0D"
+  },
+  "content": [
+    {
+      "id": "738054c2",
+      "elType": "container",
+      "isInner": false,
+      "elements": [
+        {
+          "id": "d8078032",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"mashpian-purchase-thanks\"]"
+          }
+        }
+      ],
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      }
+    },
+    {
+      "id": "958fac44",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column"
+      },
+      "elements": [
+        {
+          "id": "09fe69bd",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"influence-footer\"]"
+          }
+        }
+      ]
+    }
+  ]
+}
