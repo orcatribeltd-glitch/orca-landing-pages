@@ -1,193 +1,86 @@
 ---
 name: landing-page-builder
-description: "Build premium landing pages for Jonathan. Use when asked to create a landing page, sales page, lead capture page, webinar registration page, or checkout pre-page. Triggers: 'build a landing page', 'create a sales page', 'design a page', 'דף נחיתה', 'דף מכירה'. This skill defines Jonathan's exact design standard - dark premium aesthetic with gradient backgrounds, single-word highlights, glow effects, and central container layout."
+description: "Use when building or redesigning a landing page, sales page, lead-capture page, registration page or a client website section for Jonathan — 'דף נחיתה', 'דף מכירה', 'תבנה לי דף', 'עצב לי אתר', 'build a landing page', 'create a sales page'. Also use when Jonathan names a style profile by code name ('סגנון רחל בסוק', 'דף עדין ואומנותי', 'סגנון משפיען', 'דף כהה ויוקרתי'), or asks what his style is on a specific design decision — shadows, corners, fonts, icons, animation, cards, buttons. Also use when pushing a page to the orca-landing-pages repo or debugging why a change is not showing on the live site."
 metadata:
-  version: 3.0.0
+  version: 4.0.0
+  updated: 2026-09-23
 ---
 
 # Landing Page Builder
 
-Build premium landing pages following Jonathan's exact design standard.
+בניית דפים ליהונתן. הסקיל מפריד בין שלושה דברים שהיו מעורבבים עד גרסה 3:
+
+1. **השיטה** — מה מחליטים ובאיזה סדר. זהה לכל דף בעולם. `references/method.md`
+2. **הפרופיל** — הטעם הוויזואלי של הדף הספציפי. נבחר בהתחלה. `references/profiles/`
+3. **הפריסה** — איך הדף מגיע לאוויר. טכני, זהה לכל דף. `references/deployment.md`
+
+**החוק המרכזי:** אין "תקן עיצוב לא ניתן למשא ומתן". יש שיטה אחת ומספר פרופילים. עד גרסה 3 הסקיל הכריז על כהה־פרימיום כתקן יחיד, והאתר של רחל — הדף המוצלח ביותר שנבנה — סתר אותו.
 
 ---
 
-## Workflow (Updated 2026-09-10 — GitHub pipeline, proven on rachel-pottery.co.il)
+## פרופילים (שמות קוד)
 
-### הגישה: HTML בריפו, וורדפרס מושך לבד
+| שם קוד | מתי | קובץ |
+|---|---|---|
+| **דף עדין ואומנותי · סגנון רחל בסוק** | עסק של אדם אחד, עבודת יד, מקומי, חם. קדרות, אפייה, טיפול, סטודיו, סדנאות | `references/profiles/rachel-artisan.md` |
+| **דף כהה ויוקרתי · סגנון משפיען** | מוצר דיגיטלי, קורס, פורטל, שירות פרימיום. קהל קר שמגיע מקמפיין | `references/profiles/dark-premium.md` |
 
-**לא עושים:**
-- ❌ הדבקת HTML ידנית בווידג'ט HTML באלמנטור (כל תיקון = הדבקה מחדש)
-- ❌ JSON של עמוד שלם לאלמנטור
-- ❌ Playwright לחיצה-לחיצה
-- ❌ תמונות שמאוחסנות באתר אחר (נמחקות, והדף נשבר)
+יהונתן קורא לפרופיל בשמו. "תבנה לי דף עדין ואומנותי סגנון רחל בסוק" = קרא את הקובץ ועבוד לפיו, בלי לשאול על צבעים ופונטים.
 
-**כן עושים:**
-- ✅ ה-HTML חי בריפו `orcatribeltd-glitch/orca-landing-pages` תחת `pages/<שם>/index.html`, תמונות ב-`pages/<שם>/images/`
-- ✅ באתר מותקן התוסף `orca-landing-pages` (בריפו, `wordpress/`). בעמוד: ווידג'ט Shortcode עם `[landing_page name="<שם>"]`
-- ✅ הטופס וכל מה שפועל (כפתור, קישור) — ווידג'טים אמיתיים של אלמנטור, בתבנית `templates/<שם>-form.json` שנבנית מ-`templates/build_<שם>_form.py`
-- ✅ תיקון = עריכת הקובץ, commit, push. ה-webhook מרענן את האתר. אף אחד לא נוגע בוורדפרס
+**להוסיף פרופיל חדש:** `references/profiles/_new-profile-template.md`. פרופיל נולד אחרי שדף אושר, לא לפניו.
 
-### תהליך העבודה
+### כששני הצירים מתנגשים
 
-1. איסוף מידע: קופי, צבעים, מטרת הדף, לאן הלידים הולכים.
-2. בניית HTML מלא (מסמך שלם מותר — התוסף מחלץ את הגוף ואת ה-CSS).
-3. תצוגה מקדימה ליהונתן **לפני** push (Artifact או שרת מקומי). סבבי תיקון קורים כאן, לא באתר.
-4. push לריפו. אימות מבחוץ: `curl` לעמוד החי ובדיקת סימון שנמצא **בתוך** `<body>`.
-5. תבנית טופס: לבנות בסקריפט, לבדוק תחת CSS "עוין" (ראה סקיל elementor-landing-build), לשלוח ל-JSON.
-6. הוראות ליהונתן — ראה "Output Format".
+סוג העסק וטמפרטורת הקהל יכולים להצביע לכיוונים הפוכים — מאפייה של אישה אחת שמריצה קמפיין ממומן.
 
-### הגדרות עמוד באלמנטור (פעם אחת לכל דף)
+**סוג העסק קובע את הפרופיל. טמפרטורת הקהל קובעת את סדר הסקשנים.** מאפייה עם קמפיין = פרופיל עדין ואומנותי, בשלד של קהל קר. לא מערבבים ויזואלית.
 
-1. הגדרות עמוד → פריסה → **Elementor Canvas** (מוריד כותרת, תפריט ופוטר של האתר).
-2. הקונטיינר של ה-Shortcode: רוחב מלא, ריווח פנימי 0.
-3. ייבוא תבנית טופס **רק** מהמסך הישן: `wp-admin/edit.php?post_type=elementor_library&tabs_group=library` → "ייבוא תבניות". ספריית הענן החדשה זורקת "This source does not support import".
-4. אחרי הוספת התבנית לעמוד: קונטיינר → מתקדם → מחלקות CSS חייב להכיל את המחלקה (הייבוא לפעמים מוחק אותה).
+### כששום פרופיל לא מתאים
 
-### שמות שדות בטופס (ID)
+B2B, קליניקה, מסחר אלקטרוני, בעל מקצוע. יש שתי אפשרויות, ולא שלישית:
 
-אסור: `date`, `time`, `page_url`, `user_agent`, `remote_ip`, `form_id`, `form_name`. אלמנטור שולח את אלה ב-webhook ודורס את מה שהמשתמש הקליד (תאריך מבוקש הפך לתאריך השליחה, 10/09/2026). תאריך מבוקש = `visit_date`.
+1. **לעבוד מהשיטה בלבד** — `method.md` עומד לבד. עוברים את שלבים 1 עד 4, מציגים ליהונתן את החלטות הזהות, ומקבלים אישור לפני הבנייה.
+2. **להציג ליהונתן את שני הפרופילים ולשאול לאן נוטים.**
 
-### לידים לגיליון (Zapier)
-
-Actions After Submit → Webhook → כתובת Catch Hook של זאפייר, עם **Advanced Data** דלוק (שולח גם את כתובת העמוד). מקור הליד לפי `utm_source` בקישור (ביו באינסטגרם ≠ קמפיין), ממופה לעמודה "מקור".
-
-### זמן עדכון — נמדד, לא מובטח
-
-| אתר | push → וורדפרס | push → גולש | למה |
-|---|---|---|---|
-| influence-club.co.il (אוהד) | 8 שניות | 8 שניות | תוסף SpeedyCache מתנקה בפרסום-מחדש שהתוסף שלנו מבצע |
-| rachel-pottery.co.il (רחל) | מיד | 15–25 דקות | זיכרון עמודים בשרת (FastCloud). **החלטת יהונתן 11/09/2026: להשאיר ככה**, לא שווה את הטרחה |
-
-איך מודדים נכון: סימון **גלוי** בדף (`<span data-build="…" hidden>` או `data-olp-ref` בעטיפה מגרסה 1.5.0), לא הערת HTML — תוספי זיכרון מוחקים הערות והמדידה משקרת. לפני שמאשימים את השרת: לקרוא את 300 הבייטים האחרונים של הדף, תוספי זיכרון חותמים שם. מעקף לבדיקה: `?v=1` בכתובת מציג את הגרסה הטרייה. פרטים: אובסידיאן "01 Projects/Landing Pages — GitHub to WordPress Pipeline".
+**לא מותחים פרופיל קיים על עסק שהוא לא מתאים לו.** דף שנבנה כך הופך לפרופיל חדש אחרי שיהונתן אישר אותו.
 
 ---
 
-## Before Starting
+## כשיהונתן שואל "מה הסגנון שלי לגבי X"
 
-### Gather This Context (ask if not provided):
-
-1. **Color Palette**
-   - Reference/example for colors?
-   - Build palette together?
-   - Brand colors if relevant
-
-2. **Copy & Content**
-   - Main headline
-   - Subheadline
-   - Benefits/features
-   - CTA text
-   - Urgency elements
-
-3. **Page Purpose**
-   - Lead capture → needs Form Widget
-   - Pre-checkout → redirect to payment
-   - Registration → needs Form Widget
-   - Information only → HTML only
-
-4. **Form Requirements**
-   - Fields needed (name, email, phone, etc.)
-   - What happens after submit (redirect URL)
-   - Save lead? (requires Elementor Form Widget)
+1. שאל לאיזה פרופיל, או הסק מההקשר אם ברור.
+2. **קרא את שני המקורות**: הפרופיל (הטעם) ו-`method.md` (החוק). לארבעה נושאים יש שניהם — **אנימציה, כפתורים, כרטיסים, קופי**. תשובה מהפרופיל בלבד תחסיר את החוק, ולהפך.
+3. צטט, ואמור **מאיזה פרופיל** התשובה — היא הפוכה בין השניים. צללים רכים בזהב אצל רחל, זוהר כתום במשפיען.
+4. נושאים שהם חוק טהור וזהים לכל הפרופילים: ניגודיות, אזור לחיצה, שבירת כפתור, רוחבי בדיקה, `prefers-reduced-motion`.
 
 ---
 
-## Design Standard (Non-Negotiable)
+## תהליך בניית דף
 
-### Background
-- **NEVER flat black** - always gradient with depth
-- Dark base (#08080B or #0D0D0D)
-- Radial gradients with accent colors at low opacity
-- Optional: repeating-linear-gradient for subtle pattern
-
-### Headlines
-- **HIGHLIGHT ONE WORD ONLY** - critical
-- Use color or gradient on the highlighted word
-- Add text-shadow/glow for depth
-- Rest in white
-
-### Visual Effects
-- Glow effects (box-shadow with accent color)
-- Subtle borders (rgba white or accent)
-- Premium, minimal aesthetic
-
-### Typography
-- **Heebo** for Hebrew (400, 700, 900)
-- **Suez One** for special headlines
-- Import from Google Fonts
-
-### Layout
-- Flexbox containers
-- Centered content
-- Generous padding (80px+ on desktop)
-- Mobile: reduce padding, stack columns
+1. **פרופיל** — בחר או קבל מיהונתן. בלי פרופיל אין עיצוב.
+2. **שיטה, שלבים 1 עד 4** — אילוצים, חומרי גלם, אופי, פעולת המרה, זהות. `references/method.md`
+3. **בנייה** — HTML מלא. יהונתן מעצב הרבה מהדפים בקלוד דיזיין; שלבים 1 עד 4 הם הבריף שנמסר לשם.
+4. **תצוגה מקדימה לפני push** — Artifact או שרת מקומי. סבבי תיקון קורים כאן, לא באתר החי.
+5. **רשימת הבדיקה** שבסוף `method.md`. עוברים עליה לפני מסירה, תמיד.
+6. **פריסה** — `references/deployment.md`.
 
 ---
 
-## Output Format
+## איסוף מידע לפני התחלה
 
-### For WordPress/Elementor (ברירת המחדל, מגרסה 1.6.0 של התוסף):
-
-**עמוד חדש = שלושה קבצים בריפו ו-push. אף אחד לא נוגע בוורדפרס:**
-1. `pages/<שם>/index.html` — הדף (פונטים, CSS, תוכן). לאתר קיים: להעתיק את חלקי הפונטים וה-CSS מדף קיים באותו אתר.
-2. `templates/<שם>.json` — תבנית **עמוד** של אלמנטור (`"type":"page"`, `page_settings` עם `elementor_canvas` ורקע), שמכילה קונטיינר עם ווידג'ט Shortcode `[landing_page name="<שם>"]`, וקונטיינר עם ווידג'ט Form אמיתי. נבנה מסקריפט `templates/build_<שם>.py`.
-3. שורה ב-`pages.json` בשורש: `{"site":"<דומיין>","name":"<שם>","slug":"<כתובת>","title":"<כותרת>","template":"templates/<שם>.json"}`.
-
-בכל push התוסף באתר יוצר עמוד חסר **כטיוטה** מהתבנית. עמוד קיים לא משתנה לעולם.
-
-**מה נשאר ליהונתן, בכוונה:** לאשר את התצוגה המקדימה לפני push; לפתוח את הטיוטה ולקבוע Actions After Submit (לאן הלידים); ללחוץ פרסם. לאתר חדש: התקנת התוסף וסוד ל-webhook, פעם אחת.
-
-**מלכודת שנצפתה (11/09/2026):** אלמנטור משמיט `_css_classes` מקונטיינר שנוצר מתבנית. לכן העיצוב של כרטיס הטופס לא סומך על המחלקה: ה-HTML של הדף מצמיד אותה בעצמו לקונטיינר שמכיל את הטופס (סקריפט קטן בסוף הדף, ראה `pages/mashpian-cancel/index.html`). לעשות כך בכל דף חדש.
-
-**מה לא מוסרים:** קובץ JSON להורדה, קוד HTML להדבקה, הוראות ייבוא. הכל דרך הריפו.
-
-### For Static Hosting (Vercel/Netlify):
-
-HTML מלא עם טופס שמתחבר לשירות חיצוני (Make/Zapier webhook).
+- פרופיל, או הפניה לדף קיים שיהונתן אוהב
+- קופי: כותרת, תת־כותרת, יתרונות, CTA
+- מטרת הדף: השארת פרטים / רכישה / הרשמה / מידע
+- לאן הלידים הולכים
+- **חומרי גלם אמיתיים**: תמונות, לוגו, עדויות, מספרים. זה משנה את העיצוב מהיסוד, ראה שלב 1 בשיטה
 
 ---
 
-## Reference: Color Palette Template
+## מלכודות שכבר שילמנו עליהן
 
-```css
-/* משפיען בדיגיטל (influence-club.co.il) — פלטת המותג, מחייבת מ-13/09/2026 (לוגו 1c של יהונתן) */
---brand-orange: #FF7A1A;        /* הדגשת המילה בכותרת, ספרות, כפתורים משניים */
---brand-orange-deep: #E8590C;   /* כפתורי פעולה ראשיים (טקסט לבן) */
---brand-navy: #0F2A44;          /* רקע בסיס. גרדיאנט: #0D2440 → #0B1F33 → #0F2A44 */
---brand-sky: #7FC6E0;           /* תגיות, קו משני, קיקרים */
---text-primary: #FFFFFF;
---text-secondary: #B7C4D3;
---text-muted: #93A3B5;
---border-subtle: rgba(255,255,255,0.1);
-/* הפלטה הישנה (זהב F2C230 / טורקיז 38E1C6 / ירוק 2ED47A על שחור) הוחלפה בכל דפי הריפו
-   בסקריפט tools/rebrand_mashpian.py. לא משתמשים בה יותר לדפי משפיען. */
-```
+- **שם שדה בטופס אלמנטור**: אסור `date`, `time`, `page_url`, `user_agent`, `remote_ip`, `form_id`, `form_name`. אלמנטור דורס אותם ב-webhook. תאריך מבוקש = `visit_date`.
+- **`_css_classes` נעלם** מקונטיינר שנוצר מתבנית. הדף מצמיד את המחלקה בעצמו.
+- **CSS ישן של העמוד** (post-id.css) עם `!important` דורס את הריפו. דריסה בספציפיות גבוהה + אימות הצבע המחושב בדפדפן.
+- **מדידת זמן עדכון**: סימון גלוי בדף, לא הערת HTML. תוספי זיכרון מוחקים הערות.
 
-**מלכודת (13/09/2026):** עמוד שהועבר "כמו שהוא" מאלמנטור עלול לשאת CSS מותאם משלו בהגדרות העמוד (post-<id>.css) עם צבעים ישנים ו-`!important`. הריפו לא רואה אותו. הפתרון: בלוק דריסה בדף עם ספציפיות גבוהה יותר (`.lp-formcard .elementor-widget-form .elementor-button[type="submit"]`), ואימות בדפדפן של הצבע המחושב של הכפתור, לא רק של ה-HTML.
-
----
-
-## Reference: Good vs Bad Headlines
-
-**Good (ONE word highlighted):**
-- "הצטרפו לפורטל הכשרת **יוצרי** התוכן"
-- "מה אתה מקבל **בפורטל?**"
-
-**Bad (too many words):**
-- "הצטרפו **לפורטל הכשרת יוצרי התוכן**"
-- "**מה אתה מקבל בפורטל?**"
-
----
-
-## Checklist Before Delivery
-
-- [ ] HTML מושלם עם כל העיצוב
-- [ ] Fonts מחוברים (Google Fonts link)
-- [ ] Mobile responsive (media queries או flex-direction)
-- [ ] צבעים תואמים למפרט
-- [ ] הוראות ברורות להוספה לאלמנטור
-- [ ] מקום מסומן לטופס (אם צריך)
-
----
-
-*Last updated: 2026-09-13*
-*Based on research: modern designers use HTML directly, not JSON/Playwright*
+פירוט מלא: `references/deployment.md`.
