@@ -1,0 +1,40 @@
+{
+  "version": "0.4",
+  "title": "מדיניות פרטיות",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#FFFFFF"
+  },
+  "content": [
+    {
+      "id": "b33e5177",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "0d9a55b6",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"rachel-privacy\"]"
+          }
+        }
+      ]
+    }
+  ]
+}

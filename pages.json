@@ -40,5 +40,47 @@
     "slug": "purchase-thanks",
     "title": "משפיען בדיגיטל – תודה על הרכישה",
     "template": "templates/mashpian-purchase-thanks.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-sadna-kadarut",
+    "slug": "sadna-kadarut",
+    "title": "סדנת קדרות ופיסול",
+    "template": "templates/rachel-sadna-kadarut.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-sadna-tziur",
+    "slug": "sadna-tziur",
+    "title": "סדנת ציור על כלי קרמיקה",
+    "template": "templates/rachel-sadna-tziur.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-events",
+    "slug": "events",
+    "title": "אירועים וקבוצות",
+    "template": "templates/rachel-events.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-terms",
+    "slug": "terms",
+    "title": "תקנון וביטולים",
+    "template": "templates/rachel-terms.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-privacy",
+    "slug": "privacy",
+    "title": "מדיניות פרטיות",
+    "template": "templates/rachel-privacy.json"
+  },
+  {
+    "site": "rachel-pottery.co.il",
+    "name": "rachel-accessibility",
+    "slug": "accessibility",
+    "title": "הצהרת נגישות",
+    "template": "templates/rachel-accessibility.json"
   }
 ]
