@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.9.0
+ * Version:     1.9.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.9.0';
+    const VERSION     = '1.9.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -566,6 +566,8 @@ final class Orca_Landing_Pages
      * The page address, title, SEO settings and page template are untouched;
      * only the Elementor content becomes one shortcode widget.
      */
+    private static $last_error = '';
+
     private static function save_library_template(string $title, string $type, array $content, array $page_settings = []): int
     {
         $tid = wp_insert_post([
@@ -575,6 +577,7 @@ final class Orca_Landing_Pages
             'post_content'=> '',
         ], true);
         if (is_wp_error($tid) || !$tid) {
+            self::$last_error = 'insert: ' . (is_wp_error($tid) ? $tid->get_error_message() : 'returned 0');
             return 0;
         }
         $json = wp_json_encode($content, JSON_UNESCAPED_UNICODE);
@@ -589,8 +592,15 @@ final class Orca_Landing_Pages
         }
         wp_set_object_terms($tid, $type, 'elementor_library_type');
         // read it back: a backup that was not written is no backup
-        $stored = json_decode((string) get_post_meta($tid, '_elementor_data', true), true);
-        if ($stored !== $content) {
+        $raw    = get_post_meta($tid, '_elementor_data', true);
+        $stored = is_string($raw) ? json_decode($raw, true) : $raw;
+        $a = (string) wp_json_encode($stored, JSON_UNESCAPED_UNICODE);
+        $b = (string) wp_json_encode($content, JSON_UNESCAPED_UNICODE);
+        if ($a !== $b) {
+            $i = 0; $n = min(strlen($a), strlen($b));
+            while ($i < $n && $a[$i] === $b[$i]) { $i++; }
+            self::$last_error = 'readback mismatch: stored ' . gettype($raw) . ' len ' . strlen($a) . ' vs ' . strlen($b) . ' at ' . $i
+                . ' stored[' . substr($a, max(0, $i - 40), 90) . '] expected[' . substr($b, max(0, $i - 40), 90) . ']';
             wp_delete_post($tid, true);
             return 0;
         }
@@ -642,7 +652,7 @@ final class Orca_Landing_Pages
 
         $backup_tid = self::save_library_template('גיבוי – ' . $title . ' – ' . $stamp, 'page', $data, $page_settings);
         if (!$backup_tid) {
-            return 'backup template failed — page untouched';
+            return 'backup template failed (' . self::$last_error . ') — page untouched';
         }
         update_post_meta($pid, '_olp_convert_backup', [
             'at' => gmdate('c'), 'template' => $backup_tid, 'data' => $json,
@@ -660,7 +670,7 @@ final class Orca_Landing_Pages
             }
             $tid = self::save_library_template('טופס – ' . $title . ' #' . ($i + 1), 'container', [$el]);
             if (!$tid) {
-                return 'form template ' . ($i + 1) . ' failed — page untouched (backup #' . $backup_tid . ' kept)';
+                return 'form template ' . ($i + 1) . ' failed (' . self::$last_error . ') — page untouched (backup #' . $backup_tid . ' kept)';
             }
             $forms[] = $tid;
         }
