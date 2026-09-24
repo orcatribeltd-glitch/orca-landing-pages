@@ -9,5 +9,13 @@
       ],
       "append_to_pages_created_from_repo": true
     }
+  },
+  "orcatribe.co.il": {
+    "convert": [
+      {
+        "page": 240,
+        "name": "orca-privacy"
+      }
+    ]
   }
 }
