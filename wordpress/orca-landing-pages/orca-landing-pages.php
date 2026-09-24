@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
- * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.8.3
+ * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
+ * Version:     1.9.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.8.3';
+    const VERSION     = '1.9.0';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -548,6 +548,208 @@ final class Orca_Landing_Pages
     }
 
 
+    /* ---------- converting an existing Elementor page to repo HTML ---------- */
+
+    /**
+     * sites.json:
+     *   {"orcatribe.co.il": {"convert": [{"page": 114, "name": "orca-home"}]}}
+     * A listed page is converted ONCE, and only when pages/<name>/index.html
+     * exists in the repo. Before anything changes:
+     *   1. the full Elementor design is saved as a template in the library
+     *      ("גיבוי – <title>"), and verified by reading it back;
+     *   2. the same data, page settings and page template go to post meta
+     *      _olp_convert_backup (used by /olp/v1/unconvert).
+     * Every lead form keeps working as a real Elementor form: its enclosing
+     * container is saved as its own library template ("טופס – <title> #n") and
+     * rendered where the HTML says <!--olp:form:n-->. A form whose marker is
+     * missing from the HTML is appended at the end, so no form ever disappears.
+     * The page address, title, SEO settings and page template are untouched;
+     * only the Elementor content becomes one shortcode widget.
+     */
+    private static function save_library_template(string $title, string $type, array $content, array $page_settings = []): int
+    {
+        $tid = wp_insert_post([
+            'post_type'   => 'elementor_library',
+            'post_status' => 'publish',
+            'post_title'  => $title,
+            'post_content'=> '',
+        ], true);
+        if (is_wp_error($tid) || !$tid) {
+            return 0;
+        }
+        $json = wp_json_encode($content, JSON_UNESCAPED_UNICODE);
+        update_post_meta($tid, '_elementor_edit_mode', 'builder');
+        update_post_meta($tid, '_elementor_template_type', $type);
+        update_post_meta($tid, '_elementor_data', wp_slash($json));
+        if ($page_settings) {
+            update_post_meta($tid, '_elementor_page_settings', $page_settings);
+        }
+        if (defined('ELEMENTOR_VERSION')) {
+            update_post_meta($tid, '_elementor_version', ELEMENTOR_VERSION);
+        }
+        wp_set_object_terms($tid, $type, 'elementor_library_type');
+        // read it back: a backup that was not written is no backup
+        $stored = json_decode((string) get_post_meta($tid, '_elementor_data', true), true);
+        if ($stored !== $content) {
+            wp_delete_post($tid, true);
+            return 0;
+        }
+        return (int) $tid;
+    }
+
+    /** Depth-first: the direct parent (container/section/column) of every form widget, in page order. */
+    private static function form_holders(array $elements, array &$out, ?array $parent = null): void
+    {
+        foreach ($elements as $el) {
+            if (!is_array($el)) { continue; }
+            if (($el['elType'] ?? '') === 'widget' && ($el['widgetType'] ?? '') === 'form') {
+                $holder = $parent ?? $el;
+                $ids = array_column($out, 'id');
+                if (!in_array($holder['id'] ?? '', $ids, true)) { $out[] = $holder; }
+                continue;
+            }
+            if (!empty($el['elements']) && is_array($el['elements'])) {
+                self::form_holders($el['elements'], $out, ($el['elType'] ?? '') === 'widget' ? $parent : $el);
+            }
+        }
+    }
+
+    public static function convert_page(int $pid, string $name): string
+    {
+        $post = get_post($pid);
+        if (!$post) {
+            return 'no such page';
+        }
+        if (get_post_meta($pid, '_olp_converted', true)) {
+            return 'already converted';
+        }
+        if (get_post_meta($pid, '_olp_convert_reverted', true)) {
+            return 'reverted — not converting again';
+        }
+        [$html, $source] = self::get_page($name, true);
+        if ($html === '' || strpos($source, 'error') === 0) {
+            return 'html pages/' . $name . ' missing — waiting';
+        }
+        $json = get_post_meta($pid, '_elementor_data', true);
+        $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
+        if (!is_array($data)) {
+            return 'not an elementor page';
+        }
+        $page_settings = get_post_meta($pid, '_elementor_page_settings', true);
+        $page_settings = is_array($page_settings) ? $page_settings : [];
+        $title = html_entity_decode(get_the_title($pid), ENT_QUOTES, 'UTF-8');
+        $stamp = wp_date('d/m/Y');
+
+        $backup_tid = self::save_library_template('גיבוי – ' . $title . ' – ' . $stamp, 'page', $data, $page_settings);
+        if (!$backup_tid) {
+            return 'backup template failed — page untouched';
+        }
+        update_post_meta($pid, '_olp_convert_backup', [
+            'at' => gmdate('c'), 'template' => $backup_tid, 'data' => $json,
+            'page_settings' => $page_settings, 'wp_template' => (string) get_post_meta($pid, '_wp_page_template', true),
+        ]);
+
+        $holders = [];
+        self::form_holders($data, $holders);
+        $forms = [];
+        foreach ($holders as $i => $holder) {
+            $el = $holder;
+            $el['isInner'] = false;
+            if (($el['elType'] ?? '') === 'widget') {
+                $el = ['id' => self::new_id(), 'elType' => 'container', 'isInner' => false, 'settings' => ['content_width' => 'full'], 'elements' => [$holder]];
+            }
+            $tid = self::save_library_template('טופס – ' . $title . ' #' . ($i + 1), 'container', [$el]);
+            if (!$tid) {
+                return 'form template ' . ($i + 1) . ' failed — page untouched (backup #' . $backup_tid . ' kept)';
+            }
+            $forms[] = $tid;
+        }
+
+        $new = [[
+            'id' => self::new_id(), 'elType' => 'container', 'isInner' => false,
+            'settings' => ['content_width' => 'full', 'flex_direction' => 'column', 'flex_gap' => ['unit' => 'px', 'size' => 0, 'column' => '0', 'row' => '0'],
+                           'padding' => ['unit' => 'px', 'top' => '0', 'right' => '0', 'bottom' => '0', 'left' => '0', 'isLinked' => true], '_olp_converted' => 'yes'],
+            'elements' => [[
+                'id' => self::new_id(), 'elType' => 'widget', 'widgetType' => 'shortcode', 'elements' => [],
+                'settings' => ['shortcode' => '[landing_page name="' . $name . '"]'],
+            ]],
+        ]];
+        update_post_meta($pid, '_olp_forms', $forms);
+        update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($new, JSON_UNESCAPED_UNICODE)));
+        update_post_meta($pid, '_olp_converted', $name . '@' . gmdate('c'));
+        self::clear_elementor_cache($pid);
+        self::refresh_plain_text($pid);
+        clean_post_cache($pid);
+        self::purge_page_cache_plugins($pid);
+        return 'converted (backup #' . $backup_tid . ', forms ' . ($forms ? implode(',', $forms) : 'none') . ')';
+    }
+
+    /** Put the original Elementor design back from _olp_convert_backup, and never convert this page again. */
+    public static function unconvert_page(int $pid): array
+    {
+        $b = get_post_meta($pid, '_olp_convert_backup', true);
+        if (!is_array($b) || empty($b['data'])) {
+            return ['page' => $pid, 'error' => 'no conversion backup'];
+        }
+        update_post_meta($pid, '_elementor_data', wp_slash((string) $b['data']));
+        update_post_meta($pid, '_elementor_page_settings', is_array($b['page_settings'] ?? null) ? $b['page_settings'] : []);
+        if (!empty($b['wp_template'])) {
+            update_post_meta($pid, '_wp_page_template', (string) $b['wp_template']);
+        }
+        delete_post_meta($pid, '_olp_converted');
+        delete_post_meta($pid, '_olp_forms');
+        update_post_meta($pid, '_olp_convert_reverted', gmdate('c'));
+        self::clear_elementor_cache($pid);
+        self::refresh_plain_text($pid);
+        clean_post_cache($pid);
+        self::purge_page_cache_plugins($pid);
+        return ['page' => $pid, 'restored_from' => gmdate('c', strtotime((string) $b['at'])), 'backup_template' => (int) ($b['template'] ?? 0)];
+    }
+
+    public static function sync_conversions(): array
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $list  = is_array($sites) ? ($sites[self::site_host()]['convert'] ?? null) : null;
+        $log   = [];
+        if (!is_array($list)) {
+            $log[] = 'no conversions for ' . self::site_host();
+        } else {
+            foreach ($list as $entry) {
+                $pid  = (int) ($entry['page'] ?? 0);
+                $name = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', (string) ($entry['name'] ?? '')));
+                if ($pid <= 0 || $name === '') {
+                    continue;
+                }
+                $log[] = $pid . ' → ' . $name . ': ' . self::convert_page($pid, $name);
+            }
+        }
+        update_option('olp_last_convert', gmdate('c') . ' ' . implode('; ', $log), false);
+        return $log;
+    }
+
+    /** Rendered form templates of the page being viewed, keyed 1..n. */
+    private static function render_forms(string $html): string
+    {
+        $pid   = (int) get_queried_object_id();
+        $forms = $pid > 0 ? get_post_meta($pid, '_olp_forms', true) : [];
+        if (!is_array($forms) || !$forms || !class_exists('\Elementor\Plugin')) {
+            return $html;
+        }
+        $tail = '';
+        foreach (array_values($forms) as $i => $tid) {
+            $out    = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display((int) $tid, true);
+            $marker = '<!--olp:form:' . ($i + 1) . '-->';
+            if (strpos($html, $marker) !== false) {
+                $html = str_replace($marker, '<div class="olp-form" data-olp-form="' . ($i + 1) . '">' . $out . '</div>', $html);
+            } else {
+                $tail .= '<div class="olp-form" data-olp-form="' . ($i + 1) . '">' . $out . '</div>'; // never lose a form
+            }
+        }
+        return $html . $tail;
+    }
+
+
     /* ---------- restore what a footer sync removed ---------- */
 
     /**
@@ -995,7 +1197,7 @@ final class Orca_Landing_Pages
         }
 
         return '<div class="olp-page" data-olp-page="' . esc_attr($name) . '" data-olp-source="' . esc_attr($source) . '" data-olp-ref="' . esc_attr(substr(self::git_ref(), 0, 7)) . '">'
-            . $html . '</div>';
+            . self::render_forms($html) . '</div>';
     }
 
     /* ---------- cache purge ---------- */
@@ -1024,6 +1226,7 @@ final class Orca_Landing_Pages
         self::cpanel_clear_cache();
         self::sync_pages();
         self::sync_footer();
+        self::sync_conversions();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
@@ -1119,6 +1322,23 @@ final class Orca_Landing_Pages
                 return new WP_REST_Response(['ok' => true] + self::restore_forms($pid, $remove), 200);
             },
         ]);
+        register_rest_route('olp/v1', '/unconvert', [
+            'methods'             => ['POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                $pid = (int) $req->get_param('page');
+                if ($pid <= 0) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'page required'], 400);
+                }
+                return new WP_REST_Response(['ok' => true] + self::unconvert_page($pid), 200);
+            },
+        ]);
         register_rest_route('olp/v1', '/refresh', [
             'methods'             => ['POST', 'GET'],
             'permission_callback' => '__return_true',
@@ -1137,7 +1357,7 @@ final class Orca_Landing_Pages
                 foreach (self::landing_page_ids() as $pid) {
                     $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', ''), 'plugin' => self::VERSION . ' — ' . $update], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', ''), 'convert' => (string) get_option('olp_last_convert', ''), 'plugin' => self::VERSION . ' — ' . $update], 200);
             },
         ]);
     }
@@ -1179,7 +1399,7 @@ final class Orca_Landing_Pages
             <?php if ($purged !== null): ?>
                 <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
-            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code><br>פוטר מהריפו (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_footer', 'עדיין לא')); ?></code></p>
+            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code><br>פוטר מהריפו (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_footer', 'עדיין לא')); ?></code><br>המרת עמודים קיימים (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_convert', 'עדיין לא')); ?></code></p>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
                כדי לראות שינוי מיד: להוסיף <code>?olp_refresh=1</code> לכתובת הדף (כמנהל מחובר), או ללחוץ על הכפתור למטה.</p>
