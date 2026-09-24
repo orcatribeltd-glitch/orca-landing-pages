@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.9.2
+ * Version:     1.10.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.9.2';
+    const VERSION     = '1.10.0';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -630,7 +630,21 @@ final class Orca_Landing_Pages
      * ("font-weight: 400;" became "font-weight: 400"): the backup would not be
      * the original. A conversion therefore runs as the first administrator.
      */
-    public static function convert_page(int $pid, string $name): string
+    /** An element (container or widget) by id, at any depth. */
+    private static function find_element(array $elements, string $id): ?array
+    {
+        foreach ($elements as $el) {
+            if (!is_array($el)) { continue; }
+            if ((string) ($el['id'] ?? '') === $id) { return $el; }
+            if (!empty($el['elements']) && is_array($el['elements'])) {
+                $hit = self::find_element($el['elements'], $id);
+                if ($hit) { return $hit; }
+            }
+        }
+        return null;
+    }
+
+    public static function convert_page(int $pid, string $name, array $keep = []): string
     {
         $prev = get_current_user_id();
         $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
@@ -640,13 +654,13 @@ final class Orca_Landing_Pages
         wp_set_current_user((int) $admins[0]);
         kses_remove_filters();
         try {
-            return self::convert_page_as_admin($pid, $name);
+            return self::convert_page_as_admin($pid, $name, $keep);
         } finally {
             wp_set_current_user($prev);
         }
     }
 
-    private static function convert_page_as_admin(int $pid, string $name): string
+    private static function convert_page_as_admin(int $pid, string $name, array $keep): string
     {
         $post = get_post($pid);
         if (!$post) {
@@ -666,6 +680,11 @@ final class Orca_Landing_Pages
         $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
         if (!is_array($data)) {
             return 'not an elementor page';
+        }
+        foreach ($keep as $kid) {
+            if (!self::find_element($data, (string) $kid)) {
+                return 'keep ' . $kid . ' not found — page untouched';
+            }
         }
         $page_settings = get_post_meta($pid, '_elementor_page_settings', true);
         $page_settings = is_array($page_settings) ? $page_settings : [];
@@ -697,6 +716,22 @@ final class Orca_Landing_Pages
             $forms[] = $tid;
         }
 
+        $kept = [];
+        foreach ($keep as $kid) {
+            $el = self::find_element($data, (string) $kid);
+            $el['isInner'] = false;
+            if (($el['elType'] ?? '') === 'widget') {
+                $el = ['id' => self::new_id(), 'elType' => 'container', 'isInner' => false,
+                       'settings' => ['content_width' => 'full', 'css_classes' => 'olp-wrap', 'padding' => ['unit' => 'px', 'top' => '0', 'right' => '0', 'bottom' => '0', 'left' => '0', 'isLinked' => true]],
+                       'elements' => [self::find_element($data, (string) $kid)]];
+            }
+            $tid = self::save_library_template('רכיב – ' . $title . ' – ' . $kid, 'container', [$el]);
+            if (!$tid) {
+                return 'keep template ' . $kid . ' failed (' . self::$last_error . ') — page untouched (backup #' . $backup_tid . ' kept)';
+            }
+            $kept[(string) $kid] = $tid;
+        }
+
         $new = [[
             'id' => self::new_id(), 'elType' => 'container', 'isInner' => false,
             'settings' => ['content_width' => 'full', 'flex_direction' => 'column', 'flex_gap' => ['unit' => 'px', 'size' => 0, 'column' => '0', 'row' => '0'],
@@ -707,13 +742,14 @@ final class Orca_Landing_Pages
             ]],
         ]];
         update_post_meta($pid, '_olp_forms', $forms);
+        update_post_meta($pid, '_olp_keep', $kept);
         update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($new, JSON_UNESCAPED_UNICODE)));
         update_post_meta($pid, '_olp_converted', $name . '@' . gmdate('c'));
         self::clear_elementor_cache($pid);
         self::refresh_plain_text($pid);
         clean_post_cache($pid);
         self::purge_page_cache_plugins($pid);
-        return 'converted (backup #' . $backup_tid . ', forms ' . ($forms ? implode(',', $forms) : 'none') . ')';
+        return 'converted (backup #' . $backup_tid . ', forms ' . ($forms ? implode(',', $forms) : 'none') . ', kept ' . ($kept ? count($kept) : 0) . ')';
     }
 
     /** Put the original Elementor design back from _olp_convert_backup, and never convert this page again. */
@@ -735,6 +771,7 @@ final class Orca_Landing_Pages
         }
         delete_post_meta($pid, '_olp_converted');
         delete_post_meta($pid, '_olp_forms');
+        delete_post_meta($pid, '_olp_keep');
         update_post_meta($pid, '_olp_convert_reverted', gmdate('c'));
         self::clear_elementor_cache($pid);
         self::refresh_plain_text($pid);
@@ -758,20 +795,37 @@ final class Orca_Landing_Pages
                 if ($pid <= 0 || $name === '') {
                     continue;
                 }
-                $log[] = $pid . ' → ' . $name . ': ' . self::convert_page($pid, $name);
+                $keep = array_values(array_filter(array_map(static function ($k) { return preg_replace('/[^a-z0-9]/', '', strtolower((string) $k)); }, (array) ($entry['keep'] ?? []))));
+                $log[] = $pid . ' → ' . $name . ': ' . self::convert_page($pid, $name, $keep);
             }
         }
         update_option('olp_last_convert', gmdate('c') . ' ' . implode('; ', $log), false);
         return $log;
     }
 
-    /** Rendered form templates of the page being viewed, keyed 1..n. */
+    /**
+     * Rendered form templates of the page being viewed, keyed 1..n, and kept
+     * Elementor elements at <!--olp:keep:ID-->. The template wrappers are
+     * display:contents, so a kept element sits in the HTML's layout exactly
+     * where the original element was.
+     */
     private static function render_forms(string $html): string
     {
         $pid   = (int) get_queried_object_id();
         $forms = $pid > 0 ? get_post_meta($pid, '_olp_forms', true) : [];
-        if (!is_array($forms) || !$forms || !class_exists('\Elementor\Plugin')) {
+        $kept  = $pid > 0 ? get_post_meta($pid, '_olp_keep', true) : [];
+        if (!class_exists('\Elementor\Plugin') || ((!is_array($forms) || !$forms) && (!is_array($kept) || !$kept))) {
             return $html;
+        }
+        $forms = is_array($forms) ? $forms : [];
+        $html  = '<style>.olp-keep,.olp-form,.olp-keep>.elementor,.olp-form>.elementor,.olp-keep .e-con.olp-wrap{display:contents}</style>' . $html;
+        foreach ((is_array($kept) ? $kept : []) as $kid => $tid) {
+            $marker = '<!--olp:keep:' . $kid . '-->';
+            if (strpos($html, $marker) === false) {
+                continue;
+            }
+            $out  = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display((int) $tid, true);
+            $html = str_replace($marker, '<div class="olp-keep" data-olp-keep="' . esc_attr((string) $kid) . '">' . $out . '</div>', $html);
         }
         $tail = '';
         foreach (array_values($forms) as $i => $tid) {
