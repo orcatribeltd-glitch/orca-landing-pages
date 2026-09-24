@@ -15,6 +15,14 @@
       {
         "page": 240,
         "name": "orca-privacy"
+      },
+      {
+        "page": 241,
+        "name": "orca-terms"
+      },
+      {
+        "page": 234,
+        "name": "orca-accessibility"
       }
     ]
   }
