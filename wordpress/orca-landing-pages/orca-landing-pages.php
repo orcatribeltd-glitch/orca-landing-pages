@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.9.1
+ * Version:     1.9.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.9.1';
+    const VERSION     = '1.9.2';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -624,7 +624,29 @@ final class Orca_Landing_Pages
         }
     }
 
+    /**
+     * The webhook runs as nobody. Saving Elementor data as a user without
+     * unfiltered_html runs it through kses, which rewrites inline styles
+     * ("font-weight: 400;" became "font-weight: 400"): the backup would not be
+     * the original. A conversion therefore runs as the first administrator.
+     */
     public static function convert_page(int $pid, string $name): string
+    {
+        $prev = get_current_user_id();
+        $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
+        if (!$admins) {
+            return 'no administrator to act as — page untouched';
+        }
+        wp_set_current_user((int) $admins[0]);
+        kses_remove_filters();
+        try {
+            return self::convert_page_as_admin($pid, $name);
+        } finally {
+            wp_set_current_user($prev);
+        }
+    }
+
+    private static function convert_page_as_admin(int $pid, string $name): string
     {
         $post = get_post($pid);
         if (!$post) {
@@ -697,6 +719,11 @@ final class Orca_Landing_Pages
     /** Put the original Elementor design back from _olp_convert_backup, and never convert this page again. */
     public static function unconvert_page(int $pid): array
     {
+        $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
+        if ($admins) {
+            wp_set_current_user((int) $admins[0]);
+            kses_remove_filters();
+        }
         $b = get_post_meta($pid, '_olp_convert_backup', true);
         if (!is_array($b) || empty($b['data'])) {
             return ['page' => $pid, 'error' => 'no conversion backup'];
