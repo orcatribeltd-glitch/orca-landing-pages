@@ -65,6 +65,11 @@
           "54534d4f"
         ]
       }
-    ]
+    ],
+    "privacy_link": {
+      "text": "מדיניות פרטיות",
+      "url": "https://www.orcatribe.co.il/מדיניות-פרטיות/",
+      "color": "#32e9da"
+    }
   }
 }

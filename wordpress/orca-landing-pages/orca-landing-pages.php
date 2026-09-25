@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.10.5
+ * Version:     1.11.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.10.5';
+    const VERSION     = '1.11.0';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -61,6 +61,7 @@ final class Orca_Landing_Pages
         add_action('send_headers', [__CLASS__, 'short_page_cache']);
         add_filter('pre_set_site_transient_update_plugins', [__CLASS__, 'inject_update']);
         add_filter('plugins_api', [__CLASS__, 'plugin_info'], 10, 3);
+        add_action('wp_footer', [__CLASS__, 'privacy_link_script'], 99);
     }
 
     /* ---------- self-update from the repo ---------- */
@@ -851,6 +852,39 @@ final class Orca_Landing_Pages
     }
 
 
+    /* ---------- consent text: the privacy policy is always a visible link ---------- */
+
+    /**
+     * sites.json: {"orcatribe.co.il": {"privacy_link": {"text": "מדיניות פרטיות",
+     *   "url": "https://www.orcatribe.co.il/מדיניות-פרטיות/", "color": "#32e9da"}}}
+     * Rule (Jonathan, 25/09/2026): wherever a form's consent text mentions the privacy
+     * policy, those words are a prominent coloured link to the privacy page. Done here,
+     * once for the whole site, so every form (and every future one, popups included) obeys it.
+     */
+    public static function sync_privacy_link(): void
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $cfg   = is_array($sites) ? ($sites[self::site_host()]['privacy_link'] ?? null) : null;
+        if (is_array($cfg) && !empty($cfg['text']) && !empty($cfg['url'])) {
+            update_option('olp_privacy_link', ['text' => (string) $cfg['text'], 'url' => esc_url_raw((string) $cfg['url']), 'color' => preg_match('/^#[0-9a-f]{3,8}$/i', (string) ($cfg['color'] ?? '')) ? (string) $cfg['color'] : '#32e9da'], false);
+        } else {
+            delete_option('olp_privacy_link');
+        }
+    }
+
+    public static function privacy_link_script(): void
+    {
+        $cfg = get_option('olp_privacy_link');
+        if (!is_array($cfg) || empty($cfg['text']) || empty($cfg['url'])) {
+            return;
+        }
+        $data = wp_json_encode(['t' => $cfg['text'], 'u' => $cfg['url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        echo '<style>a.olp-privacy-link,a.olp-privacy-link:visited{color:' . esc_attr($cfg['color']) . ' !important;font-weight:700 !important;text-decoration:underline !important;text-underline-offset:3px}a.olp-privacy-link:hover{opacity:.85}</style>';
+        echo '<script>(function(c){function run(root){(root||document).querySelectorAll(".elementor-form label,.elementor-form .elementor-field-type-html,.elementor-form .elementor-field-type-acceptance").forEach(function(el){if(el.querySelector("a.olp-privacy-link"))return;var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;while((n=w.nextNode())){if(n.parentNode.closest("a"))continue;var i=n.nodeValue.indexOf(c.t);if(i<0)continue;var after=n.splitText(i);after.nodeValue=after.nodeValue.slice(c.t.length);var a=document.createElement("a");a.className="olp-privacy-link";a.href=c.u;a.target="_blank";a.rel="noopener";a.textContent=c.t;a.addEventListener("click",function(e){e.stopPropagation();});n.parentNode.insertBefore(a,after);break;}});}if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",function(){run();});if(window.jQuery){jQuery(document).on("elementor/popup/show",function(){run();});}})(' . $data . ');</script>';
+    }
+
+
     /* ---------- restore what a footer sync removed ---------- */
 
     /**
@@ -1410,6 +1444,7 @@ final class Orca_Landing_Pages
         self::sync_pages();
         self::sync_footer();
         self::sync_conversions();
+        self::sync_privacy_link();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
