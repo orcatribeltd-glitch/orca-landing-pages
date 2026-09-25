@@ -9,8 +9,8 @@ import os, re
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'pages')
 PAGES = [  # folder, title before the highlight, highlight word, kicker
-    ('orca-privacy', 'מדיניות', 'פרטיות', 'מידע משפטי'),
-    ('orca-terms', 'תנאי', 'שימוש', 'מידע משפטי'),
+    ('orca-privacy', 'מדיניות', 'פרטיות', ''),
+    ('orca-terms', 'תנאי', 'שימוש', ''),
     ('orca-accessibility', 'הצהרת', 'נגישות', 'נגישות האתר'),
 ]
 
@@ -83,6 +83,7 @@ def body_of(folder):
 def page(folder, t1, hl, kicker, body):
     nav = '\n'.join('        <a href="%s"%s>%s</a>' % (u, ' aria-current="page"' if f == folder else '', n) for f, u, n in LINKS)
     title = '%s %s' % (t1, hl)
+    kicker_html = ('      <span class="ol-kicker"><span class="ol-dash" aria-hidden="true"><i></i><i></i></span>%s</span>\n' % kicker) if kicker else ''
     return '''<!doctype html>
 <html lang="he" dir="rtl">
 <head>
@@ -106,8 +107,7 @@ def page(folder, t1, hl, kicker, body):
 <main>
   <section class="ol-hero">
     <div class="ol-wrap">
-      <span class="ol-kicker"><span class="ol-dash" aria-hidden="true"><i></i><i></i></span>%(kicker)s</span>
-      <h1>%(t1)s <span class="ol-hl"><span aria-hidden="true">%(hl)s</span><span>%(hl)s</span></span></h1>
+%(kicker_html)s      <h1>%(t1)s <span class="ol-hl"><span aria-hidden="true">%(hl)s</span><span>%(hl)s</span></span></h1>
     </div>
   </section>
   <article class="ol-card">
@@ -131,7 +131,7 @@ def page(folder, t1, hl, kicker, body):
 </div>
 </body>
 </html>
-''' % dict(title=title, css=CSS, logo=LOGO, kicker=kicker, t1=t1, hl=hl, body=body, nav=nav)
+''' % dict(title=title, css=CSS, logo=LOGO, kicker_html=kicker_html, t1=t1, hl=hl, body=body, nav=nav)
 
 
 if __name__ == '__main__':
