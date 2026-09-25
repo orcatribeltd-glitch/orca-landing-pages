@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.10.1
+ * Version:     1.10.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.10.1';
+    const VERSION     = '1.10.2';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -644,7 +644,7 @@ final class Orca_Landing_Pages
         return null;
     }
 
-    public static function convert_page(int $pid, string $name, array $keep = []): string
+    public static function convert_page(int $pid, string $name, array $keep = [], bool $after_revert = false): string
     {
         $prev = get_current_user_id();
         $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
@@ -654,13 +654,13 @@ final class Orca_Landing_Pages
         wp_set_current_user((int) $admins[0]);
         kses_remove_filters();
         try {
-            return self::convert_page_as_admin($pid, $name, $keep);
+            return self::convert_page_as_admin($pid, $name, $keep, $after_revert);
         } finally {
             wp_set_current_user($prev);
         }
     }
 
-    private static function convert_page_as_admin(int $pid, string $name, array $keep): string
+    private static function convert_page_as_admin(int $pid, string $name, array $keep, bool $after_revert = false): string
     {
         $post = get_post($pid);
         if (!$post) {
@@ -669,8 +669,8 @@ final class Orca_Landing_Pages
         if (get_post_meta($pid, '_olp_converted', true)) {
             return 'already converted';
         }
-        if (get_post_meta($pid, '_olp_convert_reverted', true)) {
-            return 'reverted — not converting again';
+        if (get_post_meta($pid, '_olp_convert_reverted', true) && !$after_revert) {
+            return 'reverted — not converting again (set "after_revert": true to convert again)';
         }
         [$html, $source] = self::get_page($name, true);
         if ($html === '' || strpos($source, 'error') === 0) {
@@ -746,6 +746,7 @@ final class Orca_Landing_Pages
         update_post_meta($pid, '_olp_keep', $kept);
         update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($new, JSON_UNESCAPED_UNICODE)));
         update_post_meta($pid, '_olp_converted', $name . '@' . gmdate('c'));
+        delete_post_meta($pid, '_olp_convert_reverted');
         self::clear_elementor_cache($pid);
         self::refresh_plain_text($pid);
         clean_post_cache($pid);
@@ -805,7 +806,7 @@ final class Orca_Landing_Pages
                     continue;
                 }
                 $keep = array_values(array_filter(array_map(static function ($k) { return preg_replace('/[^a-z0-9]/', '', strtolower((string) $k)); }, (array) ($entry['keep'] ?? []))));
-                $log[] = $pid . ' → ' . $name . ': ' . self::convert_page($pid, $name, $keep);
+                $log[] = $pid . ' → ' . $name . ': ' . self::convert_page($pid, $name, $keep, !empty($entry['after_revert']));
             }
         }
         update_option('olp_last_convert', gmdate('c') . ' ' . implode('; ', $log), false);
