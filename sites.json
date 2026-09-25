@@ -41,6 +41,29 @@
           "366a25f"
         ],
         "after_revert": true
+      },
+      {
+        "page": 10,
+        "name": "orca-thanks"
+      },
+      {
+        "page": 298,
+        "name": "orca-vsl-short",
+        "keep": [
+          "1bff7952"
+        ]
+      },
+      {
+        "page": 275,
+        "name": "orca-vsl-long",
+        "keep": [
+          "1bff7952",
+          "dd827f1",
+          "c518aa6",
+          "b9868c6",
+          "3b3cf3c4",
+          "54534d4f"
+        ]
       }
     ]
   }
