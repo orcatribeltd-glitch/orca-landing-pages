@@ -27,7 +27,7 @@ def main(path, n, url, name, field):
     head = head[:box] + '<div data-yt="%s" role="button" tabindex="0" aria-label="לצפייה בעדות של %s"' % (vid, name) + head[box + 4:]
     # the placeholder label becomes the thumbnail
     lab_start = head.rfind('<div style="position:absolute;inset:0;display:grid;place-items:center;color:#8a93a8')
-    head = head[:lab_start] + '<img src="https://i.ytimg.com/vi/%s/oardefault.jpg" alt="%s, %s" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%%;height:100%%;object-fit:cover"><div style="display:none">' % (vid, name, field) + head[lab_start + len('<div style="position:absolute;inset:0;display:grid;place-items:center;color:#8a93a8'):]
+    head = head[:lab_start] + '<img src="https://i.ytimg.com/vi/%s/oardefault.jpg" alt="%s, %s" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace(\'oardefault\',\'oar2\')}else if(this.dataset.f==1){this.dataset.f=2;this.src=this.src.replace(\'oar2\',\'hqdefault\')}" style="position:absolute;inset:0;width:100%%;height:100%%;object-fit:cover"><div style="display:none">' % (vid, name, field) + head[lab_start + len('<div style="position:absolute;inset:0;display:grid;place-items:center;color:#8a93a8'):]
     s = s[:card] + head + s[li:]
     s = s.replace('<div style="display:none">;font-family:\'JetBrains Mono\',monospace;font-size:12.5px;letter-spacing:.06em;padding-top:120px">' + label + '</div>', '', 1)
     open(path, 'w', encoding='utf-8').write(s)
