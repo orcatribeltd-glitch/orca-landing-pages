@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.10.4
+ * Version:     1.10.5
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.10.4';
+    const VERSION     = '1.10.5';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -959,6 +959,47 @@ final class Orca_Landing_Pages
         return ['post' => $pid, 'field' => $field_id, 'changed' => $changed];
     }
 
+    /**
+     * Change what a form does after submit, in every form widget of a post:
+     * remove and/or add after-submit actions, and optionally set the webhook
+     * URL. Nothing else in the form is touched.
+     */
+    public static function set_form_actions(int $pid, array $remove, array $add, string $webhook = ''): array
+    {
+        $json = get_post_meta($pid, '_elementor_data', true);
+        $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
+        if (!is_array($data)) {
+            return ['error' => 'no elementor data'];
+        }
+        $report = [];
+        $walk = function (array &$els) use (&$walk, $remove, $add, $webhook, &$report) {
+            foreach ($els as &$el) {
+                if (!is_array($el)) { continue; }
+                if (($el['widgetType'] ?? '') === 'form') {
+                    $before = array_values((array) ($el['settings']['submit_actions'] ?? []));
+                    $after  = array_values(array_unique(array_merge(array_diff($before, $remove), $add)));
+                    $el['settings']['submit_actions'] = $after;
+                    if ($webhook !== '') {
+                        $el['settings']['webhooks'] = $webhook;
+                    }
+                    $report[] = ['form' => $el['id'] ?? '?', 'before' => $before, 'after' => $after, 'webhook_set' => $webhook !== ''];
+                }
+                if (!empty($el['elements']) && is_array($el['elements'])) { $walk($el['elements']); }
+            }
+            unset($el);
+        };
+        $walk($data);
+        if ($report) {
+            $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
+            if ($admins) { wp_set_current_user((int) $admins[0]); kses_remove_filters(); }
+            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            self::clear_elementor_cache($pid);
+            clean_post_cache($pid);
+            self::touch_landing_pages();
+        }
+        return ['post' => $pid, 'forms' => $report];
+    }
+
     public static function restore_forms(int $pid, array $remove_ids = []): array
     {
         $json = get_post_meta($pid, '_elementor_data', true);
@@ -1481,6 +1522,29 @@ final class Orca_Landing_Pages
                     return new WP_REST_Response(['ok' => false, 'error' => 'post, field and a valid type required'], 400);
                 }
                 return new WP_REST_Response(['ok' => true] + self::set_form_field_type($pid, $field, $type), 200);
+            },
+        ]);
+        register_rest_route('olp/v1', '/form-actions', [
+            'methods'             => ['POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                $allowed = ['save-to-database', 'email', 'email2', 'redirect', 'webhook'];
+                $list = static function ($v) use ($allowed) { return array_values(array_intersect(array_filter(array_map('trim', explode(',', (string) $v))), $allowed)); };
+                $pid     = (int) $req->get_param('post');
+                $webhook = (string) $req->get_param('webhook');
+                if ($webhook !== '' && !preg_match('#^https://hooks\.zapier\.com/hooks/catch/[0-9]+/[a-z0-9]+/?$#i', $webhook)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'webhook must be a Zapier catch hook'], 400);
+                }
+                if ($pid <= 0) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'post required'], 400);
+                }
+                return new WP_REST_Response(['ok' => true] + self::set_form_actions($pid, $list($req->get_param('remove')), $list($req->get_param('add')), $webhook), 200);
             },
         ]);
         register_rest_route('olp/v1', '/form-info', [
