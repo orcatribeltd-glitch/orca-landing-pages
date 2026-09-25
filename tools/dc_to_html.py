@@ -59,8 +59,9 @@ def main(src, out, drop, with_form):
     body = body.replace('ref="{{ trackRef }}"', 'data-dc-track')
     body = body.replace('onSubmit="{{ noSubmit }}"', '')
     body = body.replace('{{ helix }}', '<div data-dc-helix></div>')
-    body = body.replace('{{ stickyPos }}', 'sticky')
-    body = re.sub(r'(<header\b[^>]*?)style="', r'\1class="dc-sticky" style="', body, count=1)
+    # {{ stickyPos }} = sticky only from 1000px up: tag exactly the elements that used it
+    body = re.sub(r'<([a-zA-Z0-9-]+)([^>]*?)style="([^"]*?)position:\{\{ stickyPos \}\}',
+                  lambda m: '<%s class="dc-sticky"%sstyle="%sposition:sticky' % (m.group(1), m.group(2), m.group(3)), body)
 
     # state styles -> classes
     rules, n = [], [0]
