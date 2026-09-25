@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.11.0
+ * Version:     1.11.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.11.0';
+    const VERSION     = '1.11.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -881,7 +881,7 @@ final class Orca_Landing_Pages
         }
         $data = wp_json_encode(['t' => $cfg['text'], 'u' => $cfg['url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         echo '<style>a.olp-privacy-link,a.olp-privacy-link:visited{color:' . esc_attr($cfg['color']) . ' !important;font-weight:700 !important;text-decoration:underline !important;text-underline-offset:3px}a.olp-privacy-link:hover{opacity:.85}</style>';
-        echo '<script>(function(c){function run(root){(root||document).querySelectorAll(".elementor-form label,.elementor-form .elementor-field-type-html,.elementor-form .elementor-field-type-acceptance").forEach(function(el){if(el.querySelector("a.olp-privacy-link"))return;var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;while((n=w.nextNode())){if(n.parentNode.closest("a"))continue;var i=n.nodeValue.indexOf(c.t);if(i<0)continue;var after=n.splitText(i);after.nodeValue=after.nodeValue.slice(c.t.length);var a=document.createElement("a");a.className="olp-privacy-link";a.href=c.u;a.target="_blank";a.rel="noopener";a.textContent=c.t;a.addEventListener("click",function(e){e.stopPropagation();});n.parentNode.insertBefore(a,after);break;}});}if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",function(){run();});if(window.jQuery){jQuery(document).on("elementor/popup/show",function(){run();});}})(' . $data . ');</script>';
+        echo '<script>(function(c){function run(root){(root||document).querySelectorAll(".elementor-form a").forEach(function(a){if(a.textContent.indexOf(c.t)>-1){a.classList.add("olp-privacy-link");a.href=c.u;a.target="_blank";a.rel="noopener";}});(root||document).querySelectorAll(".elementor-form label,.elementor-form .elementor-field-type-html,.elementor-form .elementor-field-type-acceptance").forEach(function(el){if(el.querySelector("a.olp-privacy-link"))return;var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),n;while((n=w.nextNode())){if(n.parentNode.closest("a"))continue;var i=n.nodeValue.indexOf(c.t);if(i<0)continue;var after=n.splitText(i);after.nodeValue=after.nodeValue.slice(c.t.length);var a=document.createElement("a");a.className="olp-privacy-link";a.href=c.u;a.target="_blank";a.rel="noopener";a.textContent=c.t;a.addEventListener("click",function(e){e.stopPropagation();});n.parentNode.insertBefore(a,after);break;}});}if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",function(){run();});if(window.jQuery){jQuery(document).on("elementor/popup/show",function(){run();});}})(' . $data . ');</script>';
     }
 
 
