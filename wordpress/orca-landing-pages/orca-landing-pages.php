@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.10.3
+ * Version:     1.10.4
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.10.3';
+    const VERSION     = '1.10.4';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1481,6 +1481,45 @@ final class Orca_Landing_Pages
                     return new WP_REST_Response(['ok' => false, 'error' => 'post, field and a valid type required'], 400);
                 }
                 return new WP_REST_Response(['ok' => true] + self::set_form_field_type($pid, $field, $type), 200);
+            },
+        ]);
+        register_rest_route('olp/v1', '/form-info', [
+            'methods'             => ['GET'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                // read-only: what a form does after submit, and Elementor's own log of the last submissions
+                $pid  = (int) $req->get_param('post');
+                $data = json_decode((string) get_post_meta($pid, '_elementor_data', true), true);
+                $forms = [];
+                $walk = function ($els) use (&$walk, &$forms) {
+                    foreach ((array) $els as $el) {
+                        if (!is_array($el)) { continue; }
+                        if (($el['widgetType'] ?? '') === 'form') {
+                            $st = (array) ($el['settings'] ?? []);
+                            $keep = [];
+                            foreach ($st as $k => $v) {
+                                if (preg_match('/^(submit_actions|webhooks|webhooks_advanced_data|email_to|email_subject|email_from|redirect_to|form_name|mailchimp|activecampaign|getresponse|convertkit|mailerlite|drip|slack|discord|custom_messages|error_message|server_message)/', (string) $k)) { $keep[$k] = $v; }
+                            }
+                            $keep['fields'] = array_map(static function ($f) { return ($f['custom_id'] ?? '?') . ':' . ($f['field_type'] ?? 'text') . (!empty($f['required']) ? '*' : ''); }, (array) ($st['form_fields'] ?? []));
+                            $forms[] = ['id' => $el['id'] ?? '?', 'settings' => $keep];
+                        }
+                        $walk($el['elements'] ?? []);
+                    }
+                };
+                $walk($data);
+                global $wpdb;
+                $log = [];
+                $t1 = $wpdb->prefix . 'e_submissions'; $t2 = $wpdb->prefix . 'e_submissions_actions_log';
+                if ($wpdb->get_var("SHOW TABLES LIKE '$t2'") === $t2) {
+                    $log = $wpdb->get_results("SELECT s.id, s.created_at_gmt, s.post_id, s.element_id, s.status, a.action_name, a.status AS action_status, a.log FROM $t1 s LEFT JOIN $t2 a ON a.submission_id = s.id ORDER BY s.id DESC LIMIT 12", ARRAY_A);
+                }
+                return new WP_REST_Response(['ok' => true, 'post' => $pid, 'forms' => $forms, 'recent_submissions' => $log], 200);
             },
         ]);
         register_rest_route('olp/v1', '/unconvert', [
