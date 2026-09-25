@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.10.0
+ * Version:     1.10.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.10.0';
+    const VERSION     = '1.10.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -695,8 +695,9 @@ final class Orca_Landing_Pages
         if (!$backup_tid) {
             return 'backup template failed (' . self::$last_error . ') — page untouched';
         }
+        // update_post_meta unslashes nested values too: slash the JSON or its escapes are lost
         update_post_meta($pid, '_olp_convert_backup', [
-            'at' => gmdate('c'), 'template' => $backup_tid, 'data' => $json,
+            'at' => gmdate('c'), 'template' => $backup_tid, 'data' => wp_slash($json),
             'page_settings' => $page_settings, 'wp_template' => (string) get_post_meta($pid, '_wp_page_template', true),
         ]);
 
@@ -764,7 +765,15 @@ final class Orca_Landing_Pages
         if (!is_array($b) || empty($b['data'])) {
             return ['page' => $pid, 'error' => 'no conversion backup'];
         }
-        update_post_meta($pid, '_elementor_data', wp_slash((string) $b['data']));
+        // the library template was verified byte-for-byte at conversion time; 1.9.x-1.10.0 stored a broken copy in page meta
+        $json = !empty($b['template']) ? get_post_meta((int) $b['template'], '_elementor_data', true) : '';
+        if (!is_string($json) || !is_array(json_decode($json, true))) {
+            $json = (string) $b['data'];
+        }
+        if (!is_array(json_decode($json, true))) {
+            return ['page' => $pid, 'error' => 'backup unreadable — restore from the library template by hand'];
+        }
+        update_post_meta($pid, '_elementor_data', wp_slash($json));
         update_post_meta($pid, '_elementor_page_settings', is_array($b['page_settings'] ?? null) ? $b['page_settings'] : []);
         if (!empty($b['wp_template'])) {
             update_post_meta($pid, '_wp_page_template', (string) $b['wp_template']);
