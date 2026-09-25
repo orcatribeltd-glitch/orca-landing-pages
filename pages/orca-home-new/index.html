@@ -98,6 +98,44 @@
 .orca-hero__faces .orca-arch:last-child{transform:translateY(28px)}
 .orca-hero__names{margin-top:40px !important}
 
+
+/* hero v2 — from Claude Design ("Orca Hero", 25/09/2026), official brand colours */
+.orca-hero2{position:relative;overflow:hidden;background:var(--bg);color:#fff;padding:clamp(48px,7vw,96px) clamp(24px,5vw,64px)}
+.orca-hero2__glow{position:absolute;inset:0;background:radial-gradient(620px 460px at 20% 50%,rgba(229,0,136,.12),transparent 70%);pointer-events:none}
+.orca-hero2__row{position:relative;max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:clamp(48px,5vw,72px)}
+.orca-hero2__text{flex:1 1 440px;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
+.orca-hero2__eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--cyan);font-weight:700;font-size:15px;margin-bottom:28px}
+.orca-hero2__dash{width:26px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);flex:none}
+.orca-hero2 h1{font-size:clamp(40px,5.2vw,64px);font-weight:900;line-height:1.02;letter-spacing:-.01em;margin:0 0 24px;text-wrap:balance}
+.orca-hero2__hl{color:var(--cyan);text-shadow:0 0 18px rgba(50,233,218,.55)}
+.orca-hero2__sub{color:var(--text-2);font-size:clamp(17px,1.5vw,19px);line-height:1.6;max-width:500px;margin:0 0 36px;text-wrap:pretty}
+.orca-site a.orca-hero2__btn,.orca-site a.orca-hero2__btn:hover{display:inline-flex;align-items:center;justify-content:center;min-height:58px;padding:0 32px;border-radius:999px;background:var(--magenta);color:#fff;
+  font:700 18px/1 "Heebo",sans-serif;text-decoration:none;white-space:nowrap;box-shadow:0 0 24px rgba(229,0,136,.45);transition:box-shadow 120ms cubic-bezier(.22,.8,.28,1),transform 120ms}
+.orca-site a.orca-hero2__btn:hover{box-shadow:0 0 12px rgba(229,0,136,.6),0 0 48px rgba(229,0,136,.45)}
+.orca-site a.orca-hero2__btn:active{transform:scale(.98);box-shadow:none}
+@media (prefers-reduced-motion:reduce){.orca-site a.orca-hero2__btn{transition:none}}
+.orca-hero2__media{flex:1 1 380px;min-width:0;display:flex;justify-content:center}
+.orca-hero2__stage{position:relative;width:100%;max-width:540px;aspect-ratio:540/640}
+.orca-hero2__label{display:flex;flex-direction:column;gap:2px;text-align:right}
+.orca-hero2__label b{font-size:17px}
+.orca-hero2__label span{font-size:14px;color:#8a93a8}
+.orca-hero2__label--hagai{position:absolute;left:0;top:0;width:53.7%}
+.orca-hero2__label--jon{position:absolute;right:24px;bottom:22px}
+.orca-hero2__label--jon span{color:var(--text-2)}
+.orca-hero2__edge{position:absolute;border-radius:22px}
+.orca-hero2__edge--hagai{left:-14px;top:calc(8.75% + 14px);width:53.7%;height:65.6%;border:1px solid rgba(229,0,136,.7);box-shadow:0 0 18px rgba(229,0,136,.25)}
+.orca-hero2__edge--jon{right:-14px;top:calc(27.8% + 14px);width:59.3%;height:70.3%;border:1px solid rgba(50,233,218,.7);box-shadow:0 0 18px rgba(50,233,218,.25)}
+.orca-site figure.orca-hero2__photo{position:absolute;margin:0;border-radius:22px;overflow:hidden;background:#000}
+.orca-hero2__photo img{width:100%;height:100%;object-fit:cover;display:block}
+.orca-hero2__photo--hagai{left:0;top:8.75%;width:53.7%;height:65.6%}
+.orca-hero2__photo--hagai img{object-position:50% 8%;filter:grayscale(1) contrast(1.22) brightness(.88)}
+.orca-hero2__photo--jon{right:0;top:27.8%;width:59.3%;height:70.3%;box-shadow:0 0 0 10px var(--bg),0 24px 64px rgba(0,0,0,.55)}
+.orca-hero2__photo--jon img{object-position:50% 10%;filter:grayscale(1) contrast(1.22) brightness(.92)}
+.orca-hero2__tint{position:absolute;inset:0;mix-blend-mode:screen}
+.orca-hero2__tint--magenta{background:linear-gradient(90deg,rgba(229,0,136,.4),transparent 38%)}
+.orca-hero2__tint--cyan{background:linear-gradient(270deg,rgba(50,233,218,.42),transparent 38%)}
+.orca-hero2__shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 62%,rgba(0,12,30,.88))}
+
 /* video slot: hidden until a real video link is set */
 .orca-video[hidden]{display:none}
 .orca-video{max-width:900px;margin:40px auto 0;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(50,233,218,.3);box-shadow:var(--glow-cyan);aspect-ratio:16/9}
@@ -237,23 +275,34 @@
 </header>
 
 <main>
-<section class="orca-hero">
-  <div class="orca-wrap orca-hero__grid">
-    <div>
-      <span class="orca-hero__eyebrow">לבעלי עסקים שרוצים לכבוש את השוק שלהם</span>
-      <h1>כשאתה לא <span class="orca-hl">מותג</span>, אתה נלחם על כל עסקה בשיניים.</h1>
-      <p class="orca-hero__sub">אחרי 7 שנים בתעשיית הפרסום הממומן והשיווק הוויראלי, פיצחנו את ה-״DNA״ לבניית מותג צומח ברשתות.</p>
-      <a class="orca-btn orca-btn--primary" href="#contact">שריין שיחת ייעוץ ללא עלות</a>
+<section class="orca-hero2">
+  <div class="orca-hero2__glow" aria-hidden="true"></div>
+  <div class="orca-hero2__row">
+    <div class="orca-hero2__text">
+      <span class="orca-hero2__eyebrow"><span class="orca-hero2__dash"></span>לבעלי עסקים שרוצים לכבוש את השוק שלהם</span>
+      <h1>כשאתה לא <span class="orca-hero2__hl">מותג</span>, אתה נלחם על כל עסקה בשיניים.</h1>
+      <p class="orca-hero2__sub">אחרי 7 שנים בתעשיית הפרסום הממומן והשיווק הוויראלי, פיצחנו את ה-״DNA״ לבניית מותג צומח ברשתות.</p>
+      <a class="orca-hero2__btn" href="#contact">שריין שיחת ייעוץ ללא עלות</a>
     </div>
-    <div>
-      <div class="orca-hero__faces">
-        <figure class="orca-arch orca-arch--white"><img src="images/jonathan.webp" width="720" height="960" alt="יהונתן טויטו"></figure>
-        <figure class="orca-arch orca-arch--black"><img src="images/hagai.webp" width="720" height="960" alt="חגי ניזרי"></figure>
+    <div class="orca-hero2__media">
+      <div class="orca-hero2__stage">
+        <div class="orca-hero2__label orca-hero2__label--hagai"><b>חגי ניזרי</b><span>בעלים ושותף</span></div>
+        <div class="orca-hero2__edge orca-hero2__edge--hagai" aria-hidden="true"></div>
+        <figure class="orca-hero2__photo orca-hero2__photo--hagai">
+          <img src="images/hagai-hd.webp" alt="חגי ניזרי">
+          <div class="orca-hero2__tint orca-hero2__tint--magenta" aria-hidden="true"></div>
+        </figure>
+        <div class="orca-hero2__edge orca-hero2__edge--jon" aria-hidden="true"></div>
+        <figure class="orca-hero2__photo orca-hero2__photo--jon">
+          <img src="images/jonathan.webp" alt="יהונתן טויטו">
+          <div class="orca-hero2__tint orca-hero2__tint--cyan" aria-hidden="true"></div>
+          <div class="orca-hero2__shade" aria-hidden="true"></div>
+          <div class="orca-hero2__label orca-hero2__label--jon"><b>יהונתן טויטו</b><span>בעלים ושותף</span></div>
+        </figure>
       </div>
-      <p class="orca-hero__names"><span><b>יהונתן טויטו</b><i> · אסטרטגיה ומספרים</i></span><span><b>חגי ניזרי</b><i> · תוכן ושטח</i></span></p>
     </div>
   </div>
-  <!-- the opening video: set data-video to the YouTube embed link and remove hidden -->
+  <!-- the opening video: set data-video to the YouTube embed link -->
   <div class="orca-wrap"><div class="orca-video" data-video="" hidden></div></div>
 </section>
 
