@@ -39,7 +39,8 @@
           "28c54f2e",
           "3a26e45b",
           "366a25f"
-        ]
+        ],
+        "after_revert": true
       }
     ]
   }
