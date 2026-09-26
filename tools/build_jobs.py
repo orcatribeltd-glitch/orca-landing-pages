@@ -16,6 +16,15 @@ from build_legal import CSS as LEGAL_CSS, LINKS, LOGO  # noqa: E402
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'pages')
 APPLY_MAIL = 'orcatribeceo@gmail.com'   # the recruitment inbox: a CV that lands here starts the WhatsApp screening bot
 APPLY_SUBJECT = 'קורות חיים - משרת יוצרי תוכן'
+EDIT_MAIL = 'orcatribeltd@gmail.com'   # NOT the recruitment inbox: a CV there starts the content-creator screening bot
+EDIT_SUBJECT = 'קורות חיים - משרת עורכי וידאו'
+EDIT_ABOUT = 'עריכת סרטונים קצרים לאינסטגרם ולטיקטוק מחומרי הגלם שצוות התוכן מצלם אצל הלקוחות.'
+EDIT_SKILLS = [
+    'ניסיון בעריכת תוכן קצר לרשתות',
+    'שליטה בתוכנת עריכה מקצועית',
+    'חוש לקצב, לכתוביות ולפתיחה שעוצרת את הגלילה',
+    'תיק עבודות',
+]
 
 DOING = [
     ('אפיון בזום', 'מול הלקוח, לפני שכותבים מילה'),
@@ -140,6 +149,14 @@ CSS = LEGAL_CSS + '''
 .jb-post .jb-chips{margin-bottom:28px}
 .orca-legal2 .jb-post .jb-h3{margin-bottom:14px}
 .jb-post .jb-list{margin-bottom:30px}
+.jb-role2{margin-top:clamp(34px,4vw,48px);padding-top:clamp(28px,3.5vw,40px);border-top:1px solid rgba(255,255,255,.12)}
+.orca-legal2 .jb-role2 .jb-role{margin-top:0}
+.jb-role2 .jb-tag{color:#32e9da;border-color:rgba(50,233,218,.45)}
+.orca-legal2 a.jb-btn--cyan{background:#32e9da;color:#001b3f;box-shadow:0 0 28px rgba(50,233,218,.5)}
+.orca-legal2 a.jb-btn--cyan:hover{color:#001b3f;box-shadow:0 0 38px rgba(50,233,218,.7)}
+.jb-btn--cyan svg{stroke:#001b3f}
+.jb-ad{align-items:start}
+@media (min-width:901px){.jb-photo{position:sticky;top:110px}}
 @media (max-width:900px){.jb-ad{grid-template-columns:1fr}.jb-photo{max-width:480px;margin:0 auto;width:100%}}
 @media (max-width:900px){.jb-cols{grid-template-columns:1fr}.jb-steps{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.jb-ex{grid-template-columns:1fr}.jb-steps{grid-template-columns:1fr}.jb-job__top{align-items:flex-start}}
@@ -169,13 +186,15 @@ def build(out):
     examples = '\n'.join('<a class="jb-ex__card" href="%s" target="_blank" rel="noopener"><span class="jb-ex__play">%s</span><span><b>%s</b><span>סרטון לדוגמה · %s</span></span><span class="jb-ex__arrow" aria-hidden="true">↗</span></a>' % (u, PLAY, t, p) for t, p, u in EXAMPLES)
     steps = '\n'.join('<li><span class="num">0%d</span><b>%s</b><span>%s</span></li>' % (i + 1, t, d) for i, (t, d) in enumerate(STEPS))
     mailto = 'mailto:%s?subject=%s' % (APPLY_MAIL, quote(APPLY_SUBJECT))
+    edit_mailto = 'mailto:%s?subject=%s' % (EDIT_MAIL, quote(EDIT_SUBJECT))
+    edit_skills = '\n'.join('<li>%s</li>' % x for x in EDIT_SKILLS)
     html = '''<!doctype html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>אנחנו מגייסים: יוצרי תוכן – אורקה טרייב</title>
-<meta name="description" content="אורקה טרייב מגייסת יוצרי ויוצרות תוכן: כתיבת תסריטים, אפיון מול לקוחות וימי צילום בשטח. משרה מלאה.">
+<title>אנחנו מגייסים: יוצרי תוכן ועורכי וידאו – אורקה טרייב</title>
+<meta name="description" content="אורקה טרייב מגייסת יוצרי תוכן ועורכי וידאו לתוכן ויראלי ברשתות.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap">
@@ -211,6 +230,14 @@ def build(out):
       </ul>
       <a class="jb-btn" href="%(mailto)s">%(i_mail)sשליחת קורות חיים</a>
       <span class="jb-mail">או ישירות למייל <a href="%(mailto)s">%(mail)s</a></span>
+      <div class="jb-role2">
+        <p class="jb-role"><span class="jb-tag">משרה פנויה</span><span>עורכי וידאו</span></p>
+        <p class="jb-about">%(edit_about)s</p>
+        <ul class="jb-list">
+%(edit_skills)s
+        </ul>
+        <a class="jb-btn jb-btn--cyan" href="%(edit_mailto)s">%(i_mail)sשליחת קורות חיים ותיק עבודות</a>
+      </div>
     </article>
   </div>
 </main>
@@ -231,7 +258,7 @@ def build(out):
 </body>
 </html>
 ''' % dict(css=CSS, logo=LOGO, nav=nav, doing=doing, skills=skills, must=must, examples=examples, steps=steps,
-           mailto=mailto, mail=APPLY_MAIL, k_examples=kicker('דוגמאות'), k_process=kicker('תהליך הגיוס'),
+           mailto=mailto, mail=APPLY_MAIL, edit_mailto=edit_mailto, edit_skills=edit_skills, edit_about=EDIT_ABOUT, k_examples=kicker('דוגמאות'), k_process=kicker('תהליך הגיוס'),
            i_clock=ICON['clock'], i_pin=ICON['pin'], i_car=ICON['car'], i_mail=ICON['mail'])
     dest = os.path.join(ROOT, out)
     os.makedirs(dest, exist_ok=True)
