@@ -124,6 +124,7 @@ h_end = svc.index('</p>', h_start) + len('</p>')
 svc = svc[:h_start] + (f'{kicker("02/05 · מה מקבלים", center=True, mb=22)}\n'
                        f'    <h2 style="{H2};margin-bottom:20px">מה כולל תהליך {hl("בניית המותג")} אצלנו</h2>\n'
                        f'    <p style="color:#b9c0d0;font-size:18px;max-width:62ch">ארבעה דברים שעובדים ביחד, תחת קורת גג אחת.</p>') + svc[h_end:]
+svc = re.sub(r'\n\s*<a class="orca-more"[^>]*>.*?</a>', '', svc)
 arts = re.findall(r'\n\s*<article .*?</article>', svc, re.S)
 assert len(arts) == 4, len(arts)
 cards = [
