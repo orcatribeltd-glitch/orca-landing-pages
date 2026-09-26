@@ -70,8 +70,9 @@ CSS = LEGAL_CSS + '''
 @keyframes tyFloat{0%,100%{transform:translateY(-6px)}50%{transform:translateY(8px)}}
 .ty-book{position:relative;width:236px;height:320px;transform:scale(.9) rotateY(22deg) rotateX(4deg);transform-style:preserve-3d;transition:transform 420ms cubic-bezier(.22,.8,.28,1)}
 .ty-card:hover .ty-book{transform:scale(.94) rotateY(8deg) rotateX(2deg)}
-.ty-cover{display:block;height:clamp(236px,26vw,280px);width:auto;max-width:none;filter:drop-shadow(-18px 22px 36px rgba(0,0,0,.6));transform:rotate(-3deg);transition:transform 420ms cubic-bezier(.22,.8,.28,1)}
-.ty-card:hover .ty-cover{transform:rotate(0) scale(1.04)}
+/* the WordPress theme sizes every img (height:auto, max-width:100%); the cover keeps its own size */
+.orca-legal2 img.ty-cover{display:block;height:clamp(236px,26vw,280px) !important;width:auto !important;max-width:none !important;filter:drop-shadow(-18px 22px 36px rgba(0,0,0,.6));transform:rotate(-3deg);transition:transform 420ms cubic-bezier(.22,.8,.28,1)}
+.orca-legal2 .ty-card:hover img.ty-cover{transform:rotate(0) scale(1.04)}
 .ty-sticker{position:absolute;top:20px;right:18px;z-index:2;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#e50088;color:#fff;font-weight:900;font-size:15px;line-height:1;transform:rotate(-7deg);box-shadow:-5px 5px 0 -1px #0a1f3d,-5px 5px 0 0 #32e9da,0 0 24px rgba(229,0,136,.6)}
 .ty-play{position:absolute;left:50%;top:50%;z-index:3;width:74px;height:74px;margin:-37px 0 0 -37px;border-radius:50%;display:grid;place-items:center;background:rgba(0,19,46,.55);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   opacity:0;transform:scale(.8);transition:opacity 220ms,transform 220ms cubic-bezier(.22,.8,.28,1)}
