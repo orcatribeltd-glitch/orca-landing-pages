@@ -63,6 +63,20 @@ STEPS = [
 
 CSS = LEGAL_CSS + '''
 /* job openings page, built by tools/build_jobs.py */
+.jb-hero2{position:relative;text-align:center;padding:clamp(10px,2vw,24px) 0 clamp(34px,5vw,56px)}
+.jb-hero2 .jb-live{margin-bottom:18px}
+.orca-legal2 .jb-hero2 h1{font-size:clamp(46px,8vw,92px);line-height:1}
+.jb-card{position:relative;max-width:1120px;margin:0 auto clamp(40px,6vw,72px);display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(26px,4.5vw,60px);align-items:center;
+  padding:clamp(22px,3.5vw,44px);border-radius:30px;background:rgba(10,31,61,.72);border:1px solid rgba(255,255,255,.1);box-shadow:-12px 12px 0 -1px #001b3f,-12px 12px 0 0 rgba(229,0,136,.38)}
+.jb-card--cyan{box-shadow:12px 12px 0 -1px #001b3f,12px 12px 0 0 rgba(50,233,218,.35)}
+.jb-card--flip .jb-photo{order:2}
+.jb-card--cyan .jb-tag{color:#32e9da;border-color:rgba(50,233,218,.45)}
+.orca-legal2 a.jb-btn{white-space:nowrap}
+@media (max-width:420px){.orca-legal2 a.jb-btn{padding:0 22px;font-size:16px;gap:8px}}
+.jb-card .jb-photo{box-shadow:0 24px 60px rgba(0,0,0,.45)}
+.jb-card:last-child{margin-bottom:0}
+@media (max-width:900px){.jb-card{grid-template-columns:1fr}.jb-card--flip .jb-photo{order:0}}
+
 .jb-hero{position:relative;overflow:hidden;text-align:center;padding:clamp(60px,9vw,112px) clamp(20px,5vw,64px) clamp(34px,5vw,56px)}
 .jb-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(620px 360px at 50% 0%,rgba(50,233,218,.14),transparent 70%),radial-gradient(520px 320px at 10% 100%,rgba(229,0,136,.10),transparent 70%);pointer-events:none}
 .jb-live{position:relative;display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;padding:8px 16px;border-radius:999px;border:1px solid rgba(50,233,218,.35);color:#fff;font-weight:700;font-size:15px}
@@ -156,7 +170,7 @@ CSS = LEGAL_CSS + '''
 .orca-legal2 a.jb-btn--cyan:hover{color:#001b3f;box-shadow:0 0 38px rgba(50,233,218,.7)}
 .jb-btn--cyan svg{stroke:#001b3f}
 .jb-ad{align-items:start}
-@media (min-width:901px){.jb-photo{position:sticky;top:110px}}
+
 @media (max-width:900px){.jb-ad{grid-template-columns:1fr}.jb-photo{max-width:480px;margin:0 auto;width:100%}}
 @media (max-width:900px){.jb-cols{grid-template-columns:1fr}.jb-steps{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.jb-ex{grid-template-columns:1fr}.jb-steps{grid-template-columns:1fr}.jb-job__top{align-items:flex-start}}
@@ -210,14 +224,17 @@ def build(out):
   </div>
 </header>
 <main class="jb-main">
-  <div class="jb-ad">
+  <section class="jb-hero2">
+    <span class="jb-live"><i aria-hidden="true"></i>2 משרות פתוחות</span>
+    <h1>אנחנו <span class="ol-hl"><span aria-hidden="true">מגייסים</span><span>מגייסים</span></span></h1>
+  </section>
+
+  <article class="jb-card" aria-labelledby="jb-t1">
     <figure class="jb-photo">
-      <img src="images/creator-on-set.webp" alt="יוצר תוכן מצלם בעל עסק בטלפון, ביום צילום בשטח" width="880" height="1100">
-      <figcaption><span class="jb-live"><i aria-hidden="true"></i>משרה פתוחה</span></figcaption>
+      <img src="images/creator-on-set.webp" alt="יוצר תוכן מצלם בעלת עסק בטלפון, ביום צילום בשטח" width="880" height="1100" loading="lazy">
     </figure>
-    <article class="jb-post" aria-labelledby="jb-title">
-      <h1>אנחנו <span class="ol-hl"><span aria-hidden="true">מגייסים</span><span>מגייסים</span></span></h1>
-      <p class="jb-role"><span class="jb-tag">משרה פנויה</span><span id="jb-title">יוצרי תוכן</span></p>
+    <div class="jb-post">
+      <p class="jb-role"><span class="jb-tag">משרה פנויה</span><span id="jb-t1">יוצרי תוכן</span></p>
       <p class="jb-about">כתיבת תסריטים לעסקים שרוצים להתפרסם באינסטגרם ובטיקטוק, אפיון מול הלקוח בזום, ו<span class="jb-mark">ימי צילום בשטח</span> שבהם מצלמים את הלקוח ומובילים אותו מול המצלמה.</p>
       <div class="jb-chips">
         <span class="jb-chip">%(i_clock)sמשרה מלאה</span>
@@ -230,16 +247,23 @@ def build(out):
       </ul>
       <a class="jb-btn" href="%(mailto)s">%(i_mail)sשליחת קורות חיים</a>
       <span class="jb-mail">או ישירות למייל <a href="%(mailto)s">%(mail)s</a></span>
-      <div class="jb-role2">
-        <p class="jb-role"><span class="jb-tag">משרה פנויה</span><span>עורכי וידאו</span></p>
-        <p class="jb-about">%(edit_about)s</p>
-        <ul class="jb-list">
+    </div>
+  </article>
+
+  <article class="jb-card jb-card--flip jb-card--cyan" aria-labelledby="jb-t2">
+    <figure class="jb-photo">
+      <img src="images/editor-at-desk.webp" alt="עורך וידאו מול מסך עם ציר עריכה של סרטון קצר" width="880" height="1100" loading="lazy">
+    </figure>
+    <div class="jb-post">
+      <p class="jb-role"><span class="jb-tag">משרה פנויה</span><span id="jb-t2">עורכי וידאו</span></p>
+      <p class="jb-about">%(edit_about)s</p>
+      <h2 class="jb-h3"><span class="ol-dash" aria-hidden="true"><i></i><i></i></span>מה מחפשים</h2>
+      <ul class="jb-list">
 %(edit_skills)s
-        </ul>
-        <a class="jb-btn jb-btn--cyan" href="%(edit_mailto)s">%(i_mail)sשליחת קורות חיים ותיק עבודות</a>
-      </div>
-    </article>
-  </div>
+      </ul>
+      <a class="jb-btn jb-btn--cyan" href="%(edit_mailto)s">%(i_mail)sשליחת קורות חיים ותיק עבודות</a>
+    </div>
+  </article>
 </main>
 
 <footer class="ol-footer">
