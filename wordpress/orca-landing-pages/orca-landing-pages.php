@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.0
+ * Version:     1.12.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.0';
+    const VERSION     = '1.12.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1577,8 +1577,8 @@ final class Orca_Landing_Pages
                 $list = static function ($v) use ($allowed) { return array_values(array_intersect(array_filter(array_map('trim', explode(',', (string) $v))), $allowed)); };
                 $pid     = (int) $req->get_param('post');
                 $webhook = (string) $req->get_param('webhook');
-                if ($webhook !== '' && !preg_match('#^https://hooks\.zapier\.com/hooks/catch/[0-9]+/[a-z0-9]+/?$#i', $webhook)) {
-                    return new WP_REST_Response(['ok' => false, 'error' => 'webhook must be a Zapier catch hook'], 400);
+                if ($webhook !== '' && !preg_match('#^https://(hooks\.zapier\.com/hooks/catch/[0-9]+/[a-z0-9]+|hook\.[a-z0-9-]+\.make\.com/[a-z0-9]+)/?$#i', $webhook)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'webhook must be a Zapier catch hook or a Make webhook'], 400);
                 }
                 if ($pid <= 0) {
                     return new WP_REST_Response(['ok' => false, 'error' => 'post required'], 400);
