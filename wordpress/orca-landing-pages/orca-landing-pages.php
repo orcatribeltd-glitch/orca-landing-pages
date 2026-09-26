@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.6
+ * Version:     1.12.7
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.6';
+    const VERSION     = '1.12.7';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -981,6 +981,11 @@ final class Orca_Landing_Pages
                         if ($type !== '' && ($f['field_type'] ?? 'text') !== $type) {
                             $changed[] = ($f['field_type'] ?? 'text') . ' → ' . $type;
                             $f['field_type'] = $type;
+                        }
+                        if ($type === 'acceptance' && trim((string) ($f['acceptance_text'] ?? '')) === '' && trim((string) ($f['field_options'] ?? '')) !== '') {
+                            // a checkbox keeps its wording in field_options; an acceptance field reads acceptance_text, so carry the text over
+                            $f['acceptance_text'] = trim(strtok((string) $f['field_options'], "\n"));
+                            $changed[] = 'acceptance_text ← field_options';
                         }
                         if ($required !== null && (($f['required'] ?? '') === 'true') !== $required) {
                             // Elementor stores the switch as the string 'true'; anything else means optional
