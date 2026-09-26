@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.8
+ * Version:     1.12.9
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.8';
+    const VERSION     = '1.12.9';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1037,6 +1037,12 @@ final class Orca_Landing_Pages
                     if ($redirect !== '') {
                         // where the visitor lands after a successful send (the 'redirect' action must be in the list)
                         $el['settings']['redirect_to'] = $redirect;
+                        // a leftover dynamic tag on the same setting (an "internal url" to a page that no longer exists) would
+                        // override the plain address at submit time, so the plain address wins
+                        if (isset($el['settings']['__dynamic__']['redirect_to'])) {
+                            unset($el['settings']['__dynamic__']['redirect_to']);
+                            if (empty($el['settings']['__dynamic__'])) { unset($el['settings']['__dynamic__']); }
+                        }
                     }
                     if ($form_name !== '') {
                         // the form's name travels with every submission, so a webhook can tell which page it came from
