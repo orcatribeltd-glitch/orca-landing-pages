@@ -202,7 +202,11 @@ faq = [
     ('אתם עובדים עם עסקים מכל הארץ?', 'כן. אנחנו עובדים עם עסקים מכל הארץ, ומגיעים לצלם אצלכם.'),
     ('אפשר לשלב גם קמפיינים ממומנים?', 'כן. אותם סרטונים עובדים גם כמודעות, ואנחנו מנהלים גם את הקמפיינים.'),
 ]
-details = '\n'.join(f'      <details><summary>{q}</summary><p>{a}</p></details>' for q, a in faq)
+FAQ_LINKS = {'אפשר לשלב גם קמפיינים ממומנים?': ('https://www.orcatribe.co.il/ניהול-קמפיינים/', 'לכל הפרטים על ניהול קמפיינים ←')}
+details = '\n'.join(
+    f'      <details><summary>{q}</summary><p>{a}'
+    + (f' <a href="{FAQ_LINKS[q][0]}" style="color:#32e9da;font-weight:700">{FAQ_LINKS[q][1]}</a>' if q in FAQ_LINKS else '')
+    + '</p></details>' for q, a in faq)
 faq_html = f'''<section id="faq" data-screen-label="FAQ" style="position:relative;background:#00132e;padding:clamp(72px,8vw,112px) clamp(24px,5vw,64px)">
   <div style="position:relative;max-width:860px;margin:0 auto;display:flex;flex-direction:column">
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:40px">
