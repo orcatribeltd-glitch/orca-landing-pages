@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.2
+ * Version:     1.12.3
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.2';
+    const VERSION     = '1.12.3';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1025,7 +1025,7 @@ final class Orca_Landing_Pages
                     }
                     if ($advanced !== null) {
                         // Elementor's "advanced data": the webhook gets form name, every field with its id, and meta (page url, date, ip)
-                        $el['settings']['webhooks_advanced_data'] = $advanced ? 'true' : '';
+                        $el['settings']['webhooks_advanced_data'] = $advanced ? 'yes' : ''; // Elementor's switcher stores 'yes', anything else counts as off
                     }
                     $report[] = ['form' => $el['id'] ?? '?', 'before' => $before, 'after' => $after, 'webhook_set' => $webhook !== '', 'advanced' => $advanced];
                 }
