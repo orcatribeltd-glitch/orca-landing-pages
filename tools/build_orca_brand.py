@@ -105,7 +105,7 @@ hero = hero.replace('src="images/', f'src="{IMG}')
 # ---------- 2. what is brand building ----------
 what = f'''<section id="what" data-screen-label="What is brand building" style="position:relative;background:#00132e;padding:clamp(72px,8vw,112px) clamp(24px,5vw,64px)">
   <div style="position:relative;max-width:780px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center">
-    {kicker('01/05 · מה זה בכלל', center=True)}
+    {kicker('בניית מותג בשפה פשוטה', center=True)}
     <h2 style="{H2};margin-bottom:28px">מה זה בעצם {hl('בניית מותג')}?</h2>
     <p style="{P};margin-bottom:14px">בניית מותג היא כל מה שגורם לאנשים לזהות את העסק שלך, לזכור אותו ולסמוך עליו, עוד לפני שהם דיברו איתך. לוגו וצבעים הם רק החלק הקטן.</p>
     <p style="{P};margin-bottom:14px">היום מותג נבנה ברשתות: בסרטונים שאנשים רואים, בתוכן שהם שומרים ומשתפים, ובפנים שהם מתחילים להכיר.</p>
@@ -121,7 +121,7 @@ svc = svc.replace('id="services"', 'id="includes"').replace('data-screen-label="
 svc = svc.replace(' id="services-grid"', '').replace('background:#00132e;padding', 'background:#001b3f;padding')
 h_start = svc.index('<span style="display:inline-flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:22px">')
 h_end = svc.index('</p>', h_start) + len('</p>')
-svc = svc[:h_start] + (f'{kicker("02/05 · מה מקבלים", center=True, mb=22)}\n'
+svc = svc[:h_start] + (f'{kicker("מה מקבלים", center=True, mb=22)}\n'
                        f'    <h2 style="{H2};margin-bottom:20px">מה כולל תהליך {hl("בניית המותג")} אצלנו</h2>\n'
                        f'    <p style="color:#b9c0d0;font-size:18px;max-width:62ch">ארבעה דברים שעובדים ביחד, תחת קורת גג אחת.</p>') + svc[h_end:]
 svc = re.sub(r'\n\s*<a class="orca-more"[^>]*>.*?</a>', '', svc)
@@ -152,7 +152,7 @@ assert '<!--olp:form:1-->' in contact
 why = f'''<section id="why" data-screen-label="Why video" style="position:relative;overflow:hidden;padding:clamp(72px,8vw,112px) clamp(24px,5vw,64px)">
   <div style="position:absolute;inset:0;background:radial-gradient(620px 420px at 85% 40%,rgba(229,0,136,.10),transparent 70%);pointer-events:none"></div>
   <div class="orca-why" style="position:relative;max-width:780px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center">
-    {kicker('03/05 · למה סרטונים', center=True)}
+    {kicker('למה דווקא סרטונים', center=True)}
     <h2 style="{H2};margin-bottom:28px">למה סרטונים בונים מותג {hl('מהר יותר')} מכל דבר אחר</h2>
     <p style="{P}">בסרטון של דקה אנשים שומעים את הקול שלך, רואים איך אתה מדבר ומבינים מה אתה יודע. אחרי כמה סרטונים הם מרגישים שהם כבר מכירים אותך.</p>
     <p style="color:#fff;font-size:clamp(19px,1.9vw,23px);font-weight:700;line-height:1.5;text-wrap:balance">וככה השיחה הראשונה איתם היא כבר ״מתי מתחילים״, ולא ״כמה זה עולה״.</p>
@@ -179,7 +179,7 @@ process = f'''<section id="process" data-screen-label="Process" style="position:
   <div style="position:absolute;inset:0;background:radial-gradient(620px 460px at 90% 10%,rgba(50,233,218,.10),transparent 70%);pointer-events:none"></div>
   <div style="position:relative;max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(40px,6vw,88px)">
     <div class="dc-sticky" style="flex:1 1 320px;min-width:0;position:sticky;top:120px;display:flex;flex-direction:column;align-items:flex-start">
-      {kicker('04/05 · התהליך')}
+      {kicker('התהליך')}
       <h2 style="{H2};margin-bottom:32px">איך נראה {hl('התהליך')}</h2>
       {btn('dcs19', '#00132e')}
     </div>
@@ -206,7 +206,7 @@ details = '\n'.join(f'      <details><summary>{q}</summary><p>{a}</p></details>'
 faq_html = f'''<section id="faq" data-screen-label="FAQ" style="position:relative;background:#00132e;padding:clamp(72px,8vw,112px) clamp(24px,5vw,64px)">
   <div style="position:relative;max-width:860px;margin:0 auto;display:flex;flex-direction:column">
     <div style="display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:40px">
-      {kicker('05/05 · שאלות נפוצות', center=True)}
+      {kicker('שאלות נפוצות', center=True)}
       <h2 style="{H2}">שאלות נפוצות על {hl('בניית מותג')}</h2>
     </div>
     <div class="orca-faq">
