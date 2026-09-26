@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.1
+ * Version:     1.12.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.1';
+    const VERSION     = '1.12.2';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -141,6 +141,12 @@ final class Orca_Landing_Pages
         if (get_filesystem_method() !== 'direct') {
             return 'newer ' . $info['version'] . ' available, filesystem not direct — update from the plugins screen';
         }
+        // one upgrade at a time: a second refresh arriving mid-upgrade (GitHub's push hook and a manual
+        // call, say) used to find the plugin folder half replaced and WordPress switched the plugin off
+        if (get_transient('olp_self_update_lock')) {
+            return 'newer ' . $info['version'] . ' available, an update is already running';
+        }
+        set_transient('olp_self_update_lock', gmdate('c'), 3 * MINUTE_IN_SECONDS);
         require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
         delete_site_transient('update_plugins');
@@ -153,6 +159,7 @@ final class Orca_Landing_Pages
         if ($was_active && !is_plugin_active($basename)) {
             activate_plugin($basename);
         }
+        delete_transient('olp_self_update_lock');
         $msg = ($ok === true ? 'updated to ' . $info['version'] : 'update failed: ' . implode(' | ', array_map('strval', (array) $skin->get_errors()->get_error_messages())));
         update_option('olp_last_self_update', gmdate('c') . ' ' . $msg, false);
         return $msg;
