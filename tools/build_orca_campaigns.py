@@ -126,16 +126,16 @@ svc = svc[:h_start] + (f'{kicker("הפלטפורמות", center=True, mb=22)}\n'
 svc = re.sub(r'\n\s*<a class="orca-more"[^>]*>.*?</a>', '', svc)
 arts = re.findall(r'\n\s*<article .*?</article>', svc, re.S)
 assert len(arts) == 4, len(arts)
-# (title, text, icon) — the icon replaces the home card's drawing: target, camera, search, note
+# (title, text, icon) — each platform's own logo (Tabler brand icons, outline, MIT) in place of the home card's drawing (Jonathan, 27/09/2026: 'the icons aren't related')
 cards = [
     ('ניהול קמפיינים בפייסבוק', 'קמפיינים לפניות ולמכירות, עם טפסים שנפתחים בתוך פייסבוק, כך שקל מאוד להשאיר פרטים.',
-     '<circle cx="12" cy="12" r="8.5"></circle><circle cx="12" cy="12" r="4.5"></circle><circle cx="12" cy="12" r="1"></circle>'),
+     '<path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"></path>'),
     ('פרסום ממומן באינסטגרם', 'מודעות וידאו וסטוריז שנראות כמו תוכן רגיל, ומגיעות לקהל שכבר גולל בפיד.',
-     '<rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17" cy="7" r=".8"></circle>'),
+     '<path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4l0 -8"></path><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path><path d="M16.5 7.5v.01"></path>'),
     ('ניהול קמפיינים בגוגל', 'מגיעים לאנשים בדיוק ברגע שהם מחפשים את השירות שלך, כשהם כבר מוכנים לקנות.',
-     '<circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.2-4.2"></path>'),
+     '<path d="M20.945 11a9 9 0 1 1 -3.284 -5.997l-2.655 2.392a5.5 5.5 0 1 0 2.119 6.605h-4.125v-3h7.945"></path>'),
     ('קמפיין ממומן בטיקטוק', 'סרטונים קצרים שנראים כמו טיקטוק ולא כמו פרסומת, ומגיעים לקהל חדש לגמרי.',
-     '<path d="M9 18V5l10-2v13"></path><circle cx="6.5" cy="18" r="2.5"></circle><circle cx="16.5" cy="16" r="2.5"></circle>'),
+     '<path d="M21 7.917v4.034a9.948 9.948 0 0 1 -5 -1.951v4.5a6.5 6.5 0 1 1 -8 -6.326v4.326a2.5 2.5 0 1 0 4 2v-11.5h4.083a6.005 6.005 0 0 0 4.917 4.917"></path>'),
 ]
 new_arts = []
 for art, (title, text, icon) in zip(arts, cards):
