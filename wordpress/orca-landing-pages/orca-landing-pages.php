@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.7
+ * Version:     1.12.8
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.7';
+    const VERSION     = '1.12.8';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1016,7 +1016,7 @@ final class Orca_Landing_Pages
      * remove and/or add after-submit actions, and optionally set the webhook
      * URL. Nothing else in the form is touched.
      */
-    public static function set_form_actions(int $pid, array $remove, array $add, string $webhook = '', ?bool $advanced = null, ?array $metadata = null, string $form_name = ''): array
+    public static function set_form_actions(int $pid, array $remove, array $add, string $webhook = '', ?bool $advanced = null, ?array $metadata = null, string $form_name = '', string $redirect = ''): array
     {
         $json = get_post_meta($pid, '_elementor_data', true);
         $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
@@ -1024,7 +1024,7 @@ final class Orca_Landing_Pages
             return ['error' => 'no elementor data'];
         }
         $report = [];
-        $walk = function (array &$els) use (&$walk, $remove, $add, $webhook, $advanced, $metadata, $form_name, &$report) {
+        $walk = function (array &$els) use (&$walk, $remove, $add, $webhook, $advanced, $metadata, $form_name, $redirect, &$report) {
             foreach ($els as &$el) {
                 if (!is_array($el)) { continue; }
                 if (($el['widgetType'] ?? '') === 'form') {
@@ -1033,6 +1033,10 @@ final class Orca_Landing_Pages
                     $el['settings']['submit_actions'] = $after;
                     if ($webhook !== '') {
                         $el['settings']['webhooks'] = $webhook;
+                    }
+                    if ($redirect !== '') {
+                        // where the visitor lands after a successful send (the 'redirect' action must be in the list)
+                        $el['settings']['redirect_to'] = $redirect;
                     }
                     if ($form_name !== '') {
                         // the form's name travels with every submission, so a webhook can tell which page it came from
@@ -1046,7 +1050,7 @@ final class Orca_Landing_Pages
                         // Elementor's "advanced data": the webhook gets form name, every field with its id, and meta (page url, date, ip)
                         $el['settings']['webhooks_advanced_data'] = $advanced ? 'yes' : ''; // Elementor's switcher stores 'yes', anything else counts as off
                     }
-                    $report[] = ['form' => $el['id'] ?? '?', 'before' => $before, 'after' => $after, 'webhook_set' => $webhook !== '', 'advanced' => $advanced, 'metadata' => $metadata, 'form_name' => $form_name];
+                    $report[] = ['form' => $el['id'] ?? '?', 'before' => $before, 'after' => $after, 'webhook_set' => $webhook !== '', 'advanced' => $advanced, 'metadata' => $metadata, 'form_name' => $form_name, 'redirect' => $redirect];
                 }
                 if (!empty($el['elements']) && is_array($el['elements'])) { $walk($el['elements']); }
             }
@@ -1613,9 +1617,13 @@ final class Orca_Landing_Pages
                 }
                 $adv = $req->get_param('advanced');
                 $adv = $adv === null || $adv === '' ? null : in_array((string) $adv, ['1', 'true', 'yes'], true);
+                $redirect = esc_url_raw((string) $req->get_param('redirect'));
+                if ($redirect !== '' && !preg_match('#^https://#', $redirect)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'redirect must be an https url'], 400);
+                }
                 $meta = $req->get_param('metadata');
                 $meta = $meta === null ? null : array_values(array_intersect(array_filter(array_map('trim', explode(',', (string) $meta))), ['date', 'time', 'page_url', 'user_agent', 'remote_ip', 'credit']));
-                return new WP_REST_Response(['ok' => true] + self::set_form_actions($pid, $list($req->get_param('remove')), $list($req->get_param('add')), $webhook, $adv, $meta, sanitize_text_field((string) $req->get_param('form_name'))), 200);
+                return new WP_REST_Response(['ok' => true] + self::set_form_actions($pid, $list($req->get_param('remove')), $list($req->get_param('add')), $webhook, $adv, $meta, sanitize_text_field((string) $req->get_param('form_name')), $redirect), 200);
             },
         ]);
         register_rest_route('olp/v1', '/form-info', [
