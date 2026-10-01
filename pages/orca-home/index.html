@@ -582,16 +582,46 @@ html,body{overflow-x:clip !important;max-width:100%}
 })();
 </script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://www.orcatribe.co.il/#business", "name": "אורקה טרייב", "alternateName": "Orca Tribe", "legalName": "אורקה טרייב בע״מ", "description": "סוכנות שיווק דיגיטלי לעסקים: כתיבה והפקת תוכן ויראלי, קמפיינים ממומנים ברשתות החברתיות, אסטרטגיה וייעוץ עסקי ובניית פרסונל ברנד.", "url": "https://www.orcatribe.co.il/", "logo": "https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png", "image": "https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png", "email": "orcatribeltd@gmail.com", "address": {"@type": "PostalAddress", "streetAddress": "אברהם פצ׳ורניק 17", "addressLocality": "נס ציונה", "addressCountry": "IL"}, "areaServed": {"@type": "Country", "name": "ישראל"}, "founder": [{"@type": "Person", "name": "יהונתן טויטו", "sameAs": ["https://www.instagram.com/jonathan_twito/"]}, {"@type": "Person", "name": "חגי ניזרי"}], "knowsAbout": ["שיווק דיגיטלי", "תוכן ויראלי", "קמפיינים ממומנים", "פרסום בפייסבוק ובאינסטגרם", "מיתוג אישי", "ייעוץ שיווקי"], "hasOfferCatalog": {"@type": "OfferCatalog", "name": "שירותי אורקה טרייב", "itemListElement": [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": "כתיבה והפקת תוכן ויראלי", "description": "סרטונים לרשתות החברתיות שמטרתם ויראליות והמון עוקבים חדשים."}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "קידום ממומן", "description": "קמפיינים ממומנים ברשתות החברתיות שמביאים פניות, עם דוח חודשי של עלות לליד."}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "אסטרטגיה וייעוץ עסקי", "description": "ניתוח המספרים של העסק ובניית תוכנית שיווק שמתאימה לתקציב."}}, {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "בניית פרסונל ברנד", "description": "הפיכת בעל העסק לפנים של המותג: סיפור, סגנון ותוכן."}}]}, "sameAs": ["https://www.instagram.com/jonathan_twito/"]}</script>
-<dialog class="olg-modal" aria-label="צפייה בהדרכה" style="width:min(960px,calc(100vw - 32px));max-width:none;padding:0;border:1px solid rgba(50,233,218,.35);border-radius:22px;background:#00132e;color:#fff;box-shadow:0 30px 80px rgba(0,0,0,.6)">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px">
-    <strong class="olg-title" style="font-size:18px;font-weight:800"></strong>
-    <button type="button" data-guide-close title="סוגר את חלון ההדרכה ועוצר את הסרטון" style="min-width:44px;min-height:44px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:transparent;color:#fff;font-size:22px;cursor:pointer">✕</button>
+<dialog class="olg-modal" aria-labelledby="olg-title">
+  <div class="olg-bar">
+    <div class="olg-head">
+      <span class="olg-kicker"><span class="olg-dot"></span>הדרכה במתנה</span>
+      <strong class="olg-title" id="olg-title"></strong>
+    </div>
+    <button type="button" class="olg-x" data-guide-close aria-label="סגירת ההדרכה" title="סוגר את חלון ההדרכה ועוצר את הסרטון">✕</button>
   </div>
-  <div class="olg-frame" style="position:relative;aspect-ratio:16/9;background:#000"></div>
+  <div class="olg-frame"></div>
+  <div class="olg-foot">
+    <p class="olg-pitch"><b>רוצה שנבנה את זה גם אצלך בעסק?</b><span>השאר פרטים ונחזור אליך לשיחת ייעוץ ללא עלות.</span></p>
+    <a class="olg-cta" href="#contact" data-guide-contact title="סוגר את ההדרכה ומוריד אותך לטופס השארת הפרטים בתחתית הדף">להשארת פרטים לשיחת ייעוץ</a>
+  </div>
 </dialog>
-<style>.olg-modal::backdrop{background:rgba(0,10,25,.82)}</style>
+<style>
+.olg-modal{width:min(1040px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 32px);padding:0;border:1px solid rgba(50,233,218,.3);border-radius:24px;background:linear-gradient(180deg,#0a2a52,#00132e 70%);color:#fff;box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 48px rgba(50,233,218,.18),0 0 90px rgba(229,0,136,.12);overflow:auto;direction:rtl;font-family:inherit}
+.olg-modal,.olg-modal *{box-sizing:border-box}
+.olg-modal::backdrop{background:rgba(0,10,26,.84);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.olg-modal[open]{animation:olgPop 280ms cubic-bezier(.22,.8,.28,1)}
+@keyframes olgPop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.olg-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px}
+.olg-head{display:flex;flex-direction:column;gap:6px;min-width:0}
+.olg-kicker{display:inline-flex;align-items:center;gap:8px;color:#32e9da;font-size:13px;font-weight:700}
+.olg-dot{width:7px;height:7px;border-radius:50%;background:#e50088;box-shadow:0 0 8px #e50088;animation:olgBlink 1.6s ease-in-out infinite}
+@keyframes olgBlink{50%{opacity:.35}}
+.olg-title{font-size:clamp(18px,2.2vw,24px);font-weight:900;line-height:1.25}
+.olg-x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:#fff;font-size:18px;cursor:pointer;transition:border-color 200ms,box-shadow 200ms}
+.olg-x:hover{border-color:#e50088;box-shadow:0 0 16px rgba(229,0,136,.35)}
+.olg-frame{position:relative;aspect-ratio:16/9;background:#000;width:min(calc(100% - 40px),calc((100dvh - 250px) * 16 / 9));margin:0 auto;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+.olg-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.olg-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px}
+.olg-pitch{display:flex;flex-direction:column;gap:4px;margin:0;color:#b9c0d0;font-size:16px}
+.olg-pitch b{color:#fff;font-size:18px;font-weight:800}
+.olg-cta{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 30px;border-radius:999px;background:#e50088;color:#fff;font-weight:700;font-size:17px;text-decoration:none;box-shadow:-6px 6px 0 -1px #00132e,-6px 6px 0 0 #32e9da,0 0 24px rgba(229,0,136,.45);transition:box-shadow 200ms}
+.olg-cta:hover{box-shadow:-3px 3px 0 -1px #00132e,-3px 3px 0 0 #32e9da,0 0 32px rgba(229,0,136,.6)}
+@media (max-width:640px){.olg-bar{padding:14px 16px}.olg-frame{width:calc(100% - 24px)}.olg-foot{padding:16px;flex-direction:column;align-items:stretch;text-align:center}.olg-cta{padding:0 20px}}
+@media (prefers-reduced-motion:reduce){.olg-modal[open],.olg-dot{animation:none}}
+</style>
 <script>
-/* gift guides: the button opens the video in a dialog on the page; without JS the link opens the video page */
+/* gift guides: the button opens the video in a branded dialog; under it a button back to the contact form. Without JS the link opens the video page */
 (function(){
   var modal=document.querySelector('.olg-modal'); if(!modal||!modal.showModal) return;
   var frame=modal.querySelector('.olg-frame'), title=modal.querySelector('.olg-title');
@@ -601,8 +631,14 @@ html,body{overflow-x:clip !important;max-width:100%}
     if(a){
       e.preventDefault();
       var t=a.getAttribute('data-guide-title'); title.textContent=t;
-      frame.innerHTML='<iframe src="https://www.you'+'tube-nocookie.com/embed/'+encodeURIComponent(a.getAttribute('data-guide-yt'))+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="'+t.replace(/"/g,'&quot;')+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+      frame.innerHTML='<iframe src="https://www.you'+'tube-nocookie.com/embed/'+encodeURIComponent(a.getAttribute('data-guide-yt'))+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="'+t.replace(/"/g,'&quot;')+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
       modal.showModal(); return;
+    }
+    if(e.target.closest('[data-guide-contact]')){
+      e.preventDefault(); close();
+      var c=document.getElementById('contact'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'});
+      var f=c&&c.querySelector('input:not([type=hidden])'); if(f) setTimeout(function(){f.focus({preventScroll:true});},700);
+      return;
     }
     if(e.target===modal||e.target.closest('[data-guide-close]')) close();
   });
