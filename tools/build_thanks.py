@@ -227,7 +227,7 @@ def build(out, yt):
     frame.innerHTML='';
     if(id){
       var f=document.createElement('iframe');
-      f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      f.src='https://www.you'+'tube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
       f.title=card.getAttribute('data-title');
       f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
       f.allowFullscreen=true;

@@ -552,12 +552,12 @@ html,body{overflow-x:clip !important;max-width:100%}
 })();
 </script>
 <script>
-/* testimonial videos: YouTube's thumbnail until clicked, the player loads only then (keeps the page fast) */
+/* testimonial videos: the video thumbnail until clicked, the player loads only then (keeps the page fast) */
 (function(){
   function play(box){
     if(box.getAttribute('data-playing')) return;
     var id=box.getAttribute('data-yt'); box.setAttribute('data-playing','1');
-    box.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="סרטון עדות" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+    box.innerHTML='<iframe src="https://www.you'+'tube-nocookie.com/embed/'+id+'?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="סרטון עדות" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
   }
   document.addEventListener('click',function(e){var b=e.target.closest('[data-yt]'); if(b) play(b);});
   document.addEventListener('keydown',function(e){if(e.key!=='Enter'&&e.key!==' ')return; var b=e.target.closest&&e.target.closest('[data-yt]'); if(b){e.preventDefault(); play(b);}});
@@ -591,7 +591,7 @@ html,body{overflow-x:clip !important;max-width:100%}
 </dialog>
 <style>.olg-modal::backdrop{background:rgba(0,10,25,.82)}</style>
 <script>
-/* gift guides: the button opens the YouTube video in a dialog on the page; without JS the link opens YouTube */
+/* gift guides: the button opens the video in a dialog on the page; without JS the link opens the video page */
 (function(){
   var modal=document.querySelector('.olg-modal'); if(!modal||!modal.showModal) return;
   var frame=modal.querySelector('.olg-frame'), title=modal.querySelector('.olg-title');
@@ -601,7 +601,7 @@ html,body{overflow-x:clip !important;max-width:100%}
     if(a){
       e.preventDefault();
       var t=a.getAttribute('data-guide-title'); title.textContent=t;
-      frame.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(a.getAttribute('data-guide-yt'))+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="'+t.replace(/"/g,'&quot;')+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+      frame.innerHTML='<iframe src="https://www.you'+'tube-nocookie.com/embed/'+encodeURIComponent(a.getAttribute('data-guide-yt'))+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="'+t.replace(/"/g,'&quot;')+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
       modal.showModal(); return;
     }
     if(e.target===modal||e.target.closest('[data-guide-close]')) close();
