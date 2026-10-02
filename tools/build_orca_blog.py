@@ -81,6 +81,17 @@ BLOG_CSS = '''
 .olp-article-body th,.olp-article-body td{border-bottom:1px solid rgba(255,255,255,.12);padding:10px 12px;text-align:right}
 .olp-article-body th{color:#fff}
 .olp-article-body img{max-width:100%;height:auto;border-radius:18px}
+.olp-article-body .wp-block-media-text,.olp-article-body .olp-side{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,36px);align-items:center;margin:40px 0}
+.olp-article-body .wp-block-media-text.has-media-on-the-right,.olp-article-body .olp-side.olp-side-flip{direction:ltr}
+.olp-article-body .wp-block-media-text.has-media-on-the-right>*,.olp-article-body .olp-side.olp-side-flip>*{direction:rtl}
+.olp-article-body .wp-block-media-text__media,.olp-article-body .olp-side figure{margin:0}
+.olp-article-body .wp-block-media-text__media img,.olp-article-body .olp-side img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:22px;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 48px rgba(0,0,0,.35),0 0 32px rgba(50,233,218,.10)}
+.olp-article-body .wp-block-media-text__content{padding:0 !important}
+.olp-article-body .wp-block-media-text__content>*+*{margin-top:14px}
+.olp-article-body figure.wp-block-image{margin:36px 0}
+.olp-article-body figure.wp-block-image img{border-radius:22px}
+.olp-article-body figcaption{color:#8f98ab;font-size:14px;text-align:center;margin-top:10px}
+@media (max-width:760px){.olp-article-body .wp-block-media-text,.olp-article-body .olp-side{grid-template-columns:1fr}.olp-article-body .wp-block-media-text__media,.olp-article-body .olp-side figure{order:-1}}
 .olp-back{display:inline-flex;align-items:center;min-height:44px;margin-top:40px;color:#32e9da;font-weight:700}
 .olp-posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:24px}
 .olp-post-card{display:flex;flex-direction:column;gap:12px;padding:28px;border-radius:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#fff;transition:border-color 200ms,transform 200ms}
