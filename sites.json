@@ -70,6 +70,12 @@
       "text": "מדיניות פרטיות",
       "url": "https://www.orcatribe.co.il/מדיניות-פרטיות/",
       "color": "#32e9da"
+    },
+    "blog": {
+      "post_page": "orca-blog-post",
+      "index_page": "orca-blog",
+      "category": "blog",
+      "form_page": 114
     }
   }
 }

@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.12.9
+ * Version:     1.13.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,11 +17,15 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.12.9';
+    const VERSION     = '1.13.0';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
     const REF_OPTION  = 'olp_git_ref';   // commit SHA from the last push webhook, else the branch
+    const BLOG_OPTION = 'olp_blog';      // sites.json "blog": which repo pages dress the posts and the blog index
+
+    /** 'post' or 'index' while blog-template.php is rendering, else '' */
+    public static $blog_mode = '';
 
     public static function defaults(): array
     {
@@ -62,6 +66,7 @@ final class Orca_Landing_Pages
         add_filter('pre_set_site_transient_update_plugins', [__CLASS__, 'inject_update']);
         add_filter('plugins_api', [__CLASS__, 'plugin_info'], 10, 3);
         add_action('wp_footer', [__CLASS__, 'privacy_link_script'], 99);
+        add_filter('template_include', [__CLASS__, 'blog_template'], 99);
     }
 
     /* ---------- self-update from the repo ---------- */
@@ -827,9 +832,9 @@ final class Orca_Landing_Pages
      * display:contents, so a kept element sits in the HTML's layout exactly
      * where the original element was.
      */
-    private static function render_forms(string $html): string
+    private static function render_forms(string $html, int $pid = 0): string
     {
-        $pid   = (int) get_queried_object_id();
+        $pid   = $pid > 0 ? $pid : (int) get_queried_object_id();
         $forms = $pid > 0 ? get_post_meta($pid, '_olp_forms', true) : [];
         $kept  = $pid > 0 ? get_post_meta($pid, '_olp_keep', true) : [];
         if (!class_exists('\Elementor\Plugin') || ((!is_array($forms) || !$forms) && (!is_array($kept) || !$kept))) {
@@ -856,6 +861,168 @@ final class Orca_Landing_Pages
             }
         }
         return $html . $tail;
+    }
+
+
+    /* ---------- blog: posts and the blog index wear the site's own design ---------- */
+
+    /**
+     * sites.json: {"orcatribe.co.il": {"blog": {"post_page": "orca-blog-post", "index_page": "orca-blog",
+     *   "category": "blog", "form_page": 114}}}
+     * (Jonathan, 02/10/2026) A post published through WordPress came out in the bare default theme: no header,
+     * no footer, no lead form. Every post and the blog category page are now rendered inside a repo page, the
+     * same way the service pages are, so one push restyles every article at once. The repo page holds markers:
+     *   <!--olp:post-title-->  <!--olp:post-date-->  <!--olp:post-reading-->  <!--olp:post-content-->
+     *   <!--olp:posts-->       (the cards on the index)
+     *   <!--olp:form:1-->      (the Elementor lead form of form_page, the home page)
+     * A FAQ section in the article ("שאלות נפוצות" + question/answer pairs) becomes FAQPage data for Google.
+     */
+    public static function sync_blog(): void
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $cfg   = is_array($sites) ? ($sites[self::site_host()]['blog'] ?? null) : null;
+        if (is_array($cfg) && !empty($cfg['post_page'])) {
+            update_option(self::BLOG_OPTION, $cfg, false);
+        } elseif ($raw !== '') {
+            update_option(self::BLOG_OPTION, ['off' => 1], false);
+        }
+    }
+
+    public static function blog_cfg(): array
+    {
+        $cfg = get_option(self::BLOG_OPTION, null);
+        if (!is_array($cfg) && !get_transient('olp_blog_synced')) {   // first request after an update, before any push
+            set_transient('olp_blog_synced', 1, 10 * MINUTE_IN_SECONDS);
+            self::sync_blog();
+            $cfg = get_option(self::BLOG_OPTION, null);
+        }
+        return (is_array($cfg) && empty($cfg['off'])) ? $cfg : [];
+    }
+
+    public static function blog_template($template)
+    {
+        if (is_admin() || is_feed() || is_embed() || isset($_GET['olp_theme'])) {
+            return $template;
+        }
+        $cfg = self::blog_cfg();
+        if (!$cfg) {
+            return $template;
+        }
+        if (is_singular('post') && !empty($cfg['post_page'])) {
+            self::$blog_mode = 'post';
+        } elseif (is_category((string) ($cfg['category'] ?? 'blog')) && !empty($cfg['index_page'])) {
+            self::$blog_mode = 'index';
+        } else {
+            return $template;
+        }
+        add_action('wp_enqueue_scripts', [__CLASS__, 'blog_enqueue_form_assets'], 20);
+        return __DIR__ . '/blog-template.php';
+    }
+
+    /** The lead form is an Elementor widget; a post page does not load Elementor's front-end by itself. */
+    public static function blog_enqueue_form_assets(): void
+    {
+        if (class_exists('\Elementor\Plugin')) {
+            $fe = \Elementor\Plugin::$instance->frontend;
+            if (method_exists($fe, 'enqueue_styles')) { $fe->enqueue_styles(); }
+            if (method_exists($fe, 'enqueue_scripts')) { $fe->enqueue_scripts(); }
+        }
+        if (class_exists('\ElementorPro\Plugin')) {
+            $pro = \ElementorPro\Plugin::instance();
+            if (method_exists($pro, 'enqueue_styles')) { $pro->enqueue_styles(); }
+            if (method_exists($pro, 'enqueue_frontend_scripts')) { $pro->enqueue_frontend_scripts(); }
+        }
+    }
+
+    public static function blog_date(int $ts): string
+    {
+        return date_i18n('j בF Y', $ts);
+    }
+
+    public static function blog_body(): string
+    {
+        $cfg  = self::blog_cfg();
+        $mode = self::$blog_mode;
+        $name = strtolower(preg_replace('/[^a-zA-Z0-9_-]/', '', (string) ($mode === 'post' ? ($cfg['post_page'] ?? '') : ($cfg['index_page'] ?? ''))));
+        [$html, $source] = $name !== '' ? self::get_page($name, isset($_GET['olp_refresh']) && current_user_can('edit_pages')) : ['', 'no page'];
+
+        if ($mode === 'post') {
+            $post = get_queried_object();
+            if (!$post instanceof WP_Post) {
+                return '';
+            }
+            $GLOBALS['post'] = $post;
+            setup_postdata($post);
+            $content = apply_filters('the_content', get_the_content(null, false, $post));
+            $content = str_replace(']]>', ']]&gt;', $content);
+            wp_reset_postdata();
+            if ($html === '') {   // the repo is unreachable and nothing is cached: still show the article
+                return '<!-- olp blog: ' . esc_html($source) . ' --><main dir="rtl" style="max-width:760px;margin:40px auto;padding:0 20px"><h1>'
+                    . esc_html(get_the_title($post)) . '</h1>' . $content . '</main>';
+            }
+            $words = max(1, (int) round(mb_strlen(wp_strip_all_tags($content)) / 1100));
+            $html  = strtr($html, [
+                '<!--olp:post-title-->'   => esc_html(get_the_title($post)),
+                '<!--olp:post-date-->'    => esc_html(self::blog_date((int) get_post_time('U', false, $post))),
+                '<!--olp:post-reading-->' => esc_html($words . ' דקות קריאה'),
+                '<!--olp:post-content-->' => $content,
+            ]);
+            $faq = self::faq_from_content($content);
+            if ($faq) {
+                $html .= '<script type="application/ld+json">' . wp_json_encode($faq, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '</script>';
+            }
+        } else {
+            if ($html === '') {
+                return '<!-- olp blog index: ' . esc_html($source) . ' -->';
+            }
+            $html = str_replace('<!--olp:posts-->', self::blog_cards($cfg), $html);
+        }
+
+        return '<div class="olp-page olp-blog" data-olp-page="' . esc_attr($name) . '" data-olp-source="' . esc_attr($source) . '">'
+            . self::render_forms($html, (int) ($cfg['form_page'] ?? 0)) . '</div>';
+    }
+
+    public static function blog_cards(array $cfg): string
+    {
+        $cat = get_category_by_slug((string) ($cfg['category'] ?? 'blog'));
+        $q   = new WP_Query([
+            'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 60, 'no_found_rows' => true,
+            'cat' => $cat ? (int) $cat->term_id : 0,
+        ]);
+        if (!$q->have_posts()) {
+            return '<p class="olp-posts-empty">המאמרים הראשונים בדרך.</p>';
+        }
+        $out = '';
+        foreach ($q->posts as $p) {
+            $ex  = has_excerpt($p) ? (string) $p->post_excerpt : wp_trim_words(wp_strip_all_tags((string) $p->post_content), 30, '…');
+            $img = get_the_post_thumbnail_url($p, 'large');
+            $out .= '<a class="olp-post-card" href="' . esc_url(get_permalink($p)) . '">'
+                . ($img ? '<img src="' . esc_url($img) . '" alt="" loading="lazy">' : '')
+                . '<span class="olp-post-date">' . esc_html(self::blog_date((int) get_post_time('U', false, $p))) . '</span>'
+                . '<h2>' . esc_html(get_the_title($p)) . '</h2><p>' . esc_html($ex) . '</p>'
+                . '<span class="olp-post-more">לקריאת המאמר ←</span></a>';
+        }
+        return '<div class="olp-posts">' . $out . '</div>';
+    }
+
+    /** "שאלות נפוצות" heading followed by <h3>Q</h3><p>A</p> or <p><strong>Q</strong></p><p>A</p> pairs. */
+    public static function faq_from_content(string $html): array
+    {
+        if (!preg_match('/<h2[^>]*>\s*שאלות נפוצות\s*<\/h2>(.*?)(?=<h2|$)/su', $html, $m)) {
+            return [];
+        }
+        $items = [];
+        if (preg_match_all('/<(?:h3[^>]*>(.*?)<\/h3>|p[^>]*>\s*<strong>(.*?)<\/strong>\s*<\/p>)\s*<p[^>]*>(.*?)<\/p>/su', $m[1], $mm, PREG_SET_ORDER)) {
+            foreach ($mm as $x) {
+                $q = trim(html_entity_decode(wp_strip_all_tags($x[1] !== '' ? $x[1] : $x[2])));
+                $a = trim(html_entity_decode(wp_strip_all_tags($x[3])));
+                if ($q !== '' && $a !== '') {
+                    $items[] = ['@type' => 'Question', 'name' => $q, 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $a]];
+                }
+            }
+        }
+        return count($items) >= 2 ? ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $items] : [];
     }
 
 
@@ -1485,6 +1652,7 @@ final class Orca_Landing_Pages
         self::sync_footer();
         self::sync_conversions();
         self::sync_privacy_link();
+        self::sync_blog();
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
