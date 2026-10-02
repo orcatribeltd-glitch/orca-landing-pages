@@ -1,0 +1,231 @@
+/**
+ * Orca Blog Content Styles
+ * CSS to apply to Single Post template for blog articles
+ * Add this CSS to: Elementor > Custom CSS (site-wide) or Theme Builder template
+ */
+
+/* Base article content styling */
+.orca-blog-content {
+  color: #e8eaf0;
+  font-family: "Heebo", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Paragraphs */
+.orca-blog-content p {
+  margin-bottom: 1.5em;
+  color: #d0d4e0;
+}
+
+/* Headings */
+.orca-blog-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+  line-height: 1.3;
+}
+
+.orca-blog-content h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  line-height: 1.4;
+}
+
+.orca-blog-content h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e8eaf0;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Links */
+.orca-blog-content a {
+  color: #32e9da;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.orca-blog-content a:hover {
+  color: #ffffff;
+}
+
+/* Lists */
+.orca-blog-content ul,
+.orca-blog-content ol {
+  margin: 1.5em 0;
+  padding-right: 1.5em;
+  color: #d0d4e0;
+}
+
+.orca-blog-content li {
+  margin-bottom: 0.6em;
+  padding-right: 0.5em;
+}
+
+.orca-blog-content ul li::marker {
+  color: #e50088;
+}
+
+.orca-blog-content ol li::marker {
+  color: #32e9da;
+  font-weight: 600;
+}
+
+/* Strong/Bold text */
+.orca-blog-content strong,
+.orca-blog-content b {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Emphasis */
+.orca-blog-content em {
+  font-style: italic;
+  color: #b9c0d0;
+}
+
+/* Blockquotes */
+.orca-blog-content blockquote {
+  margin: 2em 0;
+  padding: 1.5em 2em;
+  border-right: 4px solid #e50088;
+  background: rgba(229, 0, 136, 0.08);
+  border-radius: 0 12px 12px 0;
+  font-size: 1.1em;
+  color: #e8eaf0;
+}
+
+.orca-blog-content blockquote p {
+  margin-bottom: 0;
+}
+
+/* Tables */
+.orca-blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  background: rgba(0, 19, 46, 0.5);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.orca-blog-content th {
+  background: rgba(50, 233, 218, 0.15);
+  color: #32e9da;
+  font-weight: 600;
+  padding: 14px 18px;
+  text-align: right;
+  border-bottom: 1px solid rgba(50, 233, 218, 0.2);
+}
+
+.orca-blog-content td {
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #d0d4e0;
+}
+
+.orca-blog-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* Code */
+.orca-blog-content code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.9em;
+  padding: 0.2em 0.5em;
+  background: rgba(50, 233, 218, 0.1);
+  border-radius: 4px;
+  color: #32e9da;
+}
+
+.orca-blog-content pre {
+  background: #00132e;
+  padding: 1.5em;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 2em 0;
+  border: 1px solid rgba(50, 233, 218, 0.2);
+}
+
+.orca-blog-content pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Images */
+.orca-blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 2em 0;
+}
+
+.orca-blog-content figure {
+  margin: 2em 0;
+}
+
+.orca-blog-content figcaption {
+  text-align: center;
+  font-size: 0.9em;
+  color: #6b7894;
+  margin-top: 0.8em;
+}
+
+/* Horizontal rule */
+.orca-blog-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(50, 233, 218, 0.3), transparent);
+  margin: 3em 0;
+}
+
+/* FAQ section styling (if questions are marked with specific classes) */
+.orca-blog-content .faq-question,
+.orca-blog-content h3:has(+ ul),
+.orca-blog-content h3:has(+ p) {
+  position: relative;
+  padding-right: 0;
+}
+
+/* First paragraph after heading - larger */
+.orca-blog-content h2 + p {
+  font-size: 1.05em;
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .orca-blog-content {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .orca-blog-content h2 {
+    font-size: 24px;
+    margin-top: 2em;
+  }
+
+  .orca-blog-content h3 {
+    font-size: 20px;
+  }
+
+  .orca-blog-content blockquote {
+    padding: 1em 1.5em;
+  }
+
+  .orca-blog-content table {
+    font-size: 14px;
+  }
+
+  .orca-blog-content th,
+  .orca-blog-content td {
+    padding: 10px 12px;
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "version": "0.4",
+  "title": "אורקה - תבנית מאמר בלוג",
+  "type": "single",
+  "siteSettings": {
+    "template_type": "single",
+    "conditions": {
+      "include": [{"type": "singular", "sub": "post"}]
+    }
+  },
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#001b3f",
+    "padding": {
+      "unit": "px",
+      "top": "0",
+      "right": "0",
+      "bottom": "0",
+      "left": "0",
+      "isLinked": true
+    }
+  },
+  "content": [
+    {
+      "id": "blog-header",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "row",
+        "flex_justify_content": "space-between",
+        "flex_align_items": "center",
+        "padding": {
+          "unit": "px",
+          "top": "24",
+          "right": "48",
+          "bottom": "24",
+          "left": "48",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#00132e"
+      },
+      "elements": [
+        {
+          "id": "logo-container",
+          "elType": "container",
+          "isInner": true,
+          "settings": {
+            "content_width": "full",
+            "flex_direction": "row",
+            "flex_align_items": "center",
+            "gap": {"unit": "px", "size": 16}
+          },
+          "elements": [
+            {
+              "id": "logo-widget",
+              "elType": "widget",
+              "widgetType": "image",
+              "settings": {
+                "image": {
+                  "url": "https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png"
+                },
+                "image_size": "custom",
+                "image_custom_dimension": {
+                  "width": 48,
+                  "height": 48
+                },
+                "link": {
+                  "url": "https://www.orcatribe.co.il/"
+                }
+              }
+            },
+            {
+              "id": "site-name",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "אורקה טרייב",
+                "header_size": "h3",
+                "link": {
+                  "url": "https://www.orcatribe.co.il/"
+                },
+                "title_color": "#ffffff",
+                "typography_font_family": "Heebo",
+                "typography_font_weight": "700",
+                "typography_font_size": {"unit": "px", "size": 22}
+              }
+            }
+          ]
+        },
+        {
+          "id": "nav-container",
+          "elType": "container",
+          "isInner": true,
+          "settings": {
+            "content_width": "full",
+            "flex_direction": "row",
+            "flex_align_items": "center",
+            "gap": {"unit": "px", "size": 32},
+            "hide_mobile": "yes"
+          },
+          "elements": [
+            {
+              "id": "nav-brand",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "בניית מותג",
+                "link": {"url": "https://www.orcatribe.co.il/בניית-מותג/"},
+                "button_type": "link",
+                "button_text_color": "#b9c0d0",
+                "typography_font_family": "Heebo",
+                "typography_font_weight": "500"
+              }
+            },
+            {
+              "id": "nav-campaigns",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "ניהול קמפיינים",
+                "link": {"url": "https://www.orcatribe.co.il/ניהול-קמפיינים/"},
+                "button_type": "link",
+                "button_text_color": "#b9c0d0",
+                "typography_font_family": "Heebo",
+                "typography_font_weight": "500"
+              }
+            },
+            {
+              "id": "nav-contact",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "דברו איתנו",
+                "link": {"url": "#contact-form"},
+                "button_type": "default",
+                "background_color": "#e50088",
+                "button_text_color": "#ffffff",
+                "typography_font_family": "Heebo",
+                "typography_font_weight": "700",
+                "border_radius": {"unit": "px", "size": 999},
+                "padding": {
+                  "unit": "px",
+                  "top": "12",
+                  "right": "24",
+                  "bottom": "12",
+                  "left": "24"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "article-hero",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "boxed",
+        "boxed_width": {"unit": "px", "size": 800},
+        "flex_direction": "column",
+        "flex_align_items": "center",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "24",
+          "bottom": "48",
+          "left": "24"
+        }
+      },
+      "elements": [
+        {
+          "id": "post-title",
+          "elType": "widget",
+          "widgetType": "theme-post-title",
+          "settings": {
+            "header_size": "h1",
+            "align": "center",
+            "title_color": "#ffffff",
+            "typography_font_family": "Heebo",
+            "typography_font_weight": "900",
+            "typography_font_size": {"unit": "px", "size": 42},
+            "typography_font_size_tablet": {"unit": "px", "size": 32},
+            "typography_font_size_mobile": {"unit": "px", "size": 28},
+            "typography_line_height": {"unit": "em", "size": 1.3}
+          }
+        },
+        {
+          "id": "post-meta",
+          "elType": "container",
+          "isInner": true,
+          "settings": {
+            "content_width": "full",
+            "flex_direction": "row",
+            "flex_justify_content": "center",
+            "gap": {"unit": "px", "size": 16},
+            "margin": {"unit": "px", "top": "24"}
+          },
+          "elements": [
+            {
+              "id": "post-date",
+              "elType": "widget",
+              "widgetType": "theme-post-info",
+              "settings": {
+                "type": "date",
+                "date_format": "j בF Y",
+                "color": "#b9c0d0",
+                "typography_font_family": "Heebo",
+                "typography_font_size": {"unit": "px", "size": 15}
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "article-content",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "boxed",
+        "boxed_width": {"unit": "px", "size": 760},
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "24",
+          "bottom": "64",
+          "left": "24"
+        },
+        "_css_classes": "orca-blog-content"
+      },
+      "elements": [
+        {
+          "id": "content-widget",
+          "elType": "widget",
+          "widgetType": "theme-post-content",
+          "settings": {
+            "text_color": "#e8eaf0",
+            "typography_font_family": "Heebo",
+            "typography_font_size": {"unit": "px", "size": 18},
+            "typography_line_height": {"unit": "em", "size": 1.8}
+          }
+        }
+      ]
+    },
+    {
+      "id": "cta-section",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "boxed",
+        "boxed_width": {"unit": "px", "size": 700},
+        "flex_direction": "column",
+        "flex_align_items": "center",
+        "padding": {
+          "unit": "px",
+          "top": "64",
+          "right": "24",
+          "bottom": "80",
+          "left": "24"
+        },
+        "background_background": "classic",
+        "background_color": "rgba(0,19,46,0.6)",
+        "border_radius": {"unit": "px", "size": 24},
+        "margin": {
+          "unit": "px",
+          "bottom": "64"
+        },
+        "_element_id": "contact-form"
+      },
+      "elements": [
+        {
+          "id": "cta-title",
+          "elType": "widget",
+          "widgetType": "heading",
+          "settings": {
+            "title": "רוצה שנעזור לך להגיע ללקוחות?",
+            "header_size": "h2",
+            "align": "center",
+            "title_color": "#ffffff",
+            "typography_font_family": "Heebo",
+            "typography_font_weight": "700",
+            "typography_font_size": {"unit": "px", "size": 32}
+          }
+        },
+        {
+          "id": "cta-subtitle",
+          "elType": "widget",
+          "widgetType": "text-editor",
+          "settings": {
+            "editor": "השאר פרטים ונחזור אליך תוך יום עסקים אחד",
+            "align": "center",
+            "text_color": "#b9c0d0",
+            "typography_font_family": "Heebo",
+            "typography_font_size": {"unit": "px", "size": 17},
+            "margin": {"unit": "px", "top": "12", "bottom": "32"}
+          }
+        },
+        {
+          "id": "form-placeholder",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "settings": {
+            "shortcode": "[elementor-template id=\"390\"]"
+          }
+        }
+      ]
+    },
+    {
+      "id": "footer-section",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "flex_align_items": "center",
+        "padding": {
+          "unit": "px",
+          "top": "48",
+          "right": "24",
+          "bottom": "48",
+          "left": "24"
+        },
+        "background_background": "classic",
+        "background_color": "#00132e"
+      },
+      "elements": [
+        {
+          "id": "footer-logo",
+          "elType": "widget",
+          "widgetType": "image",
+          "settings": {
+            "image": {
+              "url": "https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png"
+            },
+            "image_size": "custom",
+            "image_custom_dimension": {
+              "width": 64,
+              "height": 64
+            },
+            "link": {"url": "https://www.orcatribe.co.il/"}
+          }
+        },
+        {
+          "id": "footer-links",
+          "elType": "container",
+          "isInner": true,
+          "settings": {
+            "content_width": "full",
+            "flex_direction": "row",
+            "flex_justify_content": "center",
+            "gap": {"unit": "px", "size": 24},
+            "margin": {"unit": "px", "top": "24"}
+          },
+          "elements": [
+            {
+              "id": "footer-privacy",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "מדיניות פרטיות",
+                "link": {"url": "https://www.orcatribe.co.il/מדיניות-פרטיות/"},
+                "button_type": "link",
+                "button_text_color": "#6b7894",
+                "typography_font_family": "Heebo",
+                "typography_font_size": {"unit": "px", "size": 14}
+              }
+            },
+            {
+              "id": "footer-terms",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "תנאי שימוש",
+                "link": {"url": "https://www.orcatribe.co.il/תנאי-שימוש/"},
+                "button_type": "link",
+                "button_text_color": "#6b7894",
+                "typography_font_family": "Heebo",
+                "typography_font_size": {"unit": "px", "size": 14}
+              }
+            },
+            {
+              "id": "footer-accessibility",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "נגישות",
+                "link": {"url": "https://www.orcatribe.co.il/הצהרת-נגישות/"},
+                "button_type": "link",
+                "button_text_color": "#6b7894",
+                "typography_font_family": "Heebo",
+                "typography_font_size": {"unit": "px", "size": 14}
+              }
+            }
+          ]
+        },
+        {
+          "id": "footer-copyright",
+          "elType": "widget",
+          "widgetType": "text-editor",
+          "settings": {
+            "editor": "© 2026 אורקה טרייב בע״מ. כל הזכויות שמורות.",
+            "align": "center",
+            "text_color": "#4a5568",
+            "typography_font_family": "Heebo",
+            "typography_font_size": {"unit": "px", "size": 13},
+            "margin": {"unit": "px", "top": "24"}
+          }
+        }
+      ]
+    }
+  ]
+}

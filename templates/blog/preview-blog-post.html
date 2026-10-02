@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תצוגה מקדימה: מאמר בלוג | אורקה טרייב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #001b3f;
+  font-family: "Heebo", system-ui, sans-serif;
+  color: #e8eaf0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: #32e9da; text-decoration: none; }
+a:hover { color: #fff; }
+
+/* Header */
+.blog-header {
+  background: #00132e;
+  padding: 20px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-area img {
+  width: 44px;
+  height: 44px;
+}
+.logo-area span {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav-links a {
+  color: #b9c0d0;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: #fff;
+}
+.nav-cta {
+  background: #e50088;
+  color: #fff !important;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  transition: box-shadow 0.2s;
+}
+.nav-cta:hover {
+  box-shadow: 0 0 24px rgba(229, 0, 136, 0.5);
+}
+
+/* Hero */
+.article-hero {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 80px 24px 48px;
+  text-align: center;
+}
+.article-hero h1 {
+  font-size: 42px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.article-meta {
+  color: #b9c0d0;
+  font-size: 15px;
+}
+
+/* Content */
+.article-content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+.article-content p {
+  margin-bottom: 1.5em;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #d0d4e0;
+}
+.article-content h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2.5em;
+  margin-bottom: 0.8em;
+}
+.article-content h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+}
+.article-content ul, .article-content ol {
+  margin: 1.5em 0;
+  padding-right: 1.5em;
+  color: #d0d4e0;
+}
+.article-content li {
+  margin-bottom: 0.6em;
+  padding-right: 0.5em;
+  font-size: 18px;
+  line-height: 1.7;
+}
+.article-content ul li::marker {
+  color: #e50088;
+}
+.article-content ol li::marker {
+  color: #32e9da;
+  font-weight: 600;
+}
+.article-content strong {
+  font-weight: 700;
+  color: #fff;
+}
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  background: rgba(0, 19, 46, 0.5);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.article-content th {
+  background: rgba(50, 233, 218, 0.15);
+  color: #32e9da;
+  font-weight: 600;
+  padding: 14px 18px;
+  text-align: right;
+}
+.article-content td {
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.article-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* CTA */
+.cta-section {
+  max-width: 700px;
+  margin: 0 auto 64px;
+  padding: 64px 32px;
+  background: rgba(0, 19, 46, 0.6);
+  border-radius: 24px;
+  text-align: center;
+}
+.cta-section h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.cta-section p {
+  color: #b9c0d0;
+  font-size: 17px;
+  margin-bottom: 32px;
+}
+.form-mock {
+  max-width: 500px;
+  margin: 0 auto;
+}
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.form-row input {
+  flex: 1;
+  min-height: 56px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font: 500 17px/1.3 "Heebo", sans-serif;
+  direction: rtl;
+  text-align: right;
+}
+.form-row input::placeholder {
+  color: #b9c0d0;
+}
+.form-row input:focus {
+  outline: none;
+  border-color: #32e9da;
+  box-shadow: 0 0 0 3px rgba(50, 233, 218, 0.2);
+}
+.form-submit {
+  width: 100%;
+  min-height: 58px;
+  border-radius: 999px;
+  background: #e50088;
+  color: #fff;
+  border: none;
+  font: 700 19px/1 "Heebo", sans-serif;
+  cursor: pointer;
+  box-shadow: -6px 6px 0 -1px #00132e, -6px 6px 0 0 #32e9da, 0 0 24px rgba(229, 0, 136, 0.45);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.form-submit:hover {
+  box-shadow: -2px 2px 0 -1px #00132e, -2px 2px 0 0 #32e9da, 0 0 48px rgba(229, 0, 136, 0.6);
+}
+
+/* Footer */
+.blog-footer {
+  background: #00132e;
+  padding: 48px 24px;
+  text-align: center;
+}
+.blog-footer img {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
+}
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.footer-links a {
+  color: #6b7894;
+  font-size: 14px;
+}
+.footer-links a:hover {
+  color: #b9c0d0;
+}
+.copyright {
+  color: #4a5568;
+  font-size: 13px;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .blog-header {
+    padding: 16px 20px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .article-hero {
+    padding: 48px 20px 32px;
+  }
+  .article-hero h1 {
+    font-size: 28px;
+  }
+  .article-content {
+    padding: 0 20px 48px;
+  }
+  .article-content p, .article-content li {
+    font-size: 16px;
+  }
+  .article-content h2 {
+    font-size: 24px;
+  }
+  .cta-section {
+    padding: 48px 20px;
+    margin: 0 20px 48px;
+  }
+  .cta-section h2 {
+    font-size: 26px;
+  }
+  .form-row {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="blog-header">
+  <div class="logo-area">
+    <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png" alt="אורקה טרייב">
+    <span>אורקה טרייב</span>
+  </div>
+  <nav class="nav-links">
+    <a href="#">בניית מותג</a>
+    <a href="#">ניהול קמפיינים</a>
+    <a href="#contact" class="nav-cta">דברו איתנו</a>
+  </nav>
+</header>
+
+<section class="article-hero">
+  <h1>כמה עולה קמפיין ממומן בפייסבוק ובאינסטגרם?</h1>
+  <div class="article-meta">2 באוקטובר 2026</div>
+</section>
+
+<article class="article-content">
+  <p>קמפיין פרסום ממומן מורכב משלושה חלקים: תקציב מדיה (מה שמשלמים למטא עצמה), דמי ניהול (מה שמשלמים למי שמנהל), וקריאייטיב (סרטונים, גרפיקות, טקסטים). עסק קטן או בינוני בישראל משלם בדרך כלל בין 3,000 ל-15,000 ש״ח בחודש על הכל ביחד.</p>
+
+  <h2>תקציב מדיה: הכסף שהולך ישירות לפייסבוק</h2>
+  <p>תקציב המדיה הוא הסכום שאתה משלם לפייסבוק כדי שהמודעות שלך יופיעו לאנשים.</p>
+  <p><strong>טווח מקובל בישראל:</strong></p>
+  <ul>
+    <li>עסק קטן שרוצה להתחיל ולבדוק: 2,000-5,000 ש״ח בחודש</li>
+    <li>עסק שרוצה זרם לידים קבוע: 5,000-12,000 ש״ח בחודש</li>
+    <li>עסק שרוצה לשלוט בשוק מקומי: 15,000 ש״ח ומעלה</li>
+  </ul>
+
+  <h2>כמה עולה ליד בפייסבוק?</h2>
+  <p><strong>טווחי עלות לליד בישראל לפי תחום (2026):</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>תחום</th>
+        <th>עלות לליד</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>שירותים מקומיים (שיפוצים, אינסטלציה)</td>
+        <td>30-80 ש״ח</td>
+      </tr>
+      <tr>
+        <td>כושר / יועצי תזונה</td>
+        <td>40-100 ש״ח</td>
+      </tr>
+      <tr>
+        <td>נדל״ן</td>
+        <td>100-300 ש״ח</td>
+      </tr>
+      <tr>
+        <td>רפואה פרטית</td>
+        <td>80-200 ש״ח</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>שאלות נפוצות</h2>
+  <p><strong>מה התקציב המינימלי לקמפיין בפייסבוק?</strong></p>
+  <p>אפשר להתחיל גם עם 1,500 ש״ח לחודש, אבל לרוב התוצאות יהיו מוגבלות. תקציב של 3,000-5,000 ש״ח נותן מספיק נתונים כדי ללמוד ולשפר.</p>
+
+  <p><strong>כמה זמן לוקח עד שרואים לידים?</strong></p>
+  <p>לידים ראשונים יכולים להגיע כבר ביום הראשון. אבל לקבל תמונה אמיתית של ביצועים לוקח 2-4 שבועות.</p>
+</article>
+
+<section class="cta-section" id="contact">
+  <h2>רוצה שנעזור לך להגיע ללקוחות?</h2>
+  <p>השאר פרטים ונחזור אליך תוך יום עסקים אחד</p>
+  <div class="form-mock">
+    <div class="form-row">
+      <input type="text" placeholder="שם מלא">
+      <input type="tel" placeholder="טלפון">
+    </div>
+    <div class="form-row">
+      <input type="email" placeholder="אימייל">
+    </div>
+    <button class="form-submit">בואו נדבר</button>
+  </div>
+</section>
+
+<footer class="blog-footer">
+  <img src="https://www.orcatribe.co.il/wp-content/uploads/2026/09/orca-site-icon-512.png" alt="אורקה טרייב">
+  <div class="footer-links">
+    <a href="#">מדיניות פרטיות</a>
+    <a href="#">תנאי שימוש</a>
+    <a href="#">נגישות</a>
+  </div>
+  <div class="copyright">© 2026 אורקה טרייב בע״מ. כל הזכויות שמורות.</div>
+</footer>
+
+</body>
+</html>
