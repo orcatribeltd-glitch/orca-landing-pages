@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.13.0
+ * Version:     1.13.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.13.0';
+    const VERSION     = '1.13.1';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1402,9 +1402,12 @@ final class Orca_Landing_Pages
     {
         $ids = self::landing_page_ids();
         foreach ($ids as $id) {
+            // bump the modified time directly; wp_update_post() ran every plugin's save hooks inside the
+            // anonymous push-hook request, and that is the prime suspect for the 500s since 26/09
+            global $wpdb;
+            $wpdb->update($wpdb->posts, ['post_modified' => current_time('mysql'), 'post_modified_gmt' => current_time('mysql', true)], ['ID' => $id]);
             clean_post_cache($id);
-            wp_update_post(['ID' => $id]);
-            self::purge_page_cache_plugins($id);
+            self::step('purge_page_cache:' . $id, static function () use ($id) { return Orca_Landing_Pages::purge_page_cache_plugins($id); });
         }
         foreach (['litespeed_purge_all', 'w3tc_flush_all', 'wp_cache_clear_cache', 'rocket_clean_domain', 'cache_enabler_clear_complete_cache', 'breeze_clear_all_cache', 'swcfpc_purge_cache'] as $hook) {
             if (has_action($hook) || has_filter($hook)) {
@@ -1633,6 +1636,19 @@ final class Orca_Landing_Pages
      * cache (Redis / Memcached), where a SQL LIKE over wp_options finds nothing.
      * Returns the new generation number.
      */
+    /** @var string[] failures of the current purge_all() run */
+    public static $step_errors = [];
+
+    public static function step(string $name, callable $fn)
+    {
+        try {
+            return $fn();
+        } catch (\Throwable $e) {
+            self::$step_errors[] = $name . ': ' . get_class($e) . ' ' . $e->getMessage() . ' @ ' . basename($e->getFile()) . ':' . $e->getLine();
+            return null;
+        }
+    }
+
     public static function purge_all(string $sha = ''): int
     {
         if ($sha === '') {
@@ -1646,13 +1662,18 @@ final class Orca_Landing_Pages
         update_option(self::GEN_OPTION, $next, false);
         wp_cache_delete(self::GEN_OPTION, 'options');
 
-        self::touch_landing_pages();
-        self::cpanel_clear_cache();
-        self::sync_pages();
-        self::sync_footer();
-        self::sync_conversions();
-        self::sync_privacy_link();
-        self::sync_blog();
+        // Each step on its own (03/10/2026): from 26/09 every push hook answered 500 and nothing after the crash
+        // ran (page sync, footer, self-update), with no trace of which step broke. A failing step is now recorded
+        // in olp_last_errors (shown on the settings screen and in the hook's reply) and the rest still run.
+        self::$step_errors = [];
+        self::step('touch_landing_pages', [__CLASS__, 'touch_landing_pages']);
+        self::step('cpanel_clear_cache', [__CLASS__, 'cpanel_clear_cache']);
+        self::step('sync_pages', [__CLASS__, 'sync_pages']);
+        self::step('sync_footer', [__CLASS__, 'sync_footer']);
+        self::step('sync_conversions', [__CLASS__, 'sync_conversions']);
+        self::step('sync_privacy_link', [__CLASS__, 'sync_privacy_link']);
+        self::step('sync_blog', [__CLASS__, 'sync_blog']);
+        update_option('olp_last_errors', self::$step_errors ? gmdate('c') . ' ' . implode(' | ', self::$step_errors) : '', false);
 
         // Best effort cleanup of DB-stored transients from earlier generations.
         global $wpdb;
@@ -1869,12 +1890,15 @@ final class Orca_Landing_Pages
                 $payload = $req->get_json_params();
                 $sha     = is_array($payload) ? (string) ($payload['after'] ?? '') : '';
                 $gen     = self::purge_all($sha);
-                $update = self::self_update();
+                $update = (string) self::step('self_update', [__CLASS__, 'self_update']);
+                if (self::$step_errors) {
+                    update_option('olp_last_errors', gmdate('c') . ' ' . implode(' | ', self::$step_errors), false);
+                }
                 $caches = [];
                 foreach (self::landing_page_ids() as $pid) {
                     $caches = array_unique(array_merge($caches, self::purge_page_cache_plugins($pid)));
                 }
-                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', ''), 'convert' => (string) get_option('olp_last_convert', ''), 'plugin' => self::VERSION . ' — ' . $update], 200);
+                return new WP_REST_Response(['ok' => true, 'generation' => $gen, 'ref' => self::git_ref(), 'touched' => self::landing_page_ids(), 'page_cache_plugins' => array_values($caches), 'cpanel' => (string) get_option('olp_last_cpanel_purge', 'not configured'), 'pages' => (string) get_option('olp_last_sync', ''), 'footer' => (string) get_option('olp_last_footer', ''), 'convert' => (string) get_option('olp_last_convert', ''), 'plugin' => self::VERSION . ' — ' . $update, 'errors' => self::$step_errors], 200);
             },
         ]);
     }
@@ -1916,7 +1940,7 @@ final class Orca_Landing_Pages
             <?php if ($purged !== null): ?>
                 <div class="notice notice-success"><p>הזיכרון נוקה (דור <?php echo $purged; ?>). הטעינה הבאה תמשוך מגיטהאב.</p></div>
             <?php endif; ?>
-            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code><br>פוטר מהריפו (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_footer', 'עדיין לא')); ?></code><br>המרת עמודים קיימים (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_convert', 'עדיין לא')); ?></code></p>
+            <p>גרסה בשימוש מגיטהאב: <code dir="ltr"><?php echo esc_html(self::git_ref()); ?></code><br>עמודים מהריפו (pages.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_sync', 'עדיין לא')); ?></code><br>פוטר מהריפו (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_footer', 'עדיין לא')); ?></code><br>המרת עמודים קיימים (sites.json): <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_convert', 'עדיין לא')); ?></code><br>תקלות בעדכון האחרון: <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_errors', '') ?: 'אין'); ?></code><br>עדכון עצמי אחרון של התוסף: <code dir="ltr"><?php echo esc_html((string) get_option('olp_last_self_update', 'עדיין לא')); ?></code></p>
             <p>בעמוד באלמנטור מוסיפים ווידג'ט Shortcode עם הקוד <code>[landing_page name="שם-התיקייה"]</code>.
                הדף נמשך מ-<code>pages/&lt;שם&gt;/index.html</code> בריפו ונשמר בזיכרון למשך <?php echo (int) $s['ttl']; ?> שניות.
                כדי לראות שינוי מיד: להוסיף <code>?olp_refresh=1</code> לכתובת הדף (כמנהל מחובר), או ללחוץ על הכפתור למטה.</p>
