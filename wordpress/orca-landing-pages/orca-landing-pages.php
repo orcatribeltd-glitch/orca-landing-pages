@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.13.1
+ * Version:     1.13.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION     = '1.13.1';
+    const VERSION = '1.13.2';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1131,7 +1131,7 @@ final class Orca_Landing_Pages
      * nothing else. Found 25/09/2026: the orcatribe home form had its "full
      * name" field set to tel, so every name typed in letters was rejected.
      */
-    public static function set_form_field_type(int $pid, string $field_id, string $type, ?bool $required = null): array
+    public static function set_form_field_type(int $pid, string $field_id, string $type, ?bool $required = null, ?string $options = null): array
     {
         $json = get_post_meta($pid, '_elementor_data', true);
         $data = is_string($json) && $json !== '' ? json_decode($json, true) : null;
@@ -1139,7 +1139,7 @@ final class Orca_Landing_Pages
             return ['error' => 'no elementor data'];
         }
         $changed = [];
-        $walk = function (array &$els) use (&$walk, $field_id, $type, $required, &$changed) {
+        $walk = function (array &$els) use (&$walk, $field_id, $type, $required, $options, &$changed) {
             foreach ($els as &$el) {
                 if (!is_array($el)) { continue; }
                 if (($el['widgetType'] ?? '') === 'form' && !empty($el['settings']['form_fields']) && is_array($el['settings']['form_fields'])) {
@@ -1158,6 +1158,10 @@ final class Orca_Landing_Pages
                             // Elementor stores the switch as the string 'true'; anything else means optional
                             $changed[] = 'required → ' . ($required ? 'yes' : 'no');
                             $f['required'] = $required ? 'true' : '';
+                        }
+                        if ($options !== null && in_array($f['field_type'] ?? 'text', ['select', 'radio', 'checkbox'], true) && (string) ($f['field_options'] ?? '') !== $options) {
+                            $changed[] = 'options: ' . str_replace("\n", ' / ', (string) ($f['field_options'] ?? '')) . ' → ' . str_replace("\n", ' / ', $options);
+                            $f['field_options'] = $options;
                         }
                     }
                     unset($f);
@@ -1784,10 +1788,13 @@ final class Orca_Landing_Pages
                 $type  = (string) $req->get_param('type');
                 $rq    = $req->get_param('required');
                 $rq    = $rq === null || $rq === '' ? null : in_array((string) $rq, ['1', 'true', 'yes'], true);
-                if ($pid <= 0 || $field === '' || ($type === '' && $rq === null) || ($type !== '' && !in_array($type, ['text', 'tel', 'email', 'textarea', 'number', 'checkbox', 'acceptance'], true))) {
-                    return new WP_REST_Response(['ok' => false, 'error' => 'post, field and a valid type or a required flag needed'], 400);
+                // a select's choices, one per line as Elementor stores them ("label|value")
+                $opts  = $req->get_param('options');
+                $opts  = $opts === null || trim((string) $opts) === '' ? null : implode("\n", array_values(array_filter(array_map(static function ($l) { return sanitize_text_field($l); }, preg_split('/\r\n|\r|\n/', (string) $opts)), 'strlen')));
+                if ($pid <= 0 || $field === '' || ($type === '' && $rq === null && $opts === null) || ($type !== '' && !in_array($type, ['text', 'tel', 'email', 'textarea', 'number', 'checkbox', 'acceptance'], true))) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'post, field and a valid type, a required flag or select options needed'], 400);
                 }
-                return new WP_REST_Response(['ok' => true] + self::set_form_field_type($pid, $field, $type, $rq), 200);
+                return new WP_REST_Response(['ok' => true] + self::set_form_field_type($pid, $field, $type, $rq, $opts), 200);
             },
         ]);
         register_rest_route('olp/v1', '/form-actions', [
