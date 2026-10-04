@@ -62,7 +62,7 @@ FIELDS = [
   {"_id":"guests","custom_id":"guests","field_type":"text","field_label":"כמה אתם?","placeholder":"למשל: 4 מבוגרים + 2 ילדים","required":"","width":"50","width_mobile":"100"},
   {"_id":"visit_date","custom_id":"visit_date","field_type":"text","field_label":"תאריך משוער","placeholder":"למשל: סוף השבוע הקרוב","required":"","width":"50","width_mobile":"100"},
   {"_id":"workshop","custom_id":"workshop","field_type":"select","field_label":"איזו סדנה מעניינת אתכם?","required":"","width":"100","width_mobile":"100",
-   "field_options":"בחרו סדנה...|\nקדרות ופיסול (330₪ לאדם)|pottery\nציור על כלי קרמיקה (180₪ לאדם)|painting\nעדיין מתלבטים|undecided"},
+   "field_options":"בחרו סדנה או קורס...|\nסדנת קדרות ופיסול|pottery\nציור על כלי קרמיקה|painting\nקורס קדרות, 4 מפגשים|course4\nקורס קדרות שנתי|course_annual\nעדיין מתלבטים|undecided"},
 ]
 
 css_widget = {"id":wid(),"elType":"widget","widgetType":"html","elements":[],"settings":{"html":CSS.strip()}}

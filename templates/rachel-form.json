@@ -5,12 +5,12 @@
   "page_settings": [],
   "content": [
     {
-      "id": "1fd4a2d9",
+      "id": "afd096d1",
       "elType": "container",
       "isInner": false,
       "elements": [
         {
-          "id": "d1f81a9b",
+          "id": "bec7f544",
           "elType": "widget",
           "widgetType": "html",
           "elements": [],
@@ -19,7 +19,7 @@
           }
         },
         {
-          "id": "aa3a9106",
+          "id": "73ffd1db",
           "elType": "widget",
           "widgetType": "form",
           "elements": [],
@@ -74,7 +74,7 @@
                 "required": "",
                 "width": "100",
                 "width_mobile": "100",
-                "field_options": "בחרו סדנה...|\nקדרות ופיסול (330₪ לאדם)|pottery\nציור על כלי קרמיקה (180₪ לאדם)|painting\nעדיין מתלבטים|undecided"
+                "field_options": "בחרו סדנה או קורס...|\nסדנת קדרות ופיסול|pottery\nציור על כלי קרמיקה|painting\nקורס קדרות, 4 מפגשים|course4\nקורס קדרות שנתי|course_annual\nעדיין מתלבטים|undecided"
               }
             ],
             "show_labels": "true",
@@ -96,7 +96,7 @@
           }
         },
         {
-          "id": "5e98f554",
+          "id": "634f231a",
           "elType": "widget",
           "widgetType": "html",
           "elements": [],
@@ -105,7 +105,7 @@
           }
         },
         {
-          "id": "9e46f678",
+          "id": "fbdac9eb",
           "elType": "widget",
           "widgetType": "button",
           "elements": [],
@@ -133,7 +133,7 @@
           }
         },
         {
-          "id": "dfc1448d",
+          "id": "6237de1f",
           "elType": "widget",
           "widgetType": "text-editor",
           "elements": [],
