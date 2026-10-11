@@ -29,6 +29,10 @@ div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
 :is(.grip-desk,.grip-mob) :is(h1,h2,h3,h4,h5,h6,p,li,blockquote,figcaption,label){color:inherit}
 :is(.grip-desk,.grip-mob) :is(h1,h2,h3,h4,h5,h6){text-transform:none}
 #grip-form,#grip-form-m{scroll-margin-top:24px}
+.grip-mob .grip-sticker{white-space:nowrap;font-size:clamp(44px,calc((100vw - 120px) * .26),72px)!important}
+.grip-mob .grip-goal{white-space:nowrap;font-size:clamp(24px,calc((100vw - 110px) * .115),34px)!important}
+.grip-mob .grip-tags{justify-content:center}
+.grip-mob .grip-oneline{white-space:nowrap;font-size:clamp(30px,calc((100vw - 48px) * .125),48px)}
 /* phone (<640px) shows the mobile design, everything wider the responsive desktop design */
 .grip-mob{display:none}
 @media (max-width:639px){.grip-desk{display:none}.grip-mob{display:block}}
@@ -938,7 +942,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <span style="font-size: 13px; font-weight: 800; color: rgb(68, 68, 68);">יעד</span>
-              <div style="border-bottom: 1.5px solid rgb(138, 138, 138); padding-bottom: 4px; font-family: Karantina, sans-serif; font-weight: 400; font-size: 34px; line-height: 1; color: rgb(34, 48, 90); transform: rotate(-1deg);">להתחטב ולרדת 6.5 ק״ג תוך 3 חודשים</div>
+              <div class="grip-goal" style="border-bottom: 1.5px solid rgb(138, 138, 138); padding-bottom: 4px; font-family: Karantina, sans-serif; font-weight: 400; font-size: 34px; line-height: 1; color: rgb(34, 48, 90); transform: rotate(-1deg);">להתחטב ולרדת 6.5 ק״ג תוך 3 חודשים</div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <span style="font-size: 13px; font-weight: 800; color: rgb(68, 68, 68);">תאריך</span>
@@ -1360,7 +1364,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
 
     <div style="display: flex; flex-direction: column; gap: 22px; max-width: 660px; align-self: center; font-size: clamp(18px, calc(1.6 * min(1vw, 4.3px)), 20px); line-height: 1.75; color: rgb(208, 208, 208); text-wrap: pretty;">
       <p style="margin: 0px;">בכולם היה את אותו הלופ: ביום שלא בא לך להגיע, אף אחד לא דחף אותך<br>אף אחד לא חיכה לך באמת.</p>
-      <p style="margin: 0px; font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(48px, calc(5.6 * min(1vw, 4.3px)), 72px); line-height: 0.92; color: rgb(242, 242, 240);"><span style="position: relative; display: inline-block; padding-bottom: 0.18em;">לבד זה פשוט קל מדי לוותר.<svg aria-hidden="true" viewBox="0 0 400 30" preserveAspectRatio="none" style="position: absolute; right: -2%; bottom: -0.12em; width: 104%; height: 0.42em; overflow: visible;"><path d="M3 18 C 60 9, 130 22, 200 14 S 330 6, 397 15" fill="none" stroke="#E0201B" stroke-width="9" stroke-linecap="round" opacity=".95"></path><path d="M22 24 C 110 17, 210 26, 300 19 S 370 16, 388 21" fill="none" stroke="#E0201B" stroke-width="5" stroke-linecap="round" opacity=".8"></path></svg></span></p>
+      <p style="margin: 0px; font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(48px, calc(5.6 * min(1vw, 4.3px)), 72px); line-height: 0.92; color: rgb(242, 242, 240);"><span class="grip-oneline" style="position: relative; display: inline-block; padding-bottom: 0.18em;">לבד זה פשוט קל מדי לוותר.<svg aria-hidden="true" viewBox="0 0 400 30" preserveAspectRatio="none" style="position: absolute; right: -2%; bottom: -0.12em; width: 104%; height: 0.42em; overflow: visible;"><path d="M3 18 C 60 9, 130 22, 200 14 S 330 6, 397 15" fill="none" stroke="#E0201B" stroke-width="9" stroke-linecap="round" opacity=".95"></path><path d="M22 24 C 110 17, 210 26, 300 19 S 370 16, 388 21" fill="none" stroke="#E0201B" stroke-width="5" stroke-linecap="round" opacity=".8"></path></svg></span></p>
       <p style="margin: 0px;">היה יום עמוס, יש עייפות, וממילא אף אחד לא ישים לב אם הגעתם או לא.<br>וזה לא בגלל חוסר רצינות. פשוט לא היה שם אף אחד שחיכה.</p>
     </div>
 
@@ -1373,7 +1377,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
       </div>
       <div style="display: flex; justify-content: center;">
         <div style="position: relative; transform: rotate(-5deg); background: rgb(242, 242, 240); color: rgb(13, 13, 13); padding: 22px 34px 26px; border-radius: 28px 28px 28px 4px; box-shadow: rgba(0, 0, 0, 0.45) 0px 24px 50px;">
-          <span style="font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(64px, calc(8 * min(1vw, 4.3px)), 104px); line-height: 0.9;">״איפה נעלמת?״</span>
+          <span class="grip-sticker" style="font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(64px, calc(8 * min(1vw, 4.3px)), 104px); line-height: 0.9;">״איפה נעלמת?״</span>
         </div>
       </div>
     </div>
@@ -1442,7 +1446,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
         <p style="margin: 0px;">16 שנה אני בתחום הכושר והאימון.<br>הייתי קצין כושר קרבי, היום אני סרן במילואים,<br>ובצבא בניתי כושר לאנשים שלא הייתה להם אפשרות לוותר.</p>
         <p style="margin: 0px;">ויותר מ-10 שנים אני מאמן מנטלי בקליניקה פרטית.<br>בגלל זה המאמן המנטלי באתגר הוא לא קישוט בחבילה.<br>למה אנשים מפסיקים, ומה גורם להם להמשיך, זה בדיוק מה שאני עושה כבר עשור.</p>
         <p style="margin: 0px; font-weight: 800; color: rgb(13, 13, 13);">האתגר הוא המקום שבו שני העולמות האלה נפגשים.</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px;">
+        <div class="grip-tags" style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px;">
           <span style="display: flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 14px; background: linear-gradient(160deg, rgb(228, 230, 232), rgb(167, 172, 177)); color: rgb(13, 13, 13); font-size: 15px; font-weight: 800; box-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px inset, rgba(0, 0, 0, 0.18) 0px 3px 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: rgb(242, 242, 240); box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px inset;"></span>קצין כושר קרבי</span>
           <span style="display: flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 14px; background: linear-gradient(160deg, rgb(228, 230, 232), rgb(167, 172, 177)); color: rgb(13, 13, 13); font-size: 15px; font-weight: 800; box-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px inset, rgba(0, 0, 0, 0.18) 0px 3px 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: rgb(242, 242, 240); box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px inset;"></span>סרן במילואים</span>
           <span style="display: flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 14px; background: linear-gradient(160deg, rgb(228, 230, 232), rgb(167, 172, 177)); color: rgb(13, 13, 13); font-size: 15px; font-weight: 800; box-shadow: rgba(255, 255, 255, 0.8) 0px 1px 0px inset, rgba(0, 0, 0, 0.18) 0px 3px 6px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: rgb(242, 242, 240); box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px inset;"></span>מאמן מנטלי בקליניקה פרטית</span>
