@@ -56,7 +56,11 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
  background:#FF5A1F!important;color:#0D0D0D!important;font:800 clamp(16px,1.5vw,18px) Heebo,sans-serif!important;white-space:nowrap!important;
  padding:0 20px!important;cursor:pointer;animation:gripPulse 2.5s ease-in-out infinite}
 .grip-formcard .elementor-button:hover{background:#FF6D38!important}
-.grip-formcard .elementor-button .elementor-button-text{white-space:nowrap}
+.grip-formcard .elementor-button .elementor-button-text{white-space:nowrap!important;flex:0 0 auto}
+.grip-formcard .elementor-button{padding:0 14px!important;font-size:clamp(15px,4.2vw,17px)!important}
+/* the consent box needs no heading above it; the reCAPTCHA badge stays active but out of the design */
+.grip-formcard .elementor-field-type-acceptance>.elementor-field-label{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.grip-formcard .elementor-field-type-recaptcha_v3{visibility:hidden;height:0!important;overflow:hidden;margin:0!important;padding:0!important}
 .grip-reassure{text-align:center}
 .grip-err{color:#B3261E;font:700 14px/1.4 Heebo,sans-serif;margin-top:6px}
 .grip-formcard .elementor-message{font:700 15px/1.5 Heebo,sans-serif!important;text-align:center;margin-top:10px!important}
