@@ -39,6 +39,8 @@ div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
 .grip-mob .grip-stats>div:nth-child(n+3){border-top:3px solid #0D0D0D;background:repeating-linear-gradient(to left,#0D0D0D 0 2px,transparent 2px 20px) top/100% 9px no-repeat}
 .grip-mob .grip-stats>div>span:first-child{font-size:clamp(50px,15vw,66px)!important;line-height:.9!important}
 .grip-mob .grip-stats>div>span:last-child{font-size:14px!important;line-height:1.35!important;max-width:15ch}
+.grip-mob .grip-eight{font-size:clamp(28px,8.4vw,36px)!important;line-height:1.35!important;text-align:center}
+.grip-mob .grip-eight span{background:#FF5A1F;color:#0D0D0D;padding:0 .18em;white-space:nowrap;box-shadow:.08em .08em 0 #0D0D0D}
 .grip-mob .grip-oneline{white-space:nowrap;font-size:clamp(30px,calc((100vw - 48px) * .125),48px)}
 /* phone (<640px) shows the mobile design, everything wider the responsive desktop design */
 .grip-mob{display:none}
@@ -1325,15 +1327,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
       <div style="display: flex; flex-direction: column; align-items: center; gap: 26px; margin-top: 18px;">
         <div style="position: relative; max-width: 100%; z-index: 1;">
           <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 26px;">
-            <div aria-hidden="true" style="position: relative; flex: 0 0 auto; width: 150px; background: rgb(255, 255, 255); color: rgb(13, 13, 13); transform: rotate(4deg); border: 2px solid rgb(13, 13, 13); box-shadow: rgb(13, 13, 13) 8px 8px 0px;">
-              <div dir="ltr" style="background: rgb(255, 90, 31); padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 12px; letter-spacing: 0.14em;"><span>GRIP</span><span>6W</span></div>
-              <div style="text-align: center; font-family: Heebo, sans-serif; font-weight: 800; font-size: 112px; line-height: 1; padding: 4px 0px 10px; letter-spacing: -0.04em;">8</div>
-              <span style="position: absolute; top: 34px; left: 7px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(138, 138, 138);"></span>
-              <span style="position: absolute; top: 34px; right: 7px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(138, 138, 138);"></span>
-              <span style="position: absolute; bottom: 7px; left: 7px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(138, 138, 138);"></span>
-              <span style="position: absolute; bottom: 7px; right: 7px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid rgb(138, 138, 138);"></span>
-            </div>
-            <p style="margin: 0px; flex: 1 1 220px; font-family: Heebo, sans-serif; font-weight: 800; font-size: clamp(26px, calc(3.2 * min(1vw, 4.3px)), 38px); line-height: 1.2;">ובגלל זה יש רק 8 מקומות בחודש.</p>
+            <p style="margin: 0px; flex: 1 1 220px; font-family: Heebo, sans-serif; font-weight: 800; font-size: clamp(26px, calc(3.2 * min(1vw, 4.3px)), 38px); line-height: 1.2;" class="grip-eight">ובגלל זה יש רק <span>8 מקומות</span> בחודש.</p>
           </div>
         </div>
         <p style="margin: 0px; max-width: 560px; font-size: 17px; line-height: 1.6; font-weight: 700;">תזונאי שבודק כל יום ומאמן מנטלי שמתקשר כל שבוע לא עובדים בפס ייצור.</p>
