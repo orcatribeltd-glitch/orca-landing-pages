@@ -12,13 +12,16 @@ a:hover{color:#FF5A1F}
 :root{--g-heroCols:minmax(0,1fr);--g-heroAreas:"a" "b" "f" "c";--g-rowCols:36px minmax(0,1fr);--g-cellSpan:1 / -1;
 --g-paperPull:0;--g-vidDisplay:flex;--g-vidOverflow:auto;--g-vidBleed:calc(-1 * clamp(20px,5vw,48px));
 --g-vidPad:clamp(20px,5vw,48px);--g-cardFlex:0 0 74%;--g-footPad:110px}
-@media (min-width:640px){:root{--g-cardFlex:0 0 42%}}
+/* from 640px the 3 testimonials sit in one row: no half-cut card a mouse can't slide (ux, 12/10) */
+@media (min-width:640px){:root{--g-vidDisplay:grid;--g-vidOverflow:visible;--g-vidBleed:0;--g-vidPad:0;--g-cardFlex:initial}}
 @media (min-width:960px){:root{--g-heroCols:minmax(0,1fr) 400px;--g-heroAreas:"a f" "b f" "c f";
 --g-rowCols:44px minmax(0,1fr) minmax(0,1.15fr);--g-cellSpan:auto;--g-paperPull:-60px;--g-vidDisplay:grid;
 --g-vidOverflow:visible;--g-vidBleed:0;--g-vidPad:0;--g-cardFlex:initial;--g-footPad:28px}}
 html{scroll-behavior:smooth}
 /* photo frames stay hidden until real photos from GRIP arrive (ux finding, 12/10) */
 div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
+/* without Aviv's photo the about text takes one centred column instead of half the row */
+.grip-desk .grip-about-grid{grid-template-columns:minmax(0,760px)!important;justify-content:center}
 .ico-sound{display:none}[data-vid-toggle].on .ico-sound{display:block}[data-vid-toggle].on .ico-muted{display:none}
 /* the site's floating WhatsApp button (Click to Chat) is off on this page only (Jonathan, 11/10) */
 #ht-ctc-chat,.ht-ctc{display:none!important}
@@ -726,7 +729,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     </div>
   </div></section><section data-screen-label="06 מי אנחנו" style="background-color: rgb(242, 242, 240); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .1 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(17, 17, 17); padding: clamp(64px, 9vw, 128px) clamp(20px, 5vw, 48px);">
   <div style="max-width: 1200px; margin: 0px auto; display: flex; flex-direction: column; gap: clamp(44px, 6vw, 80px);">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7vw, 100px); align-items: start;">
+    <div class="grip-about-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7vw, 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
         <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
@@ -1421,7 +1424,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     </div>
   </div></section><section data-screen-label="06 מי אנחנו" style="background-color: rgb(242, 242, 240); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .1 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(17, 17, 17); padding: clamp(64px, calc(9 * min(1vw, 4.3px)), 128px) clamp(20px, calc(5 * min(1vw, 4.3px)), 48px);">
   <div style="max-width: 1200px; margin: 0px auto; display: flex; flex-direction: column; gap: clamp(44px, calc(6 * min(1vw, 4.3px)), 80px);">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, calc(7 * min(1vw, 4.3px)), 100px); align-items: start;">
+    <div class="grip-about-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, calc(7 * min(1vw, 4.3px)), 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
         <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
