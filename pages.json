@@ -82,5 +82,12 @@
     "slug": "accessibility",
     "title": "הצהרת נגישות",
     "template": "templates/rachel-accessibility.json"
+  },
+  {
+    "site": "gripfitness.co.il",
+    "name": "grip-challenge",
+    "slug": "6-week-challenge",
+    "title": "גריפ – אתגר 6 השבועות",
+    "template": "templates/grip-challenge.json"
   }
 ]

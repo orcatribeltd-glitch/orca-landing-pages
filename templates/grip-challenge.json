@@ -1,0 +1,121 @@
+{
+ "version": "0.4",
+ "title": "גריפ – אתגר 6 השבועות",
+ "type": "page",
+ "page_settings": {
+  "template": "elementor_canvas",
+  "background_background": "classic",
+  "background_color": "#0D0D0D"
+ },
+ "content": [
+  {
+   "id": "5b2e8d1",
+   "elType": "container",
+   "isInner": false,
+   "settings": {
+    "content_width": "full",
+    "flex_direction": "column",
+    "padding": {
+     "unit": "px",
+     "top": "0",
+     "right": "0",
+     "bottom": "0",
+     "left": "0",
+     "isLinked": true
+    }
+   },
+   "elements": [
+    {
+     "id": "3f61c0a",
+     "elType": "widget",
+     "widgetType": "shortcode",
+     "elements": [],
+     "settings": {
+      "shortcode": "[landing_page name=\"grip-challenge\"]"
+     }
+    }
+   ]
+  },
+  {
+   "id": "7d40e95",
+   "elType": "container",
+   "isInner": false,
+   "settings": {
+    "content_width": "full",
+    "padding": {
+     "unit": "px",
+     "top": "0",
+     "right": "0",
+     "bottom": "0",
+     "left": "0",
+     "isLinked": true
+    }
+   },
+   "elements": [
+    {
+     "id": "9a7c21f",
+     "elType": "widget",
+     "widgetType": "form",
+     "elements": [],
+     "settings": {
+      "form_name": "אתגר 6 שבועות - גריפ",
+      "form_fields": [
+       {
+        "_id": "full_name",
+        "custom_id": "full_name",
+        "field_type": "text",
+        "field_label": "שם מלא",
+        "placeholder": "",
+        "required": "true",
+        "width": "100"
+       },
+       {
+        "_id": "phone",
+        "custom_id": "phone",
+        "field_type": "tel",
+        "field_label": "טלפון",
+        "placeholder": "",
+        "required": "true",
+        "width": "100"
+       },
+       {
+        "_id": "marketing_consent",
+        "custom_id": "marketing_consent",
+        "field_type": "acceptance",
+        "field_label": "אישור דיוור",
+        "acceptance_text": "אני מאשר/ת לקבל דיוור במייל ו/או ב-SMS או ב-WhatsApp מ״גריפ - אביב גוילי״, ומודע/ת לכך שאוכל להסיר את עצמי מהרשימה בכל עת. <a href=\"https://gripfitness.co.il/website-terms/\" target=\"_blank\">לתקנון</a>",
+        "required": "",
+        "width": "100"
+       },
+       {
+        "_id": "recaptcha",
+        "custom_id": "recaptcha",
+        "field_type": "recaptcha_v3",
+        "field_label": "",
+        "width": "100",
+        "recaptcha_badge": "inline"
+       }
+      ],
+      "show_labels": "true",
+      "mark_required": "",
+      "label_position": "above",
+      "button_text": "שריינו לי שיחת הצטרפות לאתגר 🏆",
+      "button_width": "100",
+      "submit_actions": [
+       "email"
+      ],
+      "email_to": "israelgrip@gmail.com, avivgvili6@gmail.com",
+      "email_subject": "ליד חדש לאתגר 6 השבועות: [field id=\"full_name\"]",
+      "email_content": "[all-fields]",
+      "email_from_name": "גריפ - דף האתגר",
+      "success_message": "תודה! קיבלנו את הפרטים, ונחזור אליכם בטלפון בהקדם 🙌",
+      "required_field_message": "זה שדה חובה",
+      "invalid_message": "משהו לא תקין בפרטים, בדקו ונסו שוב",
+      "error_message": "משהו השתבש בשליחה. נסו שוב בעוד רגע",
+      "custom_messages": "yes"
+     }
+    }
+   ]
+  }
+ ]
+}
