@@ -19,9 +19,7 @@ a:hover{color:#FF5A1F}
 --g-vidOverflow:visible;--g-vidBleed:0;--g-vidPad:0;--g-cardFlex:initial;--g-footPad:28px}}
 html{scroll-behavior:smooth}
 /* photo frames stay hidden until real photos from GRIP arrive (ux finding, 12/10) */
-div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
-/* without Aviv's photo the about text takes one centred column instead of half the row */
-.grip-desk .grip-about-grid{grid-template-columns:minmax(0,760px)!important;justify-content:center}
+div:has(> .grip-ph){display:none!important}
 .ico-sound{display:none}[data-vid-toggle].on .ico-sound{display:block}[data-vid-toggle].on .ico-muted{display:none}
 /* the site's floating WhatsApp button (Click to Chat) is off on this page only (Jonathan, 11/10) */
 #ht-ctc-chat,.ht-ctc{display:none!important}
@@ -742,15 +740,10 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     </div>
   </div></section><section data-screen-label="06 מי אנחנו" style="background-color: rgb(242, 242, 240); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .1 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(17, 17, 17); padding: clamp(64px, 9vw, 128px) clamp(20px, 5vw, 48px);">
   <div style="max-width: 1200px; margin: 0px auto; display: flex; flex-direction: column; gap: clamp(44px, 6vw, 80px);">
-    <div class="grip-about-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7vw, 100px); align-items: start;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7vw, 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
-        <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1.5px dashed rgb(138, 138, 138); padding: 24px 18px;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="5" width="18" height="14"></rect><circle cx="12" cy="12" r="3.5"></circle></svg>
-            <span>תמונה של אביב בסטודיו: דיוקן חצי גוף, מבט למצלמה, הסטודיו ברקע. תמונה אמיתית בלבד.</span>
-          </div>
-        </div>
+        <div style="position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #FFFFFF;"><img src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@2ccf533478237c35cf8c7bfd7c67df6669903c09/pages/grip-challenge/images/aviv-gvili.jpg" alt="אביב גוילי, הבעלים והמייסד של גריפ" loading="lazy" width="640" height="641" style="display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;"></div>
         <span aria-hidden="true" style="position: absolute; top: -12px; left: -6px; width: 110px; height: 30px; background: rgb(255, 90, 31); transform: rotate(-14deg);"></span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 18px; font-size: clamp(18px, 1.6vw, 20px); line-height: 1.75; text-wrap: pretty;">
@@ -1429,15 +1422,10 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     </div>
   </div></section><section data-screen-label="06 מי אנחנו" style="background-color: rgb(242, 242, 240); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .1 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(17, 17, 17); padding: clamp(64px, calc(9 * min(1vw, 4.3px)), 128px) clamp(20px, calc(5 * min(1vw, 4.3px)), 48px);">
   <div style="max-width: 1200px; margin: 0px auto; display: flex; flex-direction: column; gap: clamp(44px, calc(6 * min(1vw, 4.3px)), 80px);">
-    <div class="grip-about-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, calc(7 * min(1vw, 4.3px)), 100px); align-items: start;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, calc(7 * min(1vw, 4.3px)), 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
-        <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1.5px dashed rgb(138, 138, 138); padding: 24px 18px;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="5" width="18" height="14"></rect><circle cx="12" cy="12" r="3.5"></circle></svg>
-            <span>תמונה של אביב בסטודיו: דיוקן חצי גוף, מבט למצלמה, הסטודיו ברקע. תמונה אמיתית בלבד.</span>
-          </div>
-        </div>
+        <div style="position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: #FFFFFF;"><img src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@2ccf533478237c35cf8c7bfd7c67df6669903c09/pages/grip-challenge/images/aviv-gvili.jpg" alt="אביב גוילי, הבעלים והמייסד של גריפ" loading="lazy" width="640" height="641" style="display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;"></div>
         <span aria-hidden="true" style="position: absolute; top: -12px; left: -6px; width: 110px; height: 30px; background: rgb(255, 90, 31); transform: rotate(-14deg);"></span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 18px; font-size: clamp(18px, calc(1.6 * min(1vw, 4.3px)), 20px); line-height: 1.75; text-wrap: pretty;">
