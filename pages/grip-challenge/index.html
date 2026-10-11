@@ -32,6 +32,13 @@ div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
 .grip-mob .grip-sticker{white-space:nowrap;font-size:clamp(44px,calc((100vw - 120px) * .26),72px)!important}
 .grip-mob .grip-goal{white-space:nowrap;font-size:clamp(24px,calc((100vw - 110px) * .115),34px)!important}
 .grip-mob .grip-tags{justify-content:center}
+/* phone stats: a 2x2 block cut from the measuring tape, numbers sized to the cell */
+.grip-mob .grip-stats{grid-template-columns:1fr 1fr!important;gap:0!important;padding-top:0!important;text-align:center}
+.grip-mob .grip-stats>div{padding:18px 8px 16px!important;align-items:center;justify-content:flex-start}
+.grip-mob .grip-stats>div:nth-child(odd){border-left:2px solid #0D0D0D}
+.grip-mob .grip-stats>div:nth-child(n+3){border-top:3px solid #0D0D0D;background:repeating-linear-gradient(to left,#0D0D0D 0 2px,transparent 2px 20px) top/100% 9px no-repeat}
+.grip-mob .grip-stats>div>span:first-child{font-size:clamp(50px,15vw,66px)!important;line-height:.9!important}
+.grip-mob .grip-stats>div>span:last-child{font-size:14px!important;line-height:1.35!important;max-width:15ch}
 .grip-mob .grip-oneline{white-space:nowrap;font-size:clamp(30px,calc((100vw - 48px) * .125),48px)}
 /* phone (<640px) shows the mobile design, everything wider the responsive desktop design */
 .grip-mob{display:none}
@@ -1455,7 +1462,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     </div>
     <div style="display: flex; flex-direction: column;">
       <div aria-hidden="true" style="height: 22px; border-top: 3px solid rgb(13, 13, 13); background-image: repeating-linear-gradient(to left, rgb(13, 13, 13) 0px, rgb(13, 13, 13) 2px, transparent 2px, transparent 20px), repeating-linear-gradient(to left, rgb(13, 13, 13) 0px, rgb(13, 13, 13) 2px, transparent 2px, transparent 100px); background-size: 100% 10px, 100% 20px; background-repeat: no-repeat;"></div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px 24px; padding-top: 12px;">
+      <div class="grip-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px 24px; padding-top: 12px;">
         <div style="display: flex; flex-direction: column; gap: 4px; padding: 10px 0px;">
           <span style="font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(80px, calc(9 * min(1vw, 4.3px)), 120px); line-height: 0.8; color: rgb(201, 61, 11);">6</span>
           <span style="font-size: 16px; line-height: 1.45; color: rgb(51, 51, 51); font-weight: 500;">מאמנים בצוות, כולל דיאטן קליני</span>
