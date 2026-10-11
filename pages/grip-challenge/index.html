@@ -823,6 +823,10 @@ body.grip-past .grip-bar{transform:none;visibility:visible}
   window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
   // the design's Hebrew error messages, shown under each field before Elementor sends
+  // the browser's own required-field bubble (English on some phones) would stop the form before our messages
+  function noBubble(){ if(card) card.querySelectorAll('form').forEach(function(f){f.noValidate=true;}); }
+  noBubble(); document.addEventListener('DOMContentLoaded',noBubble);
+  document.addEventListener('click',function(e){ if(card&&card.contains(e.target)&&e.target.closest('button[type=submit]')) noBubble(); },true);
   function setErr(group,msg){
     if(!group) return;
     var old=group.querySelector('.grip-err'); if(old) old.remove();
@@ -835,7 +839,7 @@ body.grip-past .grip-bar{transform:none;visibility:visible}
     var name=form.querySelector('input[name="form_fields[full_name]"]');
     var phone=form.querySelector('input[name="form_fields[phone]"]');
     var nErr=name&&!name.value.trim()?'צריך להקליד שם מלא':'';
-    var digits=phone?phone.value.replace(/\D/g,''):'';
+    var digits=phone?phone.value.replace(/\D/g,'').replace(/^972/,'0'):'';
     var pErr=phone&&!phone.value.trim()?'צריך להקליד מספר טלפון':(phone&&digits.length!==10?'צריך להקליד מספר של 10 ספרות, למשל 0541234567':'');
     setErr(name&&name.closest('.elementor-field-group'),nErr);
     setErr(phone&&phone.closest('.elementor-field-group'),pErr);
