@@ -17,6 +17,9 @@ a:hover{color:#FF5A1F}
 --g-rowCols:44px minmax(0,1fr) minmax(0,1.15fr);--g-cellSpan:auto;--g-paperPull:-60px;--g-vidDisplay:grid;
 --g-vidOverflow:visible;--g-vidBleed:0;--g-vidPad:0;--g-cardFlex:initial;--g-footPad:28px}}
 html{scroll-behavior:smooth}
+/* photo frames stay hidden until real photos from GRIP arrive (ux finding, 12/10) */
+div:has(> .grip-ph),div:has(> [data-photo-ph]){display:none!important}
+.ico-sound{display:none}[data-vid-toggle].on .ico-sound{display:block}[data-vid-toggle].on .ico-muted{display:none}
 /* the site's floating WhatsApp button (Click to Chat) is off on this page only (Jonathan, 11/10) */
 #ht-ctc-chat,.ht-ctc{display:none!important}
 /* the site's theme paints every heading #333; on this page text takes the design's colour (Jonathan, 11/10: dark text on dark) */
@@ -141,7 +144,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
       <h2 style="margin: 0px; font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(48px, 6.4vw, 84px); line-height: 0.92; text-wrap: balance;">מעל <span style="color: rgb(255, 90, 31);">300</span> מתאמנים בקהילה של גריפ לא טועים</h2>
       <p style="margin: 0px; font-size: clamp(17px, 1.6vw, 20px); color: rgb(208, 208, 208);">אל תסמכו רק על המילה שלנו. תקשיבו להם:</p>
     </div>
-    <div style="display: var(--g-vidDisplay); grid-template-columns: repeat(4, minmax(0px, 1fr)); gap: 22px; overflow-x: var(--g-vidOverflow); scroll-snap-type: x mandatory; margin-inline: var(--g-vidBleed); padding: 16px var(--g-vidPad) 8px; scroll-padding-inline: var(--g-vidPad); scrollbar-width: none;">
+    <div style="display: var(--g-vidDisplay); grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 22px; overflow-x: var(--g-vidOverflow); scroll-snap-type: x mandatory; margin-inline: var(--g-vidBleed); padding: 16px var(--g-vidPad) 8px; scroll-padding-inline: var(--g-vidPad); scrollbar-width: none;">
       
         <figure style="margin: 0px; flex: var(--g-cardFlex); scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; transform: rotate(-1.5deg);">
           <div data-vid-toggle="1" role="button" aria-label="הפעלת קול" style="position: relative; aspect-ratio: 9 / 16; border-radius: 10px; background: rgb(31, 31, 31); border: 6px solid rgb(242, 242, 240); cursor: pointer; box-shadow: rgba(0, 0, 0, 0.5) 0px 18px 40px;">
@@ -149,20 +152,17 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 1: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-1.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-1.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״סביבה חזקה מכוח רצון.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">רקדנית, מתאמנת בגריפ כבר שנים</div>
           </figcaption>
         </figure>
       
@@ -172,20 +172,17 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 2: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-2.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-2.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״הגעתי ילד בתת־משקל וחסר ביטחון. המקום הזה הפך אותי למתחרה.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">מתחרה קרוספיט, בגריפ 5 שנים</div>
           </figcaption>
         </figure>
       
@@ -195,45 +192,21 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 3: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-3.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-3.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״החלטה ששינתה לי את החיים. לא פחות מזה.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">גיל, 24</div>
           </figcaption>
         </figure>
       
-        <figure style="margin: 0px; flex: var(--g-cardFlex); scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; transform: rotate(1.6deg);">
-          <div data-vid-toggle="1" role="button" aria-label="הפעלת קול" style="position: relative; aspect-ratio: 9 / 16; border-radius: 10px; background: rgb(31, 31, 31); border: 6px solid rgb(242, 242, 240); cursor: pointer; box-shadow: rgba(0, 0, 0, 0.5) 0px 18px 40px;">
-            <span aria-hidden="true" style="position: absolute; top: -16px; right: calc(50% - 44px); width: 88px; height: 26px; background: rgba(235, 235, 232, 0.82); transform: rotate(-3deg); z-index: 2;"></span>
-            <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
-              
-              
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 4: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
-              
-            </div>
-            <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
-              
-            </div>
-          </div>
-          <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
-          </figcaption>
-        </figure>
+        
       
     </div>
   </div></section><section data-screen-label="04 ההצעה" style="position: relative; background-color: rgb(255, 255, 255); border-top: 10px solid rgb(13, 13, 13); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .14 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(13, 13, 13);">
@@ -756,7 +729,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7vw, 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
-        <div role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
+        <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1.5px dashed rgb(138, 138, 138); padding: 24px 18px;">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="5" width="18" height="14"></rect><circle cx="12" cy="12" r="3.5"></circle></svg>
             <span>תמונה של אביב בסטודיו: דיוקן חצי גוף, מבט למצלמה, הסטודיו ברקע. תמונה אמיתית בלבד.</span>
@@ -873,7 +846,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
       <h2 style="margin: 0px; font-family: Karantina, sans-serif; font-weight: 700; font-size: clamp(48px, 6.4cqw, 84px); line-height: 0.92; text-wrap: balance;">מעל <span style="color: rgb(255, 90, 31);">300</span> מתאמנים בקהילה של גריפ לא טועים</h2>
       <p style="margin: 0px; font-size: clamp(17px, 1.6cqw, 20px); color: rgb(208, 208, 208);">אל תסמכו רק על המילה שלנו. תקשיבו להם:</p>
     </div>
-    <div style="display: flex; grid-template-columns: repeat(4, minmax(0px, 1fr)); gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * clamp(20px, 5cqw, 48px)); padding: 16px clamp(20px, 5cqw, 48px) 8px; scroll-padding-inline: clamp(20px, 5cqw, 48px); scrollbar-width: none;">
+    <div style="display: flex; grid-template-columns: repeat(3, minmax(0px, 1fr)); gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * clamp(20px, 5cqw, 48px)); padding: 16px clamp(20px, 5cqw, 48px) 8px; scroll-padding-inline: clamp(20px, 5cqw, 48px); scrollbar-width: none;">
       
         <figure style="margin: 0px; flex: 0 0 74%; scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; transform: rotate(-1.5deg);">
           <div data-vid-toggle="1" role="button" aria-label="הפעלת קול" style="position: relative; aspect-ratio: 9 / 16; border-radius: 10px; background: rgb(31, 31, 31); border: 6px solid rgb(242, 242, 240); cursor: pointer; box-shadow: rgba(0, 0, 0, 0.5) 0px 18px 40px;">
@@ -881,20 +854,17 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 1: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-1.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-1.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״סביבה חזקה מכוח רצון.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">רקדנית, מתאמנת בגריפ כבר שנים</div>
           </figcaption>
         </figure>
       
@@ -904,20 +874,17 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 2: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-2.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-2.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״הגעתי ילד בתת־משקל וחסר ביטחון. המקום הזה הפך אותי למתחרה.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">מתחרה קרוספיט, בגריפ 5 שנים</div>
           </figcaption>
         </figure>
       
@@ -927,45 +894,21 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
             <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
               
               
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 3: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
+                <video src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-3.mp4" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@cc978c49659ca8677501187901b12b00bcbb698c/pages/grip-challenge/videos/grip-testimonial-3.jpg" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
               
             </div>
             <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="ico-muted"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg><svg class="ico-sound" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
               
             </div>
           </div>
           <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
+            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">״החלטה ששינתה לי את החיים. לא פחות מזה.״</div>
+            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">גיל, 24</div>
           </figcaption>
         </figure>
       
-        <figure style="margin: 0px; flex: 0 0 74%; scroll-snap-align: start; display: flex; flex-direction: column; gap: 14px; transform: rotate(1.6deg);">
-          <div data-vid-toggle="1" role="button" aria-label="הפעלת קול" style="position: relative; aspect-ratio: 9 / 16; border-radius: 10px; background: rgb(31, 31, 31); border: 6px solid rgb(242, 242, 240); cursor: pointer; box-shadow: rgba(0, 0, 0, 0.5) 0px 18px 40px;">
-            <span aria-hidden="true" style="position: absolute; top: -16px; right: calc(50% - 44px); width: 88px; height: 26px; background: rgba(235, 235, 232, 0.82); transform: rotate(-3deg); z-index: 2;"></span>
-            <div style="position: absolute; inset: 0px; overflow: hidden; border-radius: 4px;">
-              
-              
-                <div style="position: absolute; inset: 12px; border: 1.5px dashed rgba(242, 242, 240, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 14px; text-align: center; color: rgb(171, 171, 171); font-size: 14px; line-height: 1.5;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="2" width="12" height="20"></rect><path d="m10.5 9.5 4 2.5-4 2.5z"></path></svg>
-                  <span>רילס עדות 4: סרטון אנכי אמיתי של מתאמן/ת גריפ</span>
-                </div>
-              
-            </div>
-            <div style="position: absolute; bottom: 10px; left: 10px; width: 44px; height: 44px; border-radius: 999px; background: rgb(13, 13, 13); display: flex; align-items: center; justify-content: center; color: rgb(242, 242, 240);">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="m22 9-6 6M16 9l6 6"></path></svg>
-              
-            </div>
-          </div>
-          <figcaption style="display: flex; flex-direction: column; gap: 2px; padding-inline: 4px;">
-            <div style="font-family: Karantina, sans-serif; font-weight: 700; font-size: 28px; line-height: 1; color: rgb(242, 242, 240);">[שם פרטי]</div>
-            <div style="font-size: 15px; line-height: 1.5; color: rgb(171, 171, 171);">[משפט אחד: מה השתנה, מאושר מול המתאמן/ת]</div>
-          </figcaption>
-        </figure>
+        
       
     </div>
   </div></section><section data-screen-label="04 ההצעה" style="position: relative; background-color: rgb(255, 255, 255); border-top: 10px solid rgb(13, 13, 13); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .14 0%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E&quot;); color: rgb(13, 13, 13);">
@@ -1481,7 +1424,7 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(44px, 7cqw, 100px); align-items: start;">
       <div style="position: relative; max-width: 440px; width: 100%; justify-self: center; padding: 0px 0px 22px 22px;">
         <div style="position: absolute; inset: 22px 22px 0px 0px; background: rgb(13, 13, 13);"></div>
-        <div role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
+        <div data-photo-ph="1" role="img" aria-label="אביב גוילי, הבעלים והמייסד של גריפ, בסטודיו" style="position: relative; aspect-ratio: 4 / 5; background: rgb(220, 220, 220); display: flex; align-items: center; justify-content: center; padding: 28px; text-align: center; color: rgb(68, 68, 68); font-size: 15px; line-height: 1.55;">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1.5px dashed rgb(138, 138, 138); padding: 24px 18px;">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="5" width="18" height="14"></rect><circle cx="12" cy="12" r="3.5"></circle></svg>
             <span>תמונה של אביב בסטודיו: דיוקן חצי גוף, מבט למצלמה, הסטודיו ברקע. תמונה אמיתית בלבד.</span>
@@ -1621,7 +1564,12 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     var on=v.muted;
     document.querySelectorAll('[data-vid-toggle] video').forEach(function(o){o.muted=true;});
     v.muted=!on; if(on) v.play();
-    document.querySelectorAll('[data-vid-toggle]').forEach(function(o){o.setAttribute('aria-label','הפעלת קול');});
-    t.setAttribute('aria-label',on?'השתקת הסרטון':'הפעלת קול');
+    document.querySelectorAll('[data-vid-toggle]').forEach(function(o){o.setAttribute('aria-label','הפעלת קול');o.classList.remove('on');});
+    t.setAttribute('aria-label',on?'השתקת הסרטון':'הפעלת קול'); t.classList.toggle('on',on);
   });
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){var v=en.target;
+      if(en.isIntersecting&&en.intersectionRatio>=.5){var p=v.play();if(p&&p.catch)p.catch(function(){});}else{v.pause();}});},{threshold:[0,.5]});
+    document.querySelectorAll('[data-vid-toggle] video').forEach(function(v){io.observe(v);});
+  }
 })();</script>
