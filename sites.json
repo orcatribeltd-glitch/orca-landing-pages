@@ -77,5 +77,13 @@
       "category": "blog",
       "form_page": 114
     }
+  },
+  "gripfitness.co.il": {
+    "convert": [
+      {
+        "page": 9902,
+        "name": "grip-challenge"
+      }
+    ]
   }
 }
