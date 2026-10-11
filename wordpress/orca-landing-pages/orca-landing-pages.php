@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.13.2
+ * Version:     1.13.3
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION = '1.13.2';
+    const VERSION = '1.13.3';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -519,7 +519,10 @@ final class Orca_Landing_Pages
             }
             $st = ['seen' => false, 'backup' => [], 'what' => [], 'replaced' => 0, 'deduped' => 0];
             $out = self::footer_walk($data, $name, $markers, $st);
-            $changed = !empty($st['what']);
+            // Changed only when the data really differs. Until 1.13.3 a note like 'form-protected' counted as a
+            // change, so joinwebinar1 (its form's mail recipient is a footer marker) was saved again on every push
+            // and lost its embedded Rav Messer form each time (found 11/10/2026).
+            $changed = wp_json_encode($out) !== wp_json_encode($data);
             $replaced += $st['replaced']; $deduped += $st['deduped'];
             $seen_footer = $st['seen']; $backup = $st['backup']; $what = $st['what'];
             if (!$seen_footer && $append && get_post_meta($pid, '_olp_created_from', true)) {
