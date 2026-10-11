@@ -89,5 +89,12 @@
     "slug": "6-week-challenge",
     "title": "גריפ – אתגר 6 השבועות",
     "template": "templates/grip-challenge.json"
+  },
+  {
+    "site": "gripfitness.co.il",
+    "name": "grip-challenge-thanks",
+    "slug": "6-week-challenge-thanks",
+    "title": "גריפ – תודה, אתגר 6 השבועות",
+    "template": "templates/grip-challenge-thanks.json"
   }
 ]

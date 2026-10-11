@@ -1,0 +1,40 @@
+{
+ "version": "0.4",
+ "title": "גריפ – תודה, אתגר 6 השבועות",
+ "type": "page",
+ "page_settings": {
+  "template": "elementor_canvas",
+  "background_background": "classic",
+  "background_color": "#0D0D0D"
+ },
+ "content": [
+  {
+   "id": "6c1a9e2",
+   "elType": "container",
+   "isInner": false,
+   "settings": {
+    "content_width": "full",
+    "flex_direction": "column",
+    "padding": {
+     "unit": "px",
+     "top": "0",
+     "right": "0",
+     "bottom": "0",
+     "left": "0",
+     "isLinked": true
+    }
+   },
+   "elements": [
+    {
+     "id": "2b8f4d7",
+     "elType": "widget",
+     "widgetType": "shortcode",
+     "elements": [],
+     "settings": {
+      "shortcode": "[landing_page name=\"grip-challenge-thanks\"]"
+     }
+    }
+   ]
+  }
+ ]
+}
