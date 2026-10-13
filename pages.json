@@ -96,5 +96,12 @@
     "slug": "6-week-challenge-thanks",
     "title": "גריפ – תודה, אתגר 6 השבועות",
     "template": "templates/grip-challenge-thanks.json"
+  },
+  {
+    "site": "yedidya-ankri.com",
+    "name": "alpha-syllabus",
+    "slug": "alpha-syllabus",
+    "title": "סילבוס תכנית אלפא",
+    "template": "templates/alpha-syllabus.json"
   }
 ]

@@ -1,0 +1,40 @@
+{
+  "version": "0.4",
+  "title": "סילבוס תכנית אלפא",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#F7F2EC"
+  },
+  "content": [
+    {
+      "id": "a1f05e11",
+      "elType": "container",
+      "isInner": false,
+      "elements": [
+        {
+          "id": "a1f05e12",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"alpha-syllabus\"]"
+          }
+        }
+      ],
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      }
+    }
+  ]
+}

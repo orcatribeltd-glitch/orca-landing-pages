@@ -1,0 +1,236 @@
+<!-- תכנית אלפא – סילבוס (מפת הדרך). נבנה מה-PDF ״אלפא - סילבוס מעוצב - ללא שעשועי בית״ (יהונתן, 13/10/2026). עורכים את הקובץ הזה ישירות. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#F7F2EC;overflow-x:clip}
+.asy{--brown:#3A2420;--rust:#8C3A1E;--copper:#B65A33;--gold:#F0A818;--cream:#F7F2EC;--card:#FFFDFA;--ink:#33231E;--muted:#6E5A51;--ghost:#E3CFBF;--line:#E6D8CC;
+  direction:rtl;font-family:'Heebo',Arial,sans-serif;color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:clip}
+.asy *,.asy *::before,.asy *::after{box-sizing:border-box}
+/* theme resets (Hello/Elementor colour h1-h6): low specificity via :where so our classes win */
+.asy :where(h1,h2,h3,p,li,span,a,b){color:inherit;font-family:inherit;margin:0}
+.asy a{text-decoration:none}
+.asy-wrap{max-width:1080px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+
+/* ---------- hero ---------- */
+.asy-hero{background:linear-gradient(120deg,#7E3519 0%,#5A2A1C 45%,#2E211E 100%);color:#FFF6EE;padding:clamp(36px,7vw,84px) 0 clamp(40px,7vw,80px);position:relative;overflow:hidden}
+.asy-hero::after{content:"α";position:absolute;left:-2%;bottom:-30%;font-size:clamp(220px,40vw,460px);font-weight:900;line-height:1;color:rgba(255,255,255,.04);pointer-events:none}
+.asy-hero .asy-wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center;position:relative;z-index:1}
+.asy-logo{width:min(240px,62vw);aspect-ratio:582/495;border-radius:4px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35);justify-self:center}
+.asy-logo img{width:100%;height:100%;display:block;object-fit:cover}
+.asy-kicker{color:var(--gold);font-weight:700;font-size:15px;letter-spacing:.02em;margin-bottom:12px}
+.asy .asy-hero h1{font-size:clamp(34px,6.2vw,58px);font-weight:900;line-height:1.12;color:#FFF6EE}
+.asy-hero h1 span{display:block;white-space:nowrap}
+.asy-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.asy-stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 16px;font-size:15px;color:#F3E3D6}
+.asy-stat b{color:var(--gold);font-weight:800;margin-left:4px}
+@media (min-width:860px){
+  .asy-hero .asy-wrap{grid-template-columns:minmax(0,1fr) 280px}
+  .asy-logo{width:280px;justify-self:end}
+}
+@media (max-width:859px){.asy-hero-text{text-align:center}.asy-stats{justify-content:center}.asy-logo{order:-1}}
+
+/* ---------- stage nav ---------- */
+.asy-nav{position:sticky;top:0;z-index:20;background:rgba(247,242,236,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.asy-nav .asy-wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+.asy-nav .asy-wrap::-webkit-scrollbar{display:none}
+.asy-nav a{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:600;color:var(--brown);transition:background .2s,color .2s,border-color .2s}
+.asy-nav a b{color:var(--copper);font-weight:800}
+.asy-nav a:hover,.asy-nav a.is-on{background:var(--brown);border-color:var(--brown);color:#FFF6EE}
+.asy-nav a:hover b,.asy-nav a.is-on b{color:var(--gold)}
+
+/* ---------- stages ---------- */
+.asy-stage{padding:clamp(44px,7vw,80px) 0 clamp(20px,3vw,36px);scroll-margin-top:70px}
+.asy-stage + .asy-stage{border-top:1px solid var(--line)}
+.asy-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start}
+.asy-meta{font-size:14px;font-weight:700;color:var(--copper);margin-bottom:6px}
+.asy-meta i{font-style:normal;color:var(--ghost);margin:0 6px}
+.asy .asy-head h2{font-size:clamp(30px,4.6vw,44px);font-weight:900;line-height:1.15;color:var(--brown)}
+.asy-sub{font-size:clamp(16px,2vw,18px);font-weight:700;color:var(--copper);margin-top:6px}
+.asy-num{font-size:clamp(56px,9vw,96px);font-weight:900;line-height:.9;color:var(--ghost)}
+.asy-lead{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:760px;margin-top:22px}
+.asy-bar{display:flex;align-items:center;gap:14px;margin:36px 0 18px;font-size:14px;font-weight:700;color:var(--copper)}
+.asy-bar::after{content:"";flex:1;height:1px;background:var(--line);order:1}
+.asy-bar span:last-child{order:2}
+.asy-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:0}
+@media (min-width:700px){.asy-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+.asy-card{background:var(--card);border-top:3px solid var(--copper);border-radius:2px 2px 10px 10px;padding:18px 20px 20px;box-shadow:0 1px 0 rgba(58,36,32,.04),0 8px 22px -14px rgba(58,36,32,.25);transition:transform .25s,box-shadow .25s}
+.asy-card:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(58,36,32,.04),0 14px 30px -16px rgba(58,36,32,.35)}
+.asy .asy-card h3{font-size:18px;font-weight:800;line-height:1.35;color:var(--brown);display:flex;gap:10px;align-items:baseline}
+.asy-card h3 b{color:var(--copper);font-weight:800;font-size:17px;flex:0 0 auto}
+.asy-card p{font-size:15.5px;color:var(--muted);margin-top:6px}
+.asy-quote{margin-top:28px;background:var(--brown);color:#F3E3D6;border-right:4px solid var(--gold);border-radius:10px 0 0 10px;padding:20px 24px;font-size:clamp(16px,2vw,18px)}
+.asy-quote b{color:var(--gold);font-weight:800}
+
+/* ---------- footer ---------- */
+.asy-foot{margin-top:clamp(40px,6vw,64px);background:linear-gradient(120deg,#7E3519 0%,#3A2420 100%);color:#F3E3D6;padding:28px 0;text-align:center}
+.asy-foot p{font-size:15px}
+.asy-foot b{color:var(--gold);font-weight:800}
+
+@media (prefers-reduced-motion: reduce){.asy *{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="asy" id="alpha-syllabus">
+
+  <header class="asy-hero">
+    <div class="asy-wrap">
+      <div class="asy-hero-text">
+        <p class="asy-kicker">מפת הדרך • תוכנית אלפא</p>
+        <h1><span>להחזיר את החיזור.</span><span>להעיר את התשוקה.</span></h1>
+        <div class="asy-stats">
+          <span class="asy-stat"><b>18</b>שבועות</span>
+          <span class="asy-stat"><b>36</b>פרקים</span>
+          <span class="asy-stat"><b>4</b>שלבים</span>
+        </div>
+      </div>
+      <div class="asy-logo"><img src="images/alpha-logo.webp" alt="אלפא – בא להיות" width="582" height="495"></div>
+    </div>
+  </header>
+
+  <nav class="asy-nav" aria-label="שלבי התוכנית">
+    <div class="asy-wrap">
+      <a href="#stage-1" title="מעבר לשלב 1: ההטענה, פרקים 1 עד 6"><b>01</b>ההטענה</a>
+      <a href="#stage-2" title="מעבר לשלב 2: העמקה במיניות הגברית, פרקים 7 עד 16"><b>02</b>המיניות הגברית</a>
+      <a href="#stage-3" title="מעבר לשלב 3: החיזור, פרקים 17 עד 26"><b>03</b>החיזור</a>
+      <a href="#stage-4" title="מעבר לשלב 4: האינטימי, פרקים 27 עד 36"><b>04</b>האינטימי</a>
+    </div>
+  </nav>
+
+  <main class="asy-wrap">
+
+    <section class="asy-stage" id="stage-1">
+      <div class="asy-head">
+        <div>
+          <p class="asy-meta">שלב 01<i>/</i>פרקים 01–06</p>
+          <h2>ההטענה</h2>
+          <p class="asy-sub">ממלאים את המיכל. פותחים דרך חדשה.</p>
+        </div>
+        <span class="asy-num" aria-hidden="true">01</span>
+      </div>
+      <p class="asy-lead">נחזור לחיות, לעונג ולמשאבים שלנו, ונבנה מבט חדש על זוגיות, אהבה ומיניות. כי אי אפשר לצאת למסע עם מיכל ריק.</p>
+      <div class="asy-bar"><span>מה נפגוש בדרך</span><span>6 פרקים</span></div>
+      <ul class="asy-grid">
+        <li class="asy-card"><h3><b>01</b>מרחב השינוי</h3><p>פותחים אפשרות חדשה לתנועה ולשינוי בזוגיות.</p></li>
+        <li class="asy-card"><h3><b>02</b>בשבח החרמנות</h3><p>להכיר את האנרגיה המינית שלנו ואת מקומה בחיים.</p></li>
+        <li class="asy-card"><h3><b>03</b>אפשר לדבר עם האחראי?</h3><p>חוזרים לגוף, לאימון, לשרירים ולנשימה.</p></li>
+        <li class="asy-card"><h3><b>04</b>אהבתיה / להחזיר אהבה ליושנה</h3><p>להיזכר באהבה ובקשר עם עצמנו.</p></li>
+        <li class="asy-card"><h3><b>05</b>ואנחנו שניים</h3><p>על השוני בינינו ועל האפשרות להיפגש בו.</p></li>
+        <li class="asy-card"><h3><b>06</b>קוטביות – הקוטב הצפוני</h3><p>לגלות את כוחם של ההבדלים בתוך הקשר.</p></li>
+      </ul>
+      <p class="asy-quote"><b>הדרך מתחילה מבפנים.</b> פחות לרדוף אחרי תוצאה, יותר לחזור לחיות, למשחק ולרצון להיות יחד.</p>
+    </section>
+
+    <section class="asy-stage" id="stage-2">
+      <div class="asy-head">
+        <div>
+          <p class="asy-meta">שלב 02<i>/</i>פרקים 07–16</p>
+          <h2>העמקה במיניות הגברית</h2>
+          <p class="asy-sub">להתיידד עם העוררות. להביא אותה לקשר.</p>
+        </div>
+        <span class="asy-num" aria-hidden="true">02</span>
+      </div>
+      <p class="asy-lead">נלמד לחיות בשלום עם האנרגיה המינית שלנו ולכוון אותה למרחב זוגי שמקרב ופותח את הלב, בלי להישרף בציפייה ובאכזבה.</p>
+      <div class="asy-bar"><span>מה נפגוש בדרך</span><span>10 פרקים</span></div>
+      <ul class="asy-grid">
+        <li class="asy-card"><h3><b>07</b>הצייד</h3><p>הדחף הגברי, תנועה ויוזמה.</p></li>
+        <li class="asy-card"><h3><b>08</b>מסתורין ויוזמה</h3><p>איך משאירים מקום לסקרנות ולחיזור.</p></li>
+        <li class="asy-card"><h3><b>09</b>עוררות מינית – עוררות רגשית</h3><p>מזהים את השפות השונות של ההתעוררות.</p></li>
+        <li class="asy-card"><h3><b>10</b>הבה נתמירה</h3><p>היכולת להתמיר עוררות מינית לקרבה ולנוכחות.</p></li>
+        <li class="asy-card"><h3><b>11</b>מיכל העונג</h3><p>להכיר את שלבי ההתעוררות המינית.</p></li>
+        <li class="asy-card"><h3><b>12</b>סולמות וחבלים</h3><p>להבין עליות, ירידות ותנועה בעוררות.</p></li>
+        <li class="asy-card"><h3><b>13</b>הרפיה תודעתית</h3><p>לשחרר לחץ ולאפשר נוכחות.</p></li>
+        <li class="asy-card"><h3><b>14</b>קח נשימה</h3><p>על הנשימה והשפעתה על החוויה המינית.</p></li>
+        <li class="asy-card"><h3><b>15</b>תשמיע קול</h3><p>קול ככלי לוויסות ולשחרור עוררות.</p></li>
+        <li class="asy-card"><h3><b>16</b>נוע תנוע</h3><p>תנועה כדרך לזרום עם העוררות.</p></li>
+      </ul>
+    </section>
+
+    <section class="asy-stage" id="stage-3">
+      <div class="asy-head">
+        <div>
+          <p class="asy-meta">שלב 03<i>/</i>פרקים 17–26</p>
+          <h2>החיזור</h2>
+          <p class="asy-sub">לא רק להגיע לאנשהו. ליהנות מהדרך.</p>
+        </div>
+        <span class="asy-num" aria-hidden="true">03</span>
+      </div>
+      <p class="asy-lead">נלמד לחזר מתוך התשוקה שלנו, כשהיא מכוונת אל הלב של אהובתנו. דרך נתינה, לבוש, הקשבה, מילים, קשר עין ומגע – נכניס חיים למרחב הזוגי.</p>
+      <div class="asy-bar"><span>מה נפגוש בדרך</span><span>10 פרקים</span></div>
+      <ul class="asy-grid">
+        <li class="asy-card"><h3><b>17</b>השיח׳ הנדיב</h3><p>לתת מתוך רצון ושפע, לא מתוך ריצוי.</p></li>
+        <li class="asy-card"><h3><b>18</b>לובשים חיזור</h3><p>לבוש, נראות ומה הם מעוררים בבית.</p></li>
+        <li class="asy-card"><h3><b>19</b>חוזר חלילה</h3><p>על חזרתיות שמחזירה את החיזור ליומיום.</p></li>
+        <li class="asy-card"><h3><b>20</b>הרגיש המרגיש</h3><p>חיזור רגשי: למלא את המרחב ברגש.</p></li>
+        <li class="asy-card"><h3><b>21</b>שערי העונג</h3><p>שפות האהבה: איך אנחנו נותנים ומקבלים אהבה?</p></li>
+        <li class="asy-card"><h3><b>22</b>התשמע קולי</h3><p>על הקשבה אמיתית ועל המורכבות שבה.</p></li>
+        <li class="asy-card"><h3><b>23</b>בוא נדבר על זה</h3><p>חיזור מילולי שמחבר בין הלב לתשוקה.</p></li>
+        <li class="asy-card"><h3><b>24</b>תראו אותי</h3><p>קשר עין, נראות והמפה הפנימית של בת הזוג.</p></li>
+        <li class="asy-card"><h3><b>25</b>מגע שאינו מיני</h3><p>מגע שמייצר קרבה, גם ללא יעד מיני.</p></li>
+        <li class="asy-card"><h3><b>26</b>מגע שאינו מיני – חלק ב׳</h3><p>הכנה למגע והיכולת לפגוש גוף אחר.</p></li>
+      </ul>
+    </section>
+
+    <section class="asy-stage" id="stage-4">
+      <div class="asy-head">
+        <div>
+          <p class="asy-meta">שלב 04<i>/</i>פרקים 27–36</p>
+          <h2>האינטימי</h2>
+          <p class="asy-sub">כל הדרך נכנסת לחדר השינה.</p>
+        </div>
+        <span class="asy-num" aria-hidden="true">04</span>
+      </div>
+      <p class="asy-lead">נביא את החיזור, העוררות, התשוקה והקרבה אל המרחב האינטימי, ונלמד לשהות, להקשיב ולהיפגש באהבה ובסבלנות.</p>
+      <div class="asy-bar"><span>מה נפגוש בדרך</span><span>10 פרקים</span></div>
+      <ul class="asy-grid">
+        <li class="asy-card"><h3><b>27</b>מגע מיני</h3><p>יוזמה, שהות, כוונה וקצב; שני צעדים קדימה ואחד אחורה.</p></li>
+        <li class="asy-card"><h3><b>28</b>עקרונות המגע</h3><p>יסודות המגע במיטה ובעיסוי.</p></li>
+        <li class="asy-card"><h3><b>29</b>מיניות נשית, מיניות גברית</h3><p>על השוני, הפערים והמפגש ביניהם.</p></li>
+        <li class="asy-card"><h3><b>30</b>ארבעת האלמנטים</h3><p>איכויות המגע בעיסוי ובמעשה האהבה.</p></li>
+        <li class="asy-card"><h3><b>31</b>אתה עצור</h3><p>עצירות, הפסקות והיכולת לשהות בעוררות.</p></li>
+        <li class="asy-card"><h3><b>32</b>מרחב</h3><p>להפוך את חדר השינה למרחב מקודש ואינטימי.</p></li>
+        <li class="asy-card"><h3><b>33</b>סנכרון ולאב־דייט</h3><p>כיול תדרים ויצירת זמן שמאפשר העמקה.</p></li>
+        <li class="asy-card"><h3><b>34</b>רישיון נהיגה ידני</h3><p>אומנות העינוג הידני של בת הזוג.</p></li>
+        <li class="asy-card"><h3><b>35</b>פי כמה</h3><p>על עינוג אוראלי של בת הזוג.</p></li>
+        <li class="asy-card"><h3><b>36</b>מסיבת ניצחונות</h3><p>מסכמים, חוגגים ומטמיעים את הדרך.</p></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="asy-foot">
+    <div class="asy-wrap">
+      <p><b>ידידיה אנקרי</b> • אלפא — בא להיות</p>
+      <p>המסע אל החיזור, הקרבה והתשוקה</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var root=document.getElementById('alpha-syllabus'); if(!root) return;
+  var links=[].slice.call(root.querySelectorAll('.asy-nav a'));
+  var nav=root.querySelector('.asy-nav .asy-wrap');
+  links.forEach(function(a){
+    a.addEventListener('click',function(e){
+      var t=root.querySelector(a.getAttribute('href')); if(!t) return;
+      e.preventDefault();
+      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-64,behavior:reduce?'auto':'smooth'});
+    });
+  });
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      links.forEach(function(a){
+        var on=a.getAttribute('href')==='#'+en.target.id;
+        a.classList.toggle('is-on',on);
+        if(on && nav) nav.scrollTo({left:a.offsetLeft-nav.clientWidth/2+a.offsetWidth/2,behavior:'smooth'});
+      });
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  root.querySelectorAll('.asy-stage').forEach(function(s){io.observe(s)});
+})();
+</script>
