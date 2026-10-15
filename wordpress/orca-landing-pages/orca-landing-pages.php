@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.13.3
+ * Version:     1.14.0
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION = '1.13.3';
+    const VERSION = '1.14.0';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -66,6 +66,9 @@ final class Orca_Landing_Pages
         add_filter('pre_set_site_transient_update_plugins', [__CLASS__, 'inject_update']);
         add_filter('plugins_api', [__CLASS__, 'plugin_info'], 10, 3);
         add_action('wp_footer', [__CLASS__, 'privacy_link_script'], 99);
+        add_action('wp_footer', [__CLASS__, 'cookie_banner_fix'], 100);
+        add_filter('rank_math/frontend/robots', [__CLASS__, 'noindex_rank_math'], 99);
+        add_filter('wp_robots', [__CLASS__, 'noindex_wp_robots'], 99);
         add_filter('template_include', [__CLASS__, 'blog_template'], 99);
     }
 
@@ -1062,6 +1065,87 @@ final class Orca_Landing_Pages
     }
 
 
+    /* ---------- cookie banner (Complianz) readability + noindex pages ---------- */
+
+    /**
+     * sites.json: {"gripfitness.co.il": {
+     *   "cookie_banner": {"accept_text": "#111111", "policy_text": "מדיניות פרטיות",
+     *                     "policy_url": "https://gripfitness.co.il/website-terms/"},
+     *   "noindex": [9908]}}
+     * Why (ux, 16/10/2026): on grip the Complianz "accept" button was white on light green (1.34:1),
+     * and the banner's cookie-policy link pointed at the thank-you page with no text. We have no
+     * wp-admin access, so the site's own settings are corrected on the front end, per site, from the repo.
+     * Nothing is written to Complianz or Rank Math settings; removing the sites.json entry undoes it all.
+     */
+    public static function sync_cookie_banner(): void
+    {
+        $raw   = self::fetch_repo_file('sites.json');
+        $sites = $raw !== '' ? json_decode($raw, true) : null;
+        $site  = is_array($sites) ? ($sites[self::site_host()] ?? []) : [];
+        $cb    = is_array($site['cookie_banner'] ?? null) ? $site['cookie_banner'] : null;
+        if ($cb) {
+            $hex = static function ($v) { return preg_match('/^#[0-9a-f]{3,8}$/i', (string) $v) ? (string) $v : ''; };
+            update_option('olp_cookie_banner', [
+                'accept_text' => $hex($cb['accept_text'] ?? ''),
+                'accept_bg'   => $hex($cb['accept_bg'] ?? ''),
+                'policy_text' => (string) ($cb['policy_text'] ?? ''),
+                'policy_url'  => esc_url_raw((string) ($cb['policy_url'] ?? '')),
+            ], false);
+        } else {
+            delete_option('olp_cookie_banner');
+        }
+        $ids = array_values(array_filter(array_map('intval', (array) ($site['noindex'] ?? []))));
+        if ($ids) { update_option('olp_noindex', $ids, false); } else { delete_option('olp_noindex'); }
+    }
+
+    private static function is_noindex_page(): bool
+    {
+        $ids = get_option('olp_noindex');
+        return is_array($ids) && $ids && is_singular() && in_array((int) get_queried_object_id(), array_map('intval', $ids), true);
+    }
+
+    public static function noindex_rank_math($robots)
+    {
+        if (!self::is_noindex_page()) { return $robots; }
+        $robots = is_array($robots) ? $robots : [];
+        $robots['index'] = 'noindex';
+        $robots['follow'] = 'follow';
+        return $robots;
+    }
+
+    public static function noindex_wp_robots($robots)
+    {
+        if (!self::is_noindex_page()) { return $robots; }
+        $robots = is_array($robots) ? $robots : [];
+        unset($robots['index']);
+        $robots['noindex'] = true;
+        $robots['follow'] = true;
+        return $robots;
+    }
+
+    public static function cookie_banner_fix(): void
+    {
+        $cfg = get_option('olp_cookie_banner');
+        if (!is_array($cfg)) { return; }
+        $css = '';
+        if (!empty($cfg['accept_text'])) {
+            $css .= '.cmplz-cookiebanner .cmplz-buttons .cmplz-btn.cmplz-accept{color:' . esc_attr($cfg['accept_text']) . ' !important}';
+        }
+        if (!empty($cfg['accept_bg'])) {
+            $css .= '.cmplz-cookiebanner .cmplz-buttons .cmplz-btn.cmplz-accept{background-color:' . esc_attr($cfg['accept_bg']) . ' !important;border-color:' . esc_attr($cfg['accept_bg']) . ' !important}';
+        }
+        // A document link with no text is an invisible, focusable link: hide it until it has a label.
+        $css .= '.cmplz-cookiebanner .cmplz-documents a.cmplz-link:empty{display:none !important}';
+        echo '<style id="olp-cookie-banner">' . $css . '</style>';
+        if (empty($cfg['policy_text']) || empty($cfg['policy_url'])) { return; }
+        $data = wp_json_encode(['t' => $cfg['policy_text'], 'u' => $cfg['policy_url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        // Complianz rewrites its links after load, so this runs on load, on its own events, and once more shortly after.
+        echo '<script>(function(c){function fix(){document.querySelectorAll(".cmplz-cookiebanner .cmplz-documents a.cookie-statement").forEach(function(a){if(a.href!==c.u)a.href=c.u;if(a.textContent.trim()!==c.t)a.textContent=c.t;a.classList.remove("cmplz-hidden");});}'
+            . 'function run(){fix();setTimeout(fix,600);setTimeout(fix,2000);}if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",run);'
+            . '["cmplz_cookie_warning_loaded","cmplz_status_change","cmplz_enable_category"].forEach(function(e){document.addEventListener(e,function(){setTimeout(fix,0);});});})(' . $data . ');</script>';
+    }
+
+
     /* ---------- restore what a footer sync removed ---------- */
 
     /**
@@ -1679,6 +1763,7 @@ final class Orca_Landing_Pages
         self::step('sync_footer', [__CLASS__, 'sync_footer']);
         self::step('sync_conversions', [__CLASS__, 'sync_conversions']);
         self::step('sync_privacy_link', [__CLASS__, 'sync_privacy_link']);
+        self::step('sync_cookie_banner', [__CLASS__, 'sync_cookie_banner']);
         self::step('sync_blog', [__CLASS__, 'sync_blog']);
         update_option('olp_last_errors', self::$step_errors ? gmdate('c') . ' ' . implode(' | ', self::$step_errors) : '', false);
 
