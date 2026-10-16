@@ -88,7 +88,9 @@
     "cookie_banner": {
       "accept_text": "#111111",
       "policy_text": "מדיניות פרטיות",
-      "policy_url": "https://gripfitness.co.il/website-terms/"
+      "policy_url": "https://gripfitness.co.il/website-terms/",
+      "message": "הם עוזרים לאתר לעבוד חלק ומראים לנו איך גולשים בו. בלי אישור, חלק מהאפשרויות באתר עלולות לא לעבוד.",
+      "accept_label": "לאשר ולהמשיך"
     },
     "noindex": [
       9908

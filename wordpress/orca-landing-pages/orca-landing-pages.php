@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.14.0
+ * Version:     1.14.1
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -1090,6 +1090,8 @@ final class Orca_Landing_Pages
                 'accept_bg'   => $hex($cb['accept_bg'] ?? ''),
                 'policy_text' => (string) ($cb['policy_text'] ?? ''),
                 'policy_url'  => esc_url_raw((string) ($cb['policy_url'] ?? '')),
+                'message'      => sanitize_text_field((string) ($cb['message'] ?? '')),
+                'accept_label' => sanitize_text_field((string) ($cb['accept_label'] ?? '')),
             ], false);
         } else {
             delete_option('olp_cookie_banner');
@@ -1137,10 +1139,15 @@ final class Orca_Landing_Pages
         // A document link with no text is an invisible, focusable link: hide it until it has a label.
         $css .= '.cmplz-cookiebanner .cmplz-documents a.cmplz-link:empty{display:none !important}';
         echo '<style id="olp-cookie-banner">' . $css . '</style>';
-        if (empty($cfg['policy_text']) || empty($cfg['policy_url'])) { return; }
-        $data = wp_json_encode(['t' => $cfg['policy_text'], 'u' => $cfg['policy_url']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $t = (string) ($cfg['policy_text'] ?? ''); $u = (string) ($cfg['policy_url'] ?? '');
+        $m = (string) ($cfg['message'] ?? ''); $al = (string) ($cfg['accept_label'] ?? '');
+        if (($t === '' || $u === '') && $m === '' && $al === '') { return; }
+        // Banner copy (message, accept label) is approved per site by Jonathan (grip: 16/10/2026); Complianz settings stay untouched.
+        $data = wp_json_encode(['t' => ($t !== '' && $u !== '') ? $t : '', 'u' => $u, 'm' => $m, 'a' => $al], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         // Complianz rewrites its links after load, so this runs on load, on its own events, and once more shortly after.
-        echo '<script>(function(c){function fix(){document.querySelectorAll(".cmplz-cookiebanner .cmplz-documents a.cookie-statement").forEach(function(a){if(a.href!==c.u)a.href=c.u;if(a.textContent.trim()!==c.t)a.textContent=c.t;a.classList.remove("cmplz-hidden");});}'
+        echo '<script>(function(c){function fix(){if(c.t){document.querySelectorAll(".cmplz-cookiebanner .cmplz-documents a.cookie-statement").forEach(function(a){if(a.href!==c.u)a.href=c.u;if(a.textContent.trim()!==c.t)a.textContent=c.t;a.classList.remove("cmplz-hidden");});}'
+            . 'if(c.m){document.querySelectorAll(".cmplz-cookiebanner .cmplz-message").forEach(function(el){if(el.textContent.trim()!==c.m)el.textContent=c.m;});}'
+            . 'if(c.a){document.querySelectorAll(".cmplz-cookiebanner .cmplz-buttons .cmplz-accept").forEach(function(b){if(b.textContent.trim()!==c.a)b.textContent=c.a;});}}'
             . 'function run(){fix();setTimeout(fix,600);setTimeout(fix,2000);}if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",run);'
             . '["cmplz_cookie_warning_loaded","cmplz_status_change","cmplz_enable_category"].forEach(function(e){document.addEventListener(e,function(){setTimeout(fix,0);});});})(' . $data . ');</script>';
     }
