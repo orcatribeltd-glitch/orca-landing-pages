@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.14.1
+ * Version:     1.14.2
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -67,6 +67,7 @@ final class Orca_Landing_Pages
         add_filter('plugins_api', [__CLASS__, 'plugin_info'], 10, 3);
         add_action('wp_footer', [__CLASS__, 'privacy_link_script'], 99);
         add_action('wp_footer', [__CLASS__, 'cookie_banner_fix'], 100);
+        add_action('wp_head', [__CLASS__, 'site_css'], 100);
         add_filter('rank_math/frontend/robots', [__CLASS__, 'noindex_rank_math'], 99);
         add_filter('wp_robots', [__CLASS__, 'noindex_wp_robots'], 99);
         add_filter('template_include', [__CLASS__, 'blog_template'], 99);
@@ -1096,6 +1097,10 @@ final class Orca_Landing_Pages
         } else {
             delete_option('olp_cookie_banner');
         }
+        // Small per-site layout fixes approved by Jonathan (grip, 16/10/2026: home page must not drag sideways on phones).
+        $css = trim(str_replace('<', '', (string) ($site['site_css'] ?? '')));
+        $css = str_ireplace(['</style', '<script', 'expression(', 'javascript:'], '', $css);
+        if ($css !== '') { update_option('olp_site_css', $css, false); } else { delete_option('olp_site_css'); }
         $ids = array_values(array_filter(array_map('intval', (array) ($site['noindex'] ?? []))));
         if ($ids) { update_option('olp_noindex', $ids, false); } else { delete_option('olp_noindex'); }
     }
@@ -1123,6 +1128,14 @@ final class Orca_Landing_Pages
         $robots['noindex'] = true;
         $robots['follow'] = true;
         return $robots;
+    }
+
+    /** Per-site CSS from sites.json "site_css" (layout fixes only; no copy). Remove the key to undo. */
+    public static function site_css(): void
+    {
+        $css = get_option('olp_site_css');
+        if (!is_string($css) || $css === '') { return; }
+        echo '<style id="olp-site-css">' . $css . '</style>';
     }
 
     public static function cookie_banner_fix(): void
