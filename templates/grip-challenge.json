@@ -84,7 +84,7 @@
         "field_type": "acceptance",
         "field_label": "אישור דיוור",
         "acceptance_text": "אני מאשר/ת לקבל דיוור במייל ו/או ב-SMS או ב-WhatsApp מ״גריפ - אביב גוילי״, ומודע/ת לכך שאוכל להסיר את עצמי מהרשימה בכל עת. <a href=\"https://gripfitness.co.il/website-terms/\" target=\"_blank\">לתקנון</a>",
-        "required": "",
+        "required": "true",
         "width": "100"
        },
        {

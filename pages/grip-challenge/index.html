@@ -1540,10 +1540,16 @@ body.grip-past .grip-bar{opacity:1;visibility:visible;pointer-events:auto}
     var pErr=phone&&!phone.value.trim()?'צריך להקליד מספר טלפון':(phone&&digits.length!==10?'צריך להקליד מספר של 10 ספרות, למשל 0541234567':'');
     setErr(name&&name.closest('.elementor-field-group'),nErr);
     setErr(phone&&phone.closest('.elementor-field-group'),pErr);
-    // the mailing consent is optional (Jonathan, 19/10, replaces the 12/10 decision)
-    if(nErr||pErr){(nErr?name:phone).focus();return false;}
+    // the mailing consent is REQUIRED (Jonathan, 12/10, reconfirmed 19/10: "חובה לאשר דיוור. אסור שזה יהיה רשות")
+    var ok=form.querySelector('input[name="form_fields[marketing_consent]"]');
+    var cErr=ok&&!ok.checked?'כדי להמשיך, צריך לסמן את תיבת האישור':'';
+    setErr(ok&&ok.closest('.elementor-field-group'),cErr);
+    if(nErr||pErr||cErr){(nErr?name:(pErr?phone:ok)).focus();return false;}
     return true;
   }
+  document.addEventListener('change',function(e){
+    if(e.target.matches&&e.target.matches('input[name="form_fields[marketing_consent]"]')&&e.target.checked) setErr(e.target.closest('.elementor-field-group'),'');
+  });
   document.addEventListener('input',function(e){
     if(card&&card.contains(e.target)&&e.target.matches('input.elementor-field-textual')) setErr(e.target.closest('.elementor-field-group'),'');
   });
