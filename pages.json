@@ -103,5 +103,12 @@
     "slug": "alpha-syllabus",
     "title": "סילבוס תכנית אלפא",
     "template": "templates/alpha-syllabus.json"
+  },
+  {
+    "site": "yedidya-ankri.com",
+    "name": "alpha-landing",
+    "slug": "alpha",
+    "title": "תכנית אלפא",
+    "template": "templates/alpha-landing.json"
   }
 ]

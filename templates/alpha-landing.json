@@ -1,0 +1,202 @@
+{
+  "version": "0.4",
+  "title": "תכנית אלפא",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#f7f3f0"
+  },
+  "content": [
+    {
+      "id": "b2a10e01",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "b2a10e02",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"alpha-landing\"]"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b2a10e03",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "b2a10e04",
+          "elType": "widget",
+          "widgetType": "form",
+          "elements": [],
+          "settings": {
+            "form_name": "תכנית אלפא - טופס עליון",
+            "form_fields": [
+              {
+                "_id": "full_name",
+                "custom_id": "full_name",
+                "field_type": "text",
+                "field_label": "שם",
+                "placeholder": "שם",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "phone",
+                "custom_id": "phone",
+                "field_type": "tel",
+                "field_label": "טלפון",
+                "placeholder": "טלפון",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "email",
+                "custom_id": "email",
+                "field_type": "email",
+                "field_label": "מייל",
+                "placeholder": "מייל",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "marketing_consent",
+                "custom_id": "marketing_consent",
+                "field_type": "acceptance",
+                "field_label": "אישור דיוור",
+                "acceptance_text": "אני מאשר/ת לקבל דיוור במייל ו/או ב-SMS או ב-WhatsApp מ״ידידיה אנקרי״, ומודע/ת לכך שאוכל להסיר את עצמי מהרשימה בכל עת. <a href=\"#\" target=\"_blank\">לתקנון מדיניות פרטיות</a>",
+                "required": "true",
+                "width": "100"
+              }
+            ],
+            "show_labels": "",
+            "mark_required": "",
+            "button_text": "לשיחת התאמה אישית עם ידידיה — ללא עלות",
+            "button_width": "100",
+            "submit_actions": [
+              "email"
+            ],
+            "email_subject": "ליד חדש לתכנית אלפא: [field id=\"full_name\"]",
+            "email_content": "[all-fields]",
+            "email_from_name": "תכנית אלפא - דף הנחיתה",
+            "success_message": "תודה! קיבלנו את הפרטים, וידידיה יחזור אליך לשיחת התאמה בהקדם.",
+            "required_field_message": "זה שדה חובה",
+            "invalid_message": "משהו לא תקין בפרטים, בדוק ונסה שוב",
+            "error_message": "משהו השתבש בשליחה. נסה שוב בעוד רגע",
+            "custom_messages": "yes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b2a10e05",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "b2a10e06",
+          "elType": "widget",
+          "widgetType": "form",
+          "elements": [],
+          "settings": {
+            "form_name": "תכנית אלפא - טופס תחתון",
+            "form_fields": [
+              {
+                "_id": "full_name",
+                "custom_id": "full_name",
+                "field_type": "text",
+                "field_label": "שם",
+                "placeholder": "שם מלא",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "phone",
+                "custom_id": "phone",
+                "field_type": "tel",
+                "field_label": "טלפון",
+                "placeholder": "נייד ליצירת קשר",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "email",
+                "custom_id": "email",
+                "field_type": "email",
+                "field_label": "מייל",
+                "placeholder": "אימייל",
+                "required": "true",
+                "width": "100"
+              },
+              {
+                "_id": "marketing_consent",
+                "custom_id": "marketing_consent",
+                "field_type": "acceptance",
+                "field_label": "אישור דיוור",
+                "acceptance_text": "אני מאשר/ת לקבל דיוור במייל ו/או ב-SMS או ב-WhatsApp מ״ידידיה אנקרי״, ומודע/ת לכך שאוכל להסיר את עצמי מהרשימה בכל עת. <a href=\"#\" target=\"_blank\">לתקנון מדיניות פרטיות</a>",
+                "required": "true",
+                "width": "100"
+              }
+            ],
+            "show_labels": "",
+            "mark_required": "",
+            "button_text": "לשיחת התאמה אישית עם ידידיה — ללא עלות",
+            "button_width": "100",
+            "submit_actions": [
+              "email"
+            ],
+            "email_subject": "ליד חדש לתכנית אלפא: [field id=\"full_name\"]",
+            "email_content": "[all-fields]",
+            "email_from_name": "תכנית אלפא - דף הנחיתה",
+            "success_message": "תודה! קיבלנו את הפרטים, וידידיה יחזור אליך לשיחת התאמה בהקדם.",
+            "required_field_message": "זה שדה חובה",
+            "invalid_message": "משהו לא תקין בפרטים, בדוק ונסה שוב",
+            "error_message": "משהו השתבש בשליחה. נסה שוב בעוד רגע",
+            "custom_messages": "yes"
+          }
+        }
+      ]
+    }
+  ]
+}

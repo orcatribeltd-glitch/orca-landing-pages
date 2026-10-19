@@ -1,0 +1,411 @@
+<!-- תכנית אלפא – דף נחיתה (שיחת התאמה). נבנה מעיצוב קלוד דיזיין ״ידידיה תכנית אלפא v2״ (יהונתן, 19/10/2026). טפסים = טפסי אלמנטור אמיתיים במקום olp:form:1 ו-olp:form:2. עורכים את הקובץ הזה ישירות. -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Heebo:wght@500;700;800;900&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#f7f3f0;overflow-x:clip}
+.alp{--rust:#b8431f;--rust-d:#a23a1a;--ink:#232224;--body:#4a4644;--cream:#f7f3f0;--gold:#f2a81d;--coal:#1b1a1c;--muted:#8d8682;
+  direction:rtl;font-family:'Assistant',sans-serif;color:var(--ink);background:var(--cream);min-width:0;overflow-x:clip;-webkit-font-smoothing:antialiased}
+.alp *,.alp *::before,.alp *::after{box-sizing:border-box}
+/* theme resets (Hello/Elementor colour h1-h6 and p) – low specificity so our classes win */
+.alp :where(h1,h2,h3,p,li,span,a,b,label,div){color:inherit;font-family:inherit;margin:0}
+.alp a{text-decoration:none}
+.alp .hb{font-family:'Heebo',sans-serif}
+.alp-mono{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:#8d8682}
+.alp-wrap{max-width:1200px;margin:0 auto;padding-left:32px;padding-right:32px}
+
+/* ---------- buttons ---------- */
+.alp-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;font-family:'Heebo',sans-serif;font-weight:800;line-height:1.3;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.2);transition:background .2s,transform .2s}
+.alp-btn:hover{text-decoration:none!important;transform:translateY(-1px)}
+.alp-btn--rust{background:var(--rust);color:#fbeee8!important}
+.alp-btn--rust:hover{background:var(--rust-d)}
+.alp-btn--coal{background:var(--coal);color:var(--gold)!important}
+.alp-btn--coal:hover{background:#000}
+.alp-btn--ghost{border:2px solid var(--ink);color:var(--ink)!important;box-shadow:none;font-size:18px;padding:16px 26px;min-height:44px}
+.alp-btn--ghost:hover{background:var(--ink);color:var(--cream)!important}
+
+/* ---------- header ---------- */
+.alp-head{position:sticky;top:0;z-index:20;background:var(--cream);border-bottom:1px solid #e4dcd6;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.alp-head .alp-wrap{padding-top:12px;padding-bottom:12px;display:flex;align-items:center;gap:24px}
+.alp-head-logo{display:flex;align-items:center;flex:none}
+.alp-head-logo img{width:64px;height:auto;display:block}
+.alp-nav{display:flex;gap:clamp(12px,2vw,28px);margin-inline-start:auto;min-width:0;font-family:'Heebo',sans-serif;font-weight:500;font-size:clamp(14px,1.4vw,16px)}
+.alp-nav a{color:var(--body);white-space:nowrap;min-height:44px;display:inline-flex;align-items:center}
+.alp-nav a:hover{color:var(--rust)}
+.alp-head .alp-btn{flex:none;font-size:15px;padding:14px 22px;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+
+/* ---------- hero ---------- */
+.alp-hero{position:relative;overflow:hidden;background:#3a2620}
+.alp-hero-glow{position:absolute;width:900px;height:900px;top:-220px;right:-120px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#8a3a22 0%,#6b3021 35%,rgba(58,38,32,0) 70%);pointer-events:none}
+.alp-hero .alp-wrap{position:relative;padding-top:88px;padding-bottom:100px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px;align-items:center}
+.alp-hero-text{display:flex;flex-direction:column;align-items:flex-start}
+.alp-hero-text img{width:min(100%,300px);height:auto;display:block;margin-bottom:18px}
+.alp-come{font-family:'Heebo',sans-serif;font-weight:900;font-size:clamp(56px,8vw,96px);line-height:1;color:var(--gold)!important;margin-bottom:34px!important}
+.alp .alp-hero h1{font-family:'Heebo',sans-serif;font-weight:900;font-size:clamp(34px,4.4vw,54px);line-height:1.15;color:var(--cream);text-wrap:balance}
+.alp-hero-card{background:var(--cream);padding:38px 36px;box-shadow:0 18px 40px rgba(0,0,0,.35);max-width:450px;width:100%;justify-self:end}
+.alp-hero-card > p{margin:0 0 28px!important;font-family:'Heebo',sans-serif;font-weight:800;font-size:23px;line-height:1.4;color:var(--ink)}
+
+/* ---------- section basics ---------- */
+.alp-sec{padding-top:100px;padding-bottom:100px}
+.alp .alp-h2{font-family:'Heebo',sans-serif;font-weight:900;font-size:44px;line-height:1.2;color:var(--ink)}
+.alp-check{display:flex;gap:18px;align-items:flex-start;background:#fff;padding:22px 26px;box-shadow:0 2px 6px rgba(0,0,0,.05);font-size:20px;line-height:1.6;color:var(--body)}
+.alp-tick{flex:none;width:30px;height:30px;background:var(--rust);color:var(--cream)!important;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;margin-top:2px}
+.alp-check--sm{gap:16px;padding:22px 24px;font-size:19px}
+.alp-check--sm .alp-tick{width:28px;height:28px;font-size:16px}
+.alp-list{display:flex;flex-direction:column;gap:6px}
+
+/* ---------- testimonials / tastes rails ---------- */
+.alp-rail{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.alp-rail-in{display:flex;gap:24px;padding:0 max(32px,calc((100% - 1136px) / 2));width:max-content}
+.alp-testi{flex:none;width:300px;height:420px;scroll-snap-align:start;background:#fbf6f3;box-shadow:0 10px 24px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:var(--muted);text-align:center;padding:20px}
+.alp-taste{flex:none;width:260px;height:460px;scroll-snap-align:start;background:repeating-linear-gradient(135deg,#2e2c2d 0 16px,#353334 16px 32px);border:1px solid #3a3839;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0;font:inherit}
+.alp-taste .alp-mono{color:#77726f}
+.alp-play{width:104px;height:104px;border-radius:50%;background:var(--rust);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+.alp-play span{width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-right:30px solid var(--cream);margin-right:6px}
+.alp-play--sm{width:72px;height:72px;box-shadow:none;transition:transform .2s}
+.alp-play--sm span{border-top-width:12px;border-bottom-width:12px;border-right-width:20px;margin-right:4px}
+.alp-taste:hover .alp-play--sm{transform:scale(1.08)}
+
+/* ---------- video ---------- */
+.alp-video{position:relative;aspect-ratio:16/9;width:100%;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5;box-shadow:0 14px 34px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+
+/* ---------- stages ---------- */
+.alp-stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px}
+.alp-stage{background:#2a2829;border:1px solid #3a3839;box-shadow:0 6px 0 rgba(0,0,0,.18);padding:30px 26px 34px;display:flex;flex-direction:column;gap:14px}
+.alp-stage-n{align-self:flex-start;white-space:nowrap;line-height:1.3;background:var(--gold);color:var(--coal)!important;font-family:'Heebo',sans-serif;font-weight:800;font-size:15px;padding:6px 14px}
+.alp .alp-stage h3{font-family:'Heebo',sans-serif;font-weight:900;font-size:26px;line-height:1.25;color:var(--cream)}
+.alp-stage-paras{display:flex;flex-direction:column;gap:12px}
+.alp-stage-paras p{font-size:18px;line-height:1.75;color:#a39d99}
+
+/* ---------- group ---------- */
+.alp-group p{margin:0 0 24px}
+
+/* ---------- price ---------- */
+.alp-price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;margin-bottom:30px}
+.alp-big{font-family:'Heebo',sans-serif;font-weight:900;font-size:56px;line-height:1}
+
+/* ---------- faq ---------- */
+.alp-faq-item{border-top:3px solid #ebe5e1;border-bottom:3px solid #ebe5e1}
+.alp-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px 30px;background:transparent;border:0;cursor:pointer;text-align:right;font-family:'Heebo',sans-serif;font-weight:800;font-size:22px;color:var(--ink)}
+.alp-faq-q > span:first-child{flex:1;min-width:0}
+.alp-faq-ico{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#e6e1de;color:var(--body);font-size:22px;font-weight:700;line-height:1;transition:background .2s,color .2s}
+.alp-faq-ico::before{content:"+"}
+.alp-faq-q[aria-expanded="true"] .alp-faq-ico{background:var(--rust);color:var(--cream)}
+.alp-faq-q[aria-expanded="true"] .alp-faq-ico::before{content:"−"}
+.alp-faq-a{padding:0 30px 32px 90px;font-size:19px;line-height:1.9;color:var(--body)}
+
+/* ---------- footer / floating ---------- */
+.alp-foot a{color:#cfc9c5}
+.alp-float{position:fixed;bottom:22px;left:22px;z-index:30;font-size:clamp(14px,1.6vw,17px);white-space:nowrap;padding:16px 22px;box-shadow:0 8px 22px rgba(0,0,0,.3);transition:opacity .25s,transform .25s}
+.alp-float.is-hidden{opacity:0;transform:translateY(12px);pointer-events:none}
+.alp-modal{position:fixed;inset:0;z-index:40;background:rgba(20,18,19,.88);display:flex;align-items:center;justify-content:center;padding:32px}
+.alp-modal[hidden]{display:none}
+.alp-modal-box{width:min(100%,380px);aspect-ratio:9/16;background:repeating-linear-gradient(135deg,#2e2c2d 0 16px,#353334 16px 32px);border:1px solid #3a3839;display:flex;align-items:center;justify-content:center}
+.alp-modal-x{position:absolute;top:18px;left:18px;width:44px;height:44px;border:0;background:transparent;color:#f7f3f0;font-size:30px;cursor:pointer}
+
+/* ---------- the real Elementor forms (placed by the plugin at the olp:form markers) ---------- */
+.alp-form .elementor-form-fields-wrapper{display:flex;flex-direction:column;gap:16px;margin:0!important}
+.alp-form .elementor-field-group{width:100%!important;max-width:100%!important;flex:none!important;padding:0!important;margin:0!important}
+.alp-form .elementor-field-label{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.alp-form input.elementor-field-textual{height:62px;width:100%;background:#fff;border:1px solid #ddd3cd!important;border-radius:0!important;box-shadow:inset 0 3px 4px rgba(0,0,0,.08);padding:0 18px!important;font-family:'Assistant',sans-serif!important;font-size:19px!important;color:var(--ink)!important;outline:none;direction:rtl}
+.alp-form input.elementor-field-textual:focus{border-color:var(--rust)!important}
+.alp-form input::placeholder{color:#a8a19d!important;opacity:1}
+.alp-form .elementor-field-type-acceptance{font-size:15px;line-height:1.6}
+.alp-form .elementor-field-subgroup{display:block}
+.alp-form .elementor-field-option{display:flex!important;align-items:flex-start;gap:12px}
+.alp-form .elementor-field-option input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--coal)}
+.alp-form .elementor-field-option label{color:inherit!important;font-family:'Assistant',sans-serif!important;cursor:pointer}
+.alp-form .elementor-field-option a{text-decoration:underline}
+.alp-form .e-form__buttons,.alp-form .elementor-field-type-submit{margin-top:6px!important}
+.alp-form .elementor-button{width:100%;min-height:72px;padding:12px 16px!important;border:0!important;border-radius:0!important;font-family:'Heebo',sans-serif!important;font-weight:800!important;font-size:20px!important;line-height:1.3!important;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:normal}
+.alp-form .elementor-message{font-size:17px;margin-top:12px}
+.alp-form--hero .elementor-field-type-acceptance{color:var(--body)}
+.alp-form--hero .elementor-field-option a{color:var(--rust)}
+.alp-form--hero .elementor-button{background:var(--rust)!important;color:#fbeee8!important}
+.alp-form--hero .elementor-button:hover{background:var(--rust-d)!important}
+.alp-form--final input.elementor-field-textual{height:70px;background:#fbefe9;border:0!important;box-shadow:inset 0 3px 4px rgba(0,0,0,.12);padding:0 22px!important}
+.alp-form--final .elementor-field-type-acceptance{color:#f6d6c8}
+.alp-form--final .elementor-field-option a{color:#fbeee8}
+.alp-form--final .elementor-button{min-height:84px;background:var(--coal)!important;color:var(--gold)!important;font-size:23px!important}
+.alp-form--final .elementor-button:hover{background:#000!important}
+.alp-form--final .elementor-message{color:#fbeee8}
+.alp-form--hero .elementor-message{color:var(--ink)}
+
+/* ---------- small screens ---------- */
+@media (max-width:1000px){.alp-nav{display:none}.alp-head .alp-wrap{justify-content:space-between}}
+@media (max-width:640px){
+  .alp-wrap{padding-left:16px;padding-right:16px}
+  .alp-head .alp-btn{font-size:13px;padding:10px 12px;white-space:normal;max-width:220px}
+  .alp-head-logo img{width:52px}
+  .alp-hero .alp-wrap{padding-top:44px;padding-bottom:56px;gap:36px}
+  .alp-hero-text{align-items:center;text-align:center}
+  .alp-hero-text img{width:min(70%,220px)}
+  .alp-come{margin-bottom:20px!important}
+  .alp-hero-card{padding:28px 20px;justify-self:stretch}
+  .alp-hero-card > p{font-size:20px;margin-bottom:20px!important}
+  .alp-sec{padding-top:64px;padding-bottom:64px}
+  .alp .alp-h2{font-size:32px}
+  .alp-check{font-size:18px;padding:18px 16px;gap:14px}
+  .alp-rail-in{padding:0 16px;gap:16px}
+  .alp-testi{width:260px;height:360px}
+  .alp-taste{width:220px;height:390px}
+  .alp-play{width:80px;height:80px}
+  .alp-big{font-size:46px}
+  .alp-price-card{padding:32px 18px 30px!important}
+  .alp-faq-q{padding:22px 8px;font-size:19px}
+  .alp-faq-a{padding:0 8px 24px 8px;font-size:18px}
+  .alp-btn--block-sm{display:flex;width:100%;font-size:19px!important;padding:20px 18px!important}
+  .alp .alp-final-title{font-size:34px!important}
+  .alp-float{left:12px;right:12px;bottom:12px;white-space:normal;text-align:center;justify-content:center;font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){.alp *{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="alp" dir="rtl">
+<header class="alp-head">
+  <div class="alp-wrap">
+    <a href="#top" class="alp-head-logo" title="חזרה לראש העמוד"><img src="images/alpha-logo-rust.webp" alt="אלפא" width="64" height="53"></a>
+    <nav class="alp-nav" aria-label="ניווט בעמוד">
+      <a href="#fit">למי זה מתאים</a>
+      <a href="#program">מה לומדים</a>
+      <a href="#price">עלות</a>
+      <a href="#about">ידידיה</a>
+      <a href="#faq">שאלות</a>
+    </nav>
+    <a href="#contact" class="alp-btn alp-btn--rust" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+  </div>
+</header>
+
+<section id="top" class="alp-hero">
+  <div class="alp-hero-glow" aria-hidden="true"></div>
+  <div class="alp-wrap">
+    <div class="alp-hero-text">
+      <img src="images/alpha-logo-light.webp" alt="אלפא" width="300" height="248">
+      <div class="alp-come">בוא להיות</div>
+      <h1>להחזיר את החיזור. להעיר את התשוקה.</h1>
+    </div>
+    <div class="alp-hero-card">
+      <p>לשיחת התאמה אישית עם ידידיה לתוכנית, ללא עלות:</p>
+      <div class="alp-form alp-form--hero"><!--olp:form:1--></div>
+    </div>
+  </div>
+</section>
+
+<section id="fit" class="alp-sec" style="background:#f7f3f0">
+  <div class="alp-wrap" style="max-width:1000px">
+    <h2 class="alp-h2" style="margin-bottom:44px">למי התוכנית מתאימה</h2>
+    <div class="alp-list">
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שטוב להם ורוצים שיהיה להם מדהים.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לאהוב בטירוף את אשתו.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להחזיר את הניצוץ בעיניים של אשתו.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להרגיש אהוב ומקובל בבית.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להביא את המיניות שלו לקשר באופן מלא, בלי להסתיר חלקים ממנה.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לחזור לאהבה שהייתה בהתחלה — לפני המשכנתא, הילדים, המילואים ומיליוני המשימות.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שהמיניות בקשר שלהם הפכה לנדירה, מורכבת או כואבת.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שנמאס לו רק לטפל בקשר ורוצה להתחיל לטפח ולבנות אותו.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="stories" style="background:#efc9bd">
+  <div class="alp-wrap" style="padding-top:90px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:36px">
+      <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px)">גברים כותבים לידידיה</h2>
+      <span class="alp-mono" style="color:#7a6560;letter-spacing:.25em">גלול לצדדים</span>
+    </div>
+  </div>
+  <div class="alp-rail" style="padding:6px 0 90px">
+    <div class="alp-rail-in">
+<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
+<div class="alp-testi"><span>[ ציטוט ]</span></div>
+<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
+<div class="alp-testi"><span>[ ציטוט ]</span></div>
+<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="alp-sec" style="background:#f7f3f0">
+  <div class="alp-wrap" style="text-align:center">
+    <h2 class="alp-h2" style="font-size:clamp(28px,4vw,38px);line-height:1.25;margin-bottom:44px">היי אח, יש לי מסר חשוב אליך לפני שאתה קורא.</h2>
+    <div class="alp-video">
+      <div class="alp-play"><span></span></div>
+      <div class="alp-mono" style="font-size:13px;letter-spacing:.25em;line-height:2">[ סרטון אישי של ידידיה ]</div>
+    </div>
+  </div>
+</section>
+
+<section id="program" class="alp-sec" style="background:#232224;color:#cfc9c5;padding-top:110px;padding-bottom:110px">
+  <div class="alp-wrap">
+    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);line-height:1.1;color:#f7f3f0;margin-bottom:18px">מה לומדים בתוכנית</h2>
+    <p class="hb" style="margin-bottom:56px;max-width:700px;font-weight:700;font-size:clamp(19px,2.4vw,23px);line-height:1.5;color:#f2a81d">ארבעה שלבים שמכניסים את מה שלומדים לתוך החיים ולתוך המיטה.</p>
+    <div class="alp-stages">
+<div class="alp-stage"><span class="alp-stage-n">שלב ראשון</span><h3>ההטענה</h3><div class="alp-stage-paras"><p>כדי לצאת לדרך חדשה, צריך אנרגיה. אי אפשר לצאת למסע עם מיכל ריק.</p><p>בשלב הזה נמלא מחדש את המאגרים שלנו במשאבים, בעונג ובדברים שמעניקים לנו כוח וחיות — כל אותם דברים שככל שהחיים הפכו עמוסים וסוערים, שכחנו להעניק לעצמנו.</p><p>במקביל, נבחן מחדש את התפיסות שלנו על זוגיות ומיניות, ונכניס למערכת הבנות חדשות ומעוררות, שיפתחו בפנינו אפשרויות חדשות לקרבה, לחיזור ולתשוקה.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב שני</span><h3>העמקה במיניות הגברית</h3><div class="alp-stage-paras"><p>נלמד איך להתיידד עם העוררות המינית שלנו, לחיות איתה בשלום, בלי להתבייש בה ובלי להילחם בה.</p><p>נגלה איך להביא את האנרגיה המינית שלנו אל המרחב הזוגי בדרך שמקרבת, מעוררת ופותחת את הלב של אהובתנו — במקום לתת לציפיות ולאכזבות לשרוף את הקשר.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב שלישי</span><h3>החיזור</h3><div class="alp-stage-paras"><p>זה הזמן להסתער על החיזור!</p><p>נלמד לחזר אחרי אהובתנו מתוך העוררות והתשוקה שלנו, כשהן מכוונות אל הלב שלה.</p><p>נגלה איך להפוך לסופר־מחזרים, כאלה שנהנים מהחיזור עצמו ולא רק ממה שהוא עשוי להוביל אליו.</p><p>דרך קשר עין, הקשבה, מגע ואיכויות המגע השונות, חיזור ישיר ועקיף — נלמד להפוך את המרחב הזוגי למרחב חי, משחקי ומלא בתשוקה, קרבה וחיבור.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב רביעי</span><h3>האינטימי</h3><div class="alp-stage-paras"><p>נכניס את כל הטוב שבנינו לאורך הדרך — את החיזור, העוררות, התשוקה והקרבה — אל חדר השינה שלנו.</p><p>נלמד איך לשהות בעוררות שלנו, בלי למהר לשום מקום, ואיך להזמין את אהובתנו להתחבר עמוק יותר לגוף וללב שלה.</p><p>כל המסע המיני־זוגי שלנו מתנקז אל המרחב האינטימי, באהבה ובסבלנות, כשהוא עטוף בחשק, בתשוקה ובקרבה.</p><p>ככה הופך חדר השינה למרחב מקודש של חיבור, עונג ואהבה.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alp-sec" style="background:#fbf6f3;padding-top:110px">
+  <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px;align-items:start">
+    <div>
+      <h2 class="alp-h2" style="line-height:1.15;margin-bottom:26px">דבר אליי בתכלס</h2>
+      <p style="margin-bottom:34px;font-size:21px;line-height:1.8;color:#4a4644">תוכנית ליווי צמודה לחיים ומותאמת לגברים. כמה שפחות לתפוס לך זמן — החיים שלך מפוצצים גם ככה.</p>
+      <p class="hb" style="padding:24px 28px;background:#1b1a1c;font-weight:800;font-size:23px;line-height:1.45;color:#f2a81d">זו תוכנית ליווי, לא רק קורס אינטרנטי.</p>
+    </div>
+    <div class="alp-list">
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>שיעורים של עד עשר דקות, שנשלחים פעמיים בשבוע.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפשרות לשאול שאלות אנונימיות.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>זום העמקה אחת לשבועיים: ידידיה עונה על השאלות ואפשר גם לעלות בלייב.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>משימות פרקטיות ותרגול בתוך החיים.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>קבוצת עבודה בוואטסאפ וליווי לאורך התוכנית.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>18 שבועות — כארבעה וחצי חודשים.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפליקציה ייעודית שמקפיצה לך ״שעשועי בית״ — משימות קצרות, משחקיות ומהנות, שמכניסות את החיזור, המגע והתשוקה לתוך חיי היום־יום.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="alp-sec alp-group" style="background:#f2a81d">
+  <div class="alp-wrap" style="max-width:1000px;font-size:20px;line-height:1.9;color:#232224">
+    <div class="hb" style="font-weight:800;font-size:16px;letter-spacing:.2em;margin-bottom:14px">קבוצת העבודה</div>
+    <h2 class="alp-h2" style="line-height:1.15;margin-bottom:32px">עד עכשיו ״טיפלנו״ בזוגיות — הגיע הזמן להעיף אותה למעלה!</h2>
+    <p class="hb" style="margin-bottom:32px;font-weight:700;font-size:23px;line-height:1.5">ללמוד את האהבה שלא לימדו אותנו, ולהפוך אותה לדבר הכי מרגש בחיים שלנו.</p>
+    <p>כמו שלא תהפוך לשרירן מקריאת ספרים על ספורט, גם כאן העבודה היא בתרגול. המשימות פרקטיות והחומר נכנס לחיים.</p>
+    <p>בקבוצה משתפים במה שקורה באמת בבית וביניכם, מתרגלים את השפה ומטמיעים את החומר. מקבלים כוח מהחברים, מביאים את המורכבויות וחוגגים יחד את ההצלחות.</p>
+    <p class="hb" style="margin-bottom:8px;font-weight:800;font-size:22px;line-height:1.6">ואתה ממש לא חייב לשתף כל הזמן.</p>
+    <p style="margin-bottom:48px">הרבה מהלמידה מתרחשת דווקא דרך ההקשבה לחברים, דרך התהליכים שאחרים עוברים, ודרך הכנות, הפתיחות והחברות שמתפתחות בקבוצה.</p>
+    <a href="#" class="alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מוריד את קובץ הסילבוס של תכנית אלפא">להורדת הסילבוס ↓</a>
+  </div>
+</section>
+
+<section style="background:#232224">
+  <div class="alp-wrap" style="padding-top:100px">
+    <h2 class="alp-h2" style="font-size:clamp(30px,4vw,40px);color:#f7f3f0;margin-bottom:14px">טעימה מהחומרים בתוכנית</h2>
+    <p style="margin-bottom:40px;font-size:19px;color:#a39d99">לחץ על סרטון לצפייה</p>
+  </div>
+  <div class="alp-rail" style="padding:6px 0 100px">
+    <div class="alp-rail-in">
+<button type="button" class="alp-taste" data-alp-video="1" title="פותח את סרטון הטעימה 1 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 1 · 0:30 ]</span></button>
+<button type="button" class="alp-taste" data-alp-video="2" title="פותח את סרטון הטעימה 2 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 2 · 0:30 ]</span></button>
+<button type="button" class="alp-taste" data-alp-video="3" title="פותח את סרטון הטעימה 3 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 3 · 0:30 ]</span></button>
+<button type="button" class="alp-taste" data-alp-video="4" title="פותח את סרטון הטעימה 4 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 4 · 0:30 ]</span></button>
+<button type="button" class="alp-taste" data-alp-video="5" title="פותח את סרטון הטעימה 5 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 5 · 0:30 ]</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="alp-sec" style="background:#f7f3f0;padding-top:110px">
+  <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:64px;align-items:start">
+    <div style="position:relative;aspect-ratio:3/4;max-height:560px;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5">
+      <div class="alp-mono" style="position:absolute;bottom:22px;right:24px;font-size:13px;letter-spacing:.25em">[ תמונה של ידידיה ]</div>
+    </div>
+    <div>
+      <h2 class="alp-h2" style="font-size:clamp(34px,4.6vw,46px);line-height:1.12;margin-bottom:30px">נעים מאוד, ידידיה אנקרי.</h2>
+      <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:40px;font-size:19px;line-height:1.8;color:#4a4644">
+        <p>אני נשוי, אבא לחמישה, מנחה ומאמן לזוגיות ומנחה למיניות גברית ואינטגרטיבית, ויוצר הפודקאסט ״המערה – זוגיות מזווית גברית״.</p>
+        <p>כבר למעלה מעשור שאני מתפתח, חוקר ומעמיק במרחב הזוגי־מיני. לאורך השנים הנחיתי מאות גברים במאות סדנאות, הרצאות ותהליכי ליווי, מתוך רצון לעזור לגברים לחיות בזוגיות שיש בה אהבה, חיות, קרבה ותשוקה.</p>
+        <p>העבודה שלי משלבת בין עומק רגשי, חיבור לגוף ולמיניות וכלים מעשיים שאפשר להביא אל תוך החיים עצמם.</p>
+        <p>כבעל וכאבא, אני מכיר מקרוב את השגרה, העומס והאתגרים שבחיי הנישואים, ובעיקר את האפשרות להכניס אליהם מחדש חיזור, משחק ותשוקה.</p>
+        <p>אני לא כאן כדי להפוך אותך לגבר אחר, אלא לעזור לך לחזור אל הגבר שאתה, ולהביא אותו במלואו אל הקשר עם האישה שאתה אוהב.</p>
+        <p class="hb" style="font-weight:800;color:#b8431f">וזאת בדיוק הדרך שנעבור יחד באלפא.</p>
+      </div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a href="#" class="alp-btn alp-btn--ghost" title="פותח את עמוד האינסטגרם של ידידיה">האינסטגרם שלי</a>
+        <a href="#" class="alp-btn alp-btn--ghost" title="פותח את הפודקאסט ״המערה״ של ידידיה">הפודקאסט שלי</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="price" class="alp-sec" style="background:#3a2620;padding-top:110px;padding-bottom:110px">
+  <div class="alp-wrap" style="max-width:900px;text-align:center">
+    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);color:#f7f3f0;margin-bottom:50px">עלות התוכנית</h2>
+    <div class="alp-price-card" style="background:#f7f3f0;padding:48px 40px 44px;box-shadow:0 18px 40px rgba(0,0,0,.35)">
+      <div class="hb" style="font-weight:700;font-size:26px;color:#8d8682;text-decoration:line-through;margin-bottom:24px">5,000 ₪</div>
+      <div class="alp-price-grid">
+        <div style="background:#b8431f;color:#fbeee8;padding:28px 20px">
+          <div class="hb" style="font-weight:700;font-size:17px;margin-bottom:8px">מחיר השקה בהרשמה מוקדמת</div>
+          <div class="alp-big">2,832 ₪</div>
+          <div class="hb" style="font-weight:800;font-size:20px;margin-top:12px">566 ₪ ל־5 חודשים</div>
+          <div style="font-size:16px;margin-top:10px;color:#f6d6c8">עד 20 באוקטובר [שנה לאישור]</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e4dcd6;color:#232224;padding:28px 20px">
+          <div class="hb" style="font-weight:700;font-size:17px;margin-bottom:8px;color:#4a4644">לאחר מחזור פתיחה</div>
+          <div class="alp-big">760 ₪</div>
+          <div class="hb" style="font-weight:700;font-size:17px;margin-top:12px;color:#4a4644">למחזור שאחרי</div>
+        </div>
+      </div>
+      <p style="font-size:19px;line-height:1.6;color:#4a4644;margin-bottom:34px">תחילת המחזור ב־25 באוקטובר [מועד משוער ושנה לאישור]</p>
+      <a href="#contact" class="alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="alp-sec" style="background:#f7f3f0;padding-top:110px;padding-bottom:110px">
+  <div class="alp-wrap" style="max-width:1000px">
+    <h2 class="alp-h2" style="margin-bottom:40px">שאלות על ההשקעה</h2>
+    <div style="display:flex;flex-direction:column;gap:4px">
+<div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-0" title="לחיצה פותחת את התשובה לשאלה ״אין לי זמן״, ולחיצה נוספת סוגרת אותה"><span>אין לי זמן</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-0" hidden>[תשובה מאושרת של ידידיה להשלמה: התאמת התוכנית ללוח זמנים עמוס]</p></div>
+<div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-1" title="לחיצה פותחת את התשובה לשאלה ״אני חייב לשתף בקבוצה״, ולחיצה נוספת סוגרת אותה"><span>אני חייב לשתף בקבוצה</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-1" hidden>[תשובה מאושרת של ידידיה להשלמה: אפשרויות ההשתתפות בקבוצה]</p></div>
+<div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-2" title="לחיצה פותחת את התשובה לשאלה ״למה להשקיע בקשר״, ולחיצה נוספת סוגרת אותה"><span>למה להשקיע בקשר</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-2" hidden>[תשובה מאושרת של ידידיה להשלמה: ערך ההשקעה בזוגיות]</p></div>
+<div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-3" title="לחיצה פותחת את התשובה לשאלה ״תשלום בפייטר ומימוש כסף מהמילואים״, ולחיצה נוספת סוגרת אותה"><span>תשלום בפייטר ומימוש כסף מהמילואים</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-3" hidden>[להשלמה לאחר אימות זכאות ואפשרויות מימוש]</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="alp-sec" style="background:#bb4620;padding-top:110px;padding-bottom:120px">
+  <div class="alp-wrap" style="max-width:780px">
+    <h2 class="alp-h2 alp-final-title" style="text-align:center;font-size:52px;line-height:1.15;color:#fbeee8;margin-bottom:46px">לשיחת התאמה אישית עם ידידיה — ללא עלות</h2>
+    <div class="alp-form alp-form--final"><!--olp:form:2--></div>
+  </div>
+</section>
+
+<footer class="alp-foot" style="background:#1b1a1c;color:#a39d99">
+  <div class="alp-wrap" style="padding-top:56px;padding-bottom:110px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:40px;align-items:start">
+    <img src="images/alpha-logo-light.webp" alt="אלפא" width="104" height="86" style="width:104px;height:auto;display:block">
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:17px">
+      <a href="#">תנאי שימוש</a>
+      <a href="#">תקנון מדיניות פרטיות</a>
+    </div>
+    <div class="alp-mono" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#77726f">
+      <span>[ שם החברה ]</span>
+      <span>[ כתובת מייל ליצירת קשר ]</span>
+    </div>
+  </div>
+</footer>
+
+<a href="#contact" class="alp-btn alp-btn--rust alp-float" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+
+<div class="alp-modal" hidden data-alp-modal role="dialog" aria-modal="true" aria-label="סרטון טעימה">
+  <button type="button" class="alp-modal-x" data-alp-close aria-label="סגירת הסרטון" title="סוגר את הסרטון וחוזר לעמוד">×</button>
+  <div class="alp-modal-box"><span class="alp-mono" style="font-size:13px;color:#a39d99">[ נגן וידאו · טעימה <span data-alp-n></span> ]</span></div>
+</div>
+</div>
+
+<script>
+(function(){
+  var root=document.querySelector('.alp'); if(!root) return;
+  /* FAQ accordion: one open at a time */
+  var qs=root.querySelectorAll('.alp-faq-q');
+  qs.forEach(function(b){b.addEventListener('click',function(){
+    var open=b.getAttribute('aria-expanded')==='true';
+    qs.forEach(function(o){o.setAttribute('aria-expanded','false');document.getElementById(o.getAttribute('aria-controls')).hidden=true;});
+    if(!open){b.setAttribute('aria-expanded','true');document.getElementById(b.getAttribute('aria-controls')).hidden=false;}
+  });});
+  /* taste videos modal */
+  var m=root.querySelector('[data-alp-modal]'),n=root.querySelector('[data-alp-n]');
+  root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){n.textContent=b.getAttribute('data-alp-video');m.hidden=false;});});
+  m.addEventListener('click',function(e){if(e.target===m||e.target.hasAttribute('data-alp-close'))m.hidden=true;});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')m.hidden=true;});
+  /* placeholders for the Elementor fields (design shows placeholders, not labels) */
+  var ph={hero:{full_name:'שם',phone:'טלפון',email:'מייל'},final:{full_name:'שם מלא',phone:'נייד ליצירת קשר',email:'אימייל'}};
+  ['hero','final'].forEach(function(k){var w=root.querySelector('.alp-form--'+k);if(!w)return;
+    Object.keys(ph[k]).forEach(function(id){var i=w.querySelector('[name="form_fields['+id+']"]');if(i&&!i.placeholder)i.placeholder=ph[k][id];});});
+  /* floating CTA hides while a form is on screen */
+  var f=root.querySelector('.alp-float'),targets=[root.querySelector('.alp-hero-card'),root.querySelector('#contact')];
+  if('IntersectionObserver' in window){var vis=new Set();var io=new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?vis.add(e.target):vis.delete(e.target);});f.classList.toggle('is-hidden',vis.size>0);},{threshold:.15});targets.forEach(function(t){t&&io.observe(t);});}
+})();
+</script>
