@@ -96,5 +96,13 @@
       9908
     ],
     "site_css": "@media (max-width:767px){.elementor-element-dc9d224 .jet-arrow.next-arrow{left:0 !important}.elementor-element-dc9d224 .jet-arrow.prev-arrow{right:0 !important}}"
+  },
+  "yedidya-ankri.com": {
+    "convert": [
+      {
+        "page": 2268,
+        "name": "alpha-landing"
+      }
+    ]
   }
 }
