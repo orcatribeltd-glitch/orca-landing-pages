@@ -85,6 +85,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-voices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;max-width:900px;margin:0 auto}
 .alp-voice{display:flex;flex-direction:column;align-items:center;gap:22px;margin:0}
 .alp-voice .alp-video{width:min(100%,360px);margin:0}
+@media (min-width:641px){.alp-voices{align-items:start}.alp-voice .alp-video{width:auto;max-width:100%;height:clamp(420px,45vw,560px)}}
 .alp-voice blockquote{margin:0;padding:0 8px;text-align:center;font-family:'Heebo',sans-serif;font-weight:800;font-size:clamp(20px,2.2vw,24px);line-height:1.45;color:var(--ink)}
 .alp-voice blockquote::before{content:"”";display:block;font-size:54px;line-height:.6;color:var(--rust);margin-bottom:6px}
 /* ---------- stages ---------- */
@@ -448,11 +449,11 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   });});
   /* intro video: big play button, then the native player takes over */
   var inl=root.querySelectorAll('[data-alp-intro],[data-alp-inline]');
-  inl.forEach(function(iv){var ivv=iv.querySelector('video');iv.querySelector('.alp-video-play').addEventListener('click',function(){iv.classList.add('is-playing');var p=ivv.play();if(p&&p.catch)p.catch(function(){});});ivv.addEventListener('play',function(){iv.classList.add('is-playing');inl.forEach(function(o){var ov=o.querySelector('video');if(ov!==ivv&&!ov.paused)ov.pause();});});});
+  inl.forEach(function(iv){var ivv=iv.querySelector('video');ivv.controls=false;iv.querySelector('.alp-video-play').addEventListener('click',function(){iv.classList.add('is-playing');var p=ivv.play();if(p&&p.catch)p.catch(function(){});});ivv.addEventListener('play',function(){ivv.controls=true;iv.classList.add('is-playing');inl.forEach(function(o){var ov=o.querySelector('video');if(ov!==ivv&&!ov.paused)ov.pause();});});});
   /* taste videos modal */
   var m=root.querySelector('[data-alp-modal]'),v=root.querySelector('[data-alp-player]');
   function closeV(){v.pause();v.removeAttribute('src');v.load();m.hidden=true;}
-  root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){v.src=b.getAttribute('data-alp-video');m.hidden=false;var p=v.play();if(p&&p.catch)p.catch(function(){});});});
+  root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){inl.forEach(function(o){o.querySelector('video').pause();});v.src=b.getAttribute('data-alp-video');m.hidden=false;var p=v.play();if(p&&p.catch)p.catch(function(){});});});
   m.addEventListener('click',function(e){if(e.target===m||e.target.hasAttribute('data-alp-close'))closeV();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!m.hidden)closeV();});
   /* placeholders for the Elementor fields (design shows placeholders, not labels) */
