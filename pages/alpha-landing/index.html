@@ -88,6 +88,12 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 @media (min-width:641px){.alp-voices{align-items:start}.alp-voice .alp-video{width:auto;max-width:100%;height:clamp(420px,45vw,560px)}}
 .alp-voice blockquote{margin:0;padding:0 8px;text-align:center;font-family:'Heebo',sans-serif;font-weight:800;font-size:clamp(20px,2.2vw,24px);line-height:1.45;color:var(--ink)}
 .alp-voice blockquote::before{content:"”";display:block;font-size:54px;line-height:.6;color:var(--rust);margin-bottom:6px}
+.alp-letters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;max-width:1000px;margin:0 auto;align-items:start}
+.alp-letter{margin:0;background:#fbf6f3;box-shadow:0 10px 24px rgba(0,0,0,.1);padding:34px 32px 28px;display:flex;flex-direction:column;gap:18px}
+.alp-letter blockquote{margin:0;display:flex;flex-direction:column;gap:12px;font-size:18px;line-height:1.75;color:var(--body)}
+.alp-letter blockquote::before{content:"”";display:block;font-family:'Heebo',sans-serif;font-size:60px;line-height:.55;color:var(--rust)}
+.alp .alp-letter-lead{font-family:'Heebo',sans-serif;font-weight:800;font-size:clamp(20px,2.2vw,23px);line-height:1.45;color:var(--ink)}
+.alp-letter figcaption{font-family:'Heebo',sans-serif;font-weight:700;font-size:16px;color:var(--rust)}
 /* ---------- stages ---------- */
 .alp-stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px}
 .alp-stage{background:#2a2829;border:1px solid #3a3839;box-shadow:0 6px 0 rgba(0,0,0,.18);padding:30px 26px 34px;display:flex;flex-direction:column;gap:14px}
@@ -185,6 +191,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp-testi{width:260px;height:360px}
   .alp-tastes{grid-template-columns:minmax(0,1fr);gap:16px}
   .alp-voices{grid-template-columns:minmax(0,1fr);gap:48px}
+  .alp-letters{grid-template-columns:minmax(0,1fr);gap:16px}
+  .alp-letter{padding:26px 20px 22px}
   .alp-modal{padding:16px}
   .alp-play{width:80px;height:80px}
   .alp-taste .alp-play--sm{width:60px;height:60px}
@@ -271,20 +279,18 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   </div>
 </section>
 
-<section id="stories" class="alp-pending" hidden style="background:#efc9bd">
-  <div class="alp-wrap" style="padding-top:90px">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:36px">
-      <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px)">גברים כותבים לידידיה</h2>
-      <span class="alp-mono" style="color:#7a6560;letter-spacing:.25em">גלול לצדדים</span>
-    </div>
-  </div>
-  <div class="alp-rail" style="padding:6px 0 90px">
-    <div class="alp-rail-in">
-<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
-<div class="alp-testi"><span>[ ציטוט ]</span></div>
-<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
-<div class="alp-testi"><span>[ ציטוט ]</span></div>
-<div class="alp-testi"><span>[ צילום מסך של הודעה ]</span></div>
+<section id="stories" style="background:#efc9bd">
+  <div class="alp-wrap" style="padding-top:60px;padding-bottom:90px">
+    <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px);margin-bottom:36px;text-align:center">גברים כותבים לידידיה</h2>
+    <div class="alp-letters">
+      <figure class="alp-letter">
+        <blockquote><p class="alp-letter-lead">״אחד הדברים המשמעותיים שקיבלתי מתוכנית אלפא הוא הרשות פשוט להיות גבר ליד אשתי.</p><p>למדתי להרשות לעצמי להרגיש את העוררות שלי, את המשיכה ואת הרצון שלי באשתי, ולהביע אותם בפשטות ובביטחון, בלי להתנצל.</p><p>למדתי גם את החשיבות של המגע הקטן והיומיומי, דווקא בתקופות של ריחוק. ליטוף של הרגליים כשרואים טלוויזיה, מגע שלא בהכרח מוביל למיניות, אבל שומר על החיבור בינינו.</p><p>באופן מפתיע, דווקא החופש הזה, לצד המרחב שנוצר בינינו, חיזק את התשוקה והמשיכה בזוגיות שלנו.״</p></blockquote>
+        <figcaption>— דוד, בוגר תוכנית אלפא</figcaption>
+      </figure>
+      <figure class="alp-letter">
+        <blockquote><p class="alp-letter-lead">״ידידיה תודה עליך. הפכת לנו את החיים לטובה.</p><p>אנחנו מפוקסים יותר על הזוגיות וקיבלנו מתנות שאין להם מחיר!</p><p>הדרך שלך שאותה אנחנו עושים וחיים משנה חיים ומשנה את כל המרחב בבית. הילדים כמובן כל הזמן מקליטים אותנו ומשדרים תדיר. התדר שלהם גם השתנה לטובה.״</p></blockquote>
+        <figcaption>— עמרי, בוגר תוכנית אלפא</figcaption>
+      </figure>
     </div>
   </div>
 </section>
