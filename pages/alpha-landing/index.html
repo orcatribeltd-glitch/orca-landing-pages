@@ -74,7 +74,13 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-taste:hover .alp-play--sm{transform:translate(-50%,-50%) scale(1.08)}
 
 /* ---------- video ---------- */
-.alp-video{position:relative;aspect-ratio:16/9;width:100%;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5;box-shadow:0 14px 34px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.alp-video{position:relative;width:min(100%,380px);aspect-ratio:478/850;margin:0 auto;background:#1b1a1c;border:1px solid #e3dbd5;box-shadow:0 14px 34px rgba(0,0,0,.12);overflow:hidden}
+.alp-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#1b1a1c}
+.alp-video-play{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;border:0;padding:0;background:linear-gradient(to top,rgba(20,18,19,.55),rgba(20,18,19,0) 55%);cursor:pointer;font:inherit}
+.alp-video-play .alp-play{transition:transform .2s}
+.alp-video-play:hover .alp-play{transform:scale(1.06)}
+.alp-video-play span.alp-video-len{position:absolute;bottom:16px;right:18px;font-family:'Heebo',sans-serif;font-weight:700;font-size:15px;color:#f7f3f0!important}
+.alp-video.is-playing .alp-video-play{display:none}
 
 /* ---------- stages ---------- */
 .alp-stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px}
@@ -116,6 +122,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp .alp-taste:hover,.alp .alp-taste:focus,.alp .alp-taste:active{background:#2a2829!important;color:inherit!important;border-color:#3a3839!important}
 .alp .alp-taste:focus-visible{outline:3px solid var(--rust)!important;outline-offset:2px}
 .alp .alp-modal-x:hover,.alp .alp-modal-x:focus,.alp .alp-modal-x:active{background:transparent!important;color:#fff!important}
+.alp .alp-video-play:hover,.alp .alp-video-play:focus,.alp .alp-video-play:active{background:linear-gradient(to top,rgba(20,18,19,.55),rgba(20,18,19,0) 55%)!important;color:inherit!important;border:0!important}
+.alp .alp-video-play:focus-visible{outline:3px solid var(--rust)!important;outline-offset:-3px}
 
 /* ---------- the real Elementor forms (placed by the plugin at the olp:form markers) ---------- */
 .alp-form .elementor-form-fields-wrapper{display:flex;flex-direction:column;gap:16px;margin:0!important}
@@ -246,9 +254,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 <section class="alp-sec" style="background:#f7f3f0">
   <div class="alp-wrap" style="text-align:center">
     <h2 class="alp-h2" style="font-size:clamp(28px,4vw,38px);line-height:1.25;margin-bottom:44px">היי אח, יש לי מסר חשוב אליך לפני שאתה קורא.</h2>
-    <div class="alp-video">
-      <div class="alp-play"><span></span></div>
-      <div class="alp-mono" style="font-size:13px;letter-spacing:.25em;line-height:2">[ סרטון אישי של ידידיה ]</div>
+    <div class="alp-video" data-alp-intro>
+      <video controls playsinline preload="none" poster="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@da2b94d17dba8f9ef8df13139ddbfc3e8784e014/pages/alpha-landing/images/alpha-intro.webp" src="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@da2b94d17dba8f9ef8df13139ddbfc3e8784e014/pages/alpha-landing/videos/alpha-intro.mp4"></video>
+      <button type="button" class="alp-video-play" aria-label="נגן את הסרטון האישי של ידידיה" title="מנגן כאן בדף את הסרטון האישי של ידידיה (3:33). אפשר לעצור ולהמשיך מהנגן."><span class="alp-play"><span></span></span><span class="alp-video-len">3:33</span></button>
     </div>
   </div>
 </section>
@@ -410,6 +418,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     qs.forEach(function(o){o.setAttribute('aria-expanded','false');document.getElementById(o.getAttribute('aria-controls')).hidden=true;});
     if(!open){b.setAttribute('aria-expanded','true');document.getElementById(b.getAttribute('aria-controls')).hidden=false;}
   });});
+  /* intro video: big play button, then the native player takes over */
+  var iv=root.querySelector('[data-alp-intro]');
+  if(iv){var ivv=iv.querySelector('video');iv.querySelector('.alp-video-play').addEventListener('click',function(){iv.classList.add('is-playing');var p=ivv.play();if(p&&p.catch)p.catch(function(){});});ivv.addEventListener('play',function(){iv.classList.add('is-playing');});}
   /* taste videos modal */
   var m=root.querySelector('[data-alp-modal]'),v=root.querySelector('[data-alp-player]');
   function closeV(){v.pause();v.removeAttribute('src');v.load();m.hidden=true;}
