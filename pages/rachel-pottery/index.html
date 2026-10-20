@@ -108,3 +108,34 @@
 }
 </style>
 
+<script>
+/* course registration: /?course=4|annual preselects the course in the home form and scrolls to it;
+   after a course registration is sent (email), the visitor continues to WhatsApp with the details. */
+(function(){
+  var COURSES={"4":"קורס קדרות, 4 מפגשים","annual":"קורס קדרות שנתי"};
+  var WA="972534255780";
+  function sel(){return document.getElementById("form-field-workshop");}
+  function preselect(){
+    var c=new URLSearchParams(location.search).get("course"), s=sel();
+    if(!c||!COURSES[c]||!s)return false;
+    for(var i=0;i<s.options.length;i++){if(s.options[i].text.trim()===COURSES[c]){s.selectedIndex=i;break;}}
+    var f=s.closest("form");
+    setTimeout(function(){f.scrollIntoView({behavior:"smooth",block:"start"});var n=document.getElementById("form-field-name");if(n)setTimeout(function(){n.focus({preventScroll:true});},600);},300);
+    return true;
+  }
+  function boot(){if(!preselect()){var t=0,iv=setInterval(function(){if(preselect()||++t>20)clearInterval(iv);},250);}}
+  if(document.readyState!=="loading")boot();else document.addEventListener("DOMContentLoaded",boot);
+  function val(f,k){var e=f.querySelector('[name="form_fields['+k+']"]');if(!e)return "";return e.tagName==="SELECT"?e.options[e.selectedIndex].text.trim():e.value.trim();}
+  var last={};
+  document.addEventListener("submit",function(e){var f=e.target;if(!f.querySelector||!f.querySelector("#form-field-workshop"))return;
+    last={name:val(f,"name"),phone:val(f,"phone"),guests:val(f,"guests"),date:val(f,"visit_date"),workshop:val(f,"workshop")};},true);
+  function onSuccess(){
+    var isCourse=false;for(var k in COURSES){if(COURSES[k]===last.workshop)isCourse=true;}
+    if(!isCourse)return;
+    var msg="היי רחל, נרשמתי באתר ל"+last.workshop+".\nהשם שלי: "+last.name+"\nטלפון: "+last.phone+(last.guests?"\nכמה אנחנו: "+last.guests:"")+(last.date?"\nתאריך משוער: "+last.date:"");
+    setTimeout(function(){location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(msg);},1200);
+  }
+  function bindJq(){if(window.jQuery){jQuery(document).on("submit_success",".elementor-form",onSuccess);return true;}return false;}
+  if(!bindJq())document.addEventListener("DOMContentLoaded",bindJq);
+})();
+</script>
