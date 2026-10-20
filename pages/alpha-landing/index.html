@@ -59,13 +59,19 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-rail{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
 .alp-rail-in{display:flex;gap:24px;padding:0 max(32px,calc((100% - 1136px) / 2));width:max-content}
 .alp-testi{flex:none;width:300px;height:420px;scroll-snap-align:start;background:#fbf6f3;box-shadow:0 10px 24px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:var(--muted);text-align:center;padding:20px}
-.alp-taste{flex:none;width:260px;height:460px;scroll-snap-align:start;background:repeating-linear-gradient(135deg,#2e2c2d 0 16px,#353334 16px 32px);border:1px solid #3a3839;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0;font:inherit}
-.alp-taste .alp-mono{color:#77726f}
+.alp-tastes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.alp-taste{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;border:1px solid #3a3839;background:#2a2829;cursor:pointer;overflow:hidden;font:inherit;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.alp-taste img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s,opacity .25s;opacity:.88}
+.alp-taste::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,19,.85) 0%,rgba(20,18,19,.15) 55%,rgba(20,18,19,0) 100%)}
+.alp-taste .alp-play--sm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1}
+.alp-taste-label{position:absolute;right:16px;bottom:12px;z-index:1;display:flex;align-items:baseline;gap:10px;font-family:'Heebo',sans-serif;font-weight:800;font-size:16px;color:#f7f3f0!important}
+.alp-taste-label i{font-style:normal;font-weight:500;color:#cfc9c5}
+.alp-taste:hover img{transform:scale(1.04);opacity:1}
 .alp-play{width:104px;height:104px;border-radius:50%;background:var(--rust);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.18)}
 .alp-play span{width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-right:30px solid var(--cream);margin-right:6px}
 .alp-play--sm{width:72px;height:72px;box-shadow:none;transition:transform .2s}
 .alp-play--sm span{border-top-width:12px;border-bottom-width:12px;border-right-width:20px;margin-right:4px}
-.alp-taste:hover .alp-play--sm{transform:scale(1.08)}
+.alp-taste:hover .alp-play--sm{transform:translate(-50%,-50%) scale(1.08)}
 
 /* ---------- video ---------- */
 .alp-video{position:relative;aspect-ratio:16/9;width:100%;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5;box-shadow:0 14px 34px rgba(0,0,0,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
@@ -101,7 +107,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-float.is-hidden{opacity:0;transform:translateY(12px);pointer-events:none}
 .alp-modal{position:fixed;inset:0;z-index:40;background:rgba(20,18,19,.88);display:flex;align-items:center;justify-content:center;padding:32px}
 .alp-modal[hidden]{display:none}
-.alp-modal-box{width:min(100%,380px);aspect-ratio:9/16;background:repeating-linear-gradient(135deg,#2e2c2d 0 16px,#353334 16px 32px);border:1px solid #3a3839;display:flex;align-items:center;justify-content:center}
+.alp-modal-box{width:min(100%,1040px);aspect-ratio:16/9;max-height:calc(100vh - 120px);background:#000;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.alp-modal-box video{width:100%;height:100%;display:block;background:#000}
 .alp-modal-x{position:absolute;top:18px;left:18px;width:44px;height:44px;border:0;background:transparent;color:#f7f3f0;font-size:30px;cursor:pointer}
 
 /* ---------- the real Elementor forms (placed by the plugin at the olp:form markers) ---------- */
@@ -134,6 +141,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 
 /* ---------- small screens ---------- */
 @media (max-width:1000px){.alp-nav{display:none}.alp-head .alp-wrap{justify-content:space-between}}
+@media (max-width:900px) and (min-width:641px){.alp-tastes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){
   .alp-wrap{padding-left:16px;padding-right:16px}
   .alp-head .alp-btn{font-size:13px;padding:10px 12px;white-space:normal;max-width:220px}
@@ -149,8 +157,10 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp-check{font-size:18px;padding:18px 16px;gap:14px}
   .alp-rail-in{padding:0 16px;gap:16px}
   .alp-testi{width:260px;height:360px}
-  .alp-taste{width:220px;height:390px}
+  .alp-tastes{grid-template-columns:minmax(0,1fr);gap:16px}
+  .alp-modal{padding:16px}
   .alp-play{width:80px;height:80px}
+  .alp-taste .alp-play--sm{width:60px;height:60px}
   .alp-big{font-size:46px}
   .alp-price-card{padding:32px 18px 30px!important}
   .alp-faq-q{padding:22px 8px;font-size:19px}
@@ -286,13 +296,11 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     <h2 class="alp-h2" style="font-size:clamp(30px,4vw,40px);color:#f7f3f0;margin-bottom:14px">טעימה מהחומרים בתוכנית</h2>
     <p style="margin-bottom:40px;font-size:19px;color:#a39d99">לחץ על סרטון לצפייה</p>
   </div>
-  <div class="alp-rail" style="padding:6px 0 100px">
-    <div class="alp-rail-in">
-<button type="button" class="alp-taste" data-alp-video="1" title="פותח את סרטון הטעימה 1 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 1 · 0:30 ]</span></button>
-<button type="button" class="alp-taste" data-alp-video="2" title="פותח את סרטון הטעימה 2 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 2 · 0:30 ]</span></button>
-<button type="button" class="alp-taste" data-alp-video="3" title="פותח את סרטון הטעימה 3 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 3 · 0:30 ]</span></button>
-<button type="button" class="alp-taste" data-alp-video="4" title="פותח את סרטון הטעימה 4 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 4 · 0:30 ]</span></button>
-<button type="button" class="alp-taste" data-alp-video="5" title="פותח את סרטון הטעימה 5 בחלון על המסך. לחיצה מחוץ לסרטון סוגרת אותו."><span class="alp-play alp-play--sm"><span></span></span><span class="alp-mono">[ טעימה 5 · 0:30 ]</span></button>
+  <div class="alp-wrap" style="padding-bottom:100px">
+    <div class="alp-tastes">
+<button type="button" class="alp-taste" data-alp-video="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@71714ddfad6f288ddb78454b32f6d2a0fb530910/pages/alpha-landing/videos/alpha-taste-1.mp4" title="מנגן את סרטון הטעימה 1 בחלון על המסך. לחיצה מחוץ לסרטון, או על ×, עוצרת וסוגרת אותו."><img src="images/alpha-taste-1.webp" alt="קטע מתוך תכנית אלפא, טעימה 1" loading="lazy" width="960" height="540"><span class="alp-play alp-play--sm"><span></span></span><span class="alp-taste-label">טעימה 1<i>0:38</i></span></button>
+<button type="button" class="alp-taste" data-alp-video="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@71714ddfad6f288ddb78454b32f6d2a0fb530910/pages/alpha-landing/videos/alpha-taste-2.mp4" title="מנגן את סרטון הטעימה 2 בחלון על המסך. לחיצה מחוץ לסרטון, או על ×, עוצרת וסוגרת אותו."><img src="images/alpha-taste-2.webp" alt="קטע מתוך תכנית אלפא, טעימה 2" loading="lazy" width="960" height="540"><span class="alp-play alp-play--sm"><span></span></span><span class="alp-taste-label">טעימה 2<i>0:35</i></span></button>
+<button type="button" class="alp-taste" data-alp-video="https://cdn.jsdelivr.net/gh/orcatribeltd-glitch/orca-landing-pages@71714ddfad6f288ddb78454b32f6d2a0fb530910/pages/alpha-landing/videos/alpha-taste-3.mp4" title="מנגן את סרטון הטעימה 3 בחלון על המסך. לחיצה מחוץ לסרטון, או על ×, עוצרת וסוגרת אותו."><img src="images/alpha-taste-3.webp" alt="קטע מתוך תכנית אלפא, טעימה 3" loading="lazy" width="960" height="540"><span class="alp-play alp-play--sm"><span></span></span><span class="alp-taste-label">טעימה 3<i>0:51</i></span></button>
     </div>
   </div>
 </section>
@@ -381,7 +389,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 
 <div class="alp-modal" hidden data-alp-modal role="dialog" aria-modal="true" aria-label="סרטון טעימה">
   <button type="button" class="alp-modal-x" data-alp-close aria-label="סגירת הסרטון" title="סוגר את הסרטון וחוזר לעמוד">×</button>
-  <div class="alp-modal-box"><span class="alp-mono" style="font-size:13px;color:#a39d99">[ נגן וידאו · טעימה <span data-alp-n></span> ]</span></div>
+  <div class="alp-modal-box"><video data-alp-player controls playsinline preload="none"></video></div>
 </div>
 </div>
 
@@ -396,10 +404,11 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     if(!open){b.setAttribute('aria-expanded','true');document.getElementById(b.getAttribute('aria-controls')).hidden=false;}
   });});
   /* taste videos modal */
-  var m=root.querySelector('[data-alp-modal]'),n=root.querySelector('[data-alp-n]');
-  root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){n.textContent=b.getAttribute('data-alp-video');m.hidden=false;});});
-  m.addEventListener('click',function(e){if(e.target===m||e.target.hasAttribute('data-alp-close'))m.hidden=true;});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')m.hidden=true;});
+  var m=root.querySelector('[data-alp-modal]'),v=root.querySelector('[data-alp-player]');
+  function closeV(){v.pause();v.removeAttribute('src');v.load();m.hidden=true;}
+  root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){v.src=b.getAttribute('data-alp-video');m.hidden=false;var p=v.play();if(p&&p.catch)p.catch(function(){});});});
+  m.addEventListener('click',function(e){if(e.target===m||e.target.hasAttribute('data-alp-close'))closeV();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!m.hidden)closeV();});
   /* placeholders for the Elementor fields (design shows placeholders, not labels) */
   var ph={hero:{full_name:'שם',phone:'טלפון',email:'מייל'},final:{full_name:'שם מלא',phone:'נייד ליצירת קשר',email:'אימייל'}};
   ['hero','final'].forEach(function(k){var w=root.querySelector('.alp-form--'+k);if(!w)return;
