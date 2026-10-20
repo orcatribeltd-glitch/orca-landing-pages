@@ -62,7 +62,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-tastes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .alp-taste{position:relative;display:block;width:100%;aspect-ratio:16/9;padding:0;border:1px solid #3a3839;background:#2a2829;cursor:pointer;overflow:hidden;font:inherit;box-shadow:0 6px 0 rgba(0,0,0,.18)}
 .alp-taste img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s,opacity .25s;opacity:.88}
-.alp-taste::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,19,.85) 0%,rgba(20,18,19,.15) 55%,rgba(20,18,19,0) 100%)}
+.alp-taste::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,18,19,.95) 0%,rgba(20,18,19,.7) 26%,rgba(20,18,19,.15) 58%,rgba(20,18,19,0) 100%)}
 .alp-taste .alp-play--sm{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1}
 .alp-taste-label{position:absolute;right:16px;bottom:12px;z-index:1;display:flex;align-items:baseline;gap:10px;font-family:'Heebo',sans-serif;font-weight:800;font-size:16px;color:#f7f3f0!important}
 .alp-taste-label i{font-style:normal;font-weight:500;color:#cfc9c5}
@@ -106,7 +106,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 /* ---------- faq ---------- */
 .alp-faq-item{border-top:3px solid #ebe5e1;border-bottom:3px solid #ebe5e1}
 .alp-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px 30px;background:transparent;border:0;cursor:pointer;text-align:right;font-family:'Heebo',sans-serif;font-weight:800;font-size:22px;color:var(--ink)}
-.alp-faq-q > span:first-child{flex:1;min-width:0}
+.alp-faq-q > span:first-child{flex:1;min-width:0;white-space:normal;line-height:1.35}
+.alp-faq-item + .alp-faq-item{border-top:0}
 .alp-faq-ico{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#e6e1de;color:var(--body);font-size:22px;font-weight:700;line-height:1;transition:background .2s,color .2s}
 .alp-faq-ico::before{content:"+"}
 .alp-faq-q[aria-expanded="true"] .alp-faq-ico{background:var(--rust);color:var(--cream)}
@@ -141,9 +142,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-form .elementor-field-type-acceptance{font-size:15px;line-height:1.6}
 .alp-form .elementor-field-subgroup{display:block}
 .alp-form .elementor-field-option{display:flex!important;align-items:flex-start;gap:12px}
-.alp-form .elementor-field-option input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--coal)}
+.alp-form .elementor-field-option input{width:24px;height:24px;margin:1px 0 0;flex:none;accent-color:var(--coal)}
 .alp-form .elementor-field-option label{color:inherit!important;font-family:'Assistant',sans-serif!important;cursor:pointer}
-.alp-form .elementor-field-option a{text-decoration:underline}
+.alp-form .elementor-field-option a{text-decoration:underline;white-space:nowrap}
 .alp-form .e-form__buttons,.alp-form .elementor-field-type-submit{margin-top:6px!important}
 .alp-form .elementor-button{width:100%;min-height:72px;padding:12px 16px!important;border:0!important;border-radius:0!important;font-family:'Heebo',sans-serif!important;font-weight:800!important;font-size:20px!important;line-height:1.3!important;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18);white-space:normal}
 .alp-form .elementor-message{font-size:17px;margin-top:12px}
@@ -190,6 +191,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp .alp-final-title{font-size:34px!important}
   .alp-about-links .alp-btn--ghost{flex:1 1 0;justify-content:center;text-align:center}
   .alp-float{left:12px;right:12px;bottom:12px;white-space:normal;text-align:center;justify-content:center;font-size:15px}
+  /* one CTA at a time on a phone: while the floating button shows, the header button fades (same text twice took ~17% of the screen) */
+  .alp-head .alp-btn{transition:opacity .25s}
+  .alp.alp-float-on .alp-head .alp-btn{opacity:0;pointer-events:none}
 }
 @media (prefers-reduced-motion:reduce){.alp *{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -462,6 +466,6 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     Object.keys(ph[k]).forEach(function(id){var i=w.querySelector('[name="form_fields['+id+']"]');if(i&&!i.placeholder)i.placeholder=ph[k][id];});});
   /* floating CTA hides while a form is on screen */
   var f=root.querySelector('.alp-float'),targets=[root.querySelector('.alp-hero-card'),root.querySelector('#contact')];
-  if('IntersectionObserver' in window){var vis=new Set();var io=new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?vis.add(e.target):vis.delete(e.target);});f.classList.toggle('is-hidden',vis.size>0);},{threshold:.15});targets.forEach(function(t){t&&io.observe(t);});}
+  if('IntersectionObserver' in window){var vis=new Set();var io=new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?vis.add(e.target):vis.delete(e.target);});f.classList.toggle('is-hidden',vis.size>0);root.classList.toggle('alp-float-on',vis.size===0);},{threshold:.15});targets.forEach(function(t){t&&io.observe(t);});}
 })();
 </script>
