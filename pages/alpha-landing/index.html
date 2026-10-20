@@ -82,6 +82,11 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-video-play span.alp-video-len{position:absolute;bottom:16px;right:18px;font-family:'Heebo',sans-serif;font-weight:700;font-size:15px;color:#f7f3f0!important}
 .alp-video.is-playing .alp-video-play{display:none}
 
+.alp-voices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;max-width:900px;margin:0 auto}
+.alp-voice{display:flex;flex-direction:column;align-items:center;gap:22px;margin:0}
+.alp-voice .alp-video{width:min(100%,360px);margin:0}
+.alp-voice blockquote{margin:0;padding:0 8px;text-align:center;font-family:'Heebo',sans-serif;font-weight:800;font-size:clamp(20px,2.2vw,24px);line-height:1.45;color:var(--ink)}
+.alp-voice blockquote::before{content:"”";display:block;font-size:54px;line-height:.6;color:var(--rust);margin-bottom:6px}
 /* ---------- stages ---------- */
 .alp-stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:20px}
 .alp-stage{background:#2a2829;border:1px solid #3a3839;box-shadow:0 6px 0 rgba(0,0,0,.18);padding:30px 26px 34px;display:flex;flex-direction:column;gap:14px}
@@ -172,6 +177,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp-rail-in{padding:0 16px;gap:16px}
   .alp-testi{width:260px;height:360px}
   .alp-tastes{grid-template-columns:minmax(0,1fr);gap:16px}
+  .alp-voices{grid-template-columns:minmax(0,1fr);gap:48px}
   .alp-modal{padding:16px}
   .alp-play{width:80px;height:80px}
   .alp-taste .alp-play--sm{width:60px;height:60px}
@@ -229,6 +235,28 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 <div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לחזור לאהבה שהייתה בהתחלה — לפני המשכנתא, הילדים, המילואים ומיליוני המשימות.</span></div>
 <div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שהמיניות בקשר שלהם הפכה לנדירה, מורכבת או כואבת.</span></div>
 <div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שנמאס לו רק לטפל בקשר ורוצה להתחיל לטפח ולבנות אותו.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="voices" style="background:#efc9bd">
+  <div class="alp-wrap" style="padding-top:90px;padding-bottom:20px">
+    <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px);margin-bottom:44px;text-align:center">אתה חייב לשמוע אותם:</h2>
+    <div class="alp-voices">
+      <figure class="alp-voice">
+        <div class="alp-video" data-alp-inline style="aspect-ratio:632/850">
+          <video controls playsinline preload="none" poster="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-testimonial-1.webp" src="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-testimonial-1.mp4"></video>
+          <button type="button" class="alp-video-play" aria-label="נגן את סרטון העדות 1" title="מנגן כאן בדף את סרטון העדות 1 (0:56). אפשר לעצור ולהמשיך מהנגן."><span class="alp-play"><span></span></span><span class="alp-video-len">0:56</span></button>
+        </div>
+        <blockquote>לא משהו לשרוד אותו ולא משהו להעביר אותו, אלא משהו לגדול איתו.</blockquote>
+      </figure>
+      <figure class="alp-voice">
+        <div class="alp-video" data-alp-inline style="aspect-ratio:474/850">
+          <video controls playsinline preload="none" poster="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-testimonial-2.webp" src="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-testimonial-2.mp4"></video>
+          <button type="button" class="alp-video-play" aria-label="נגן את סרטון העדות 2" title="מנגן כאן בדף את סרטון העדות 2 (0:17). אפשר לעצור ולהמשיך מהנגן."><span class="alp-play"><span></span></span><span class="alp-video-len">0:17</span></button>
+        </div>
+        <blockquote>אלוף בכל מה שקשור במיניות, זוגיות, גבריות.</blockquote>
+      </figure>
     </div>
   </div>
 </section>
@@ -419,8 +447,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     if(!open){b.setAttribute('aria-expanded','true');document.getElementById(b.getAttribute('aria-controls')).hidden=false;}
   });});
   /* intro video: big play button, then the native player takes over */
-  var iv=root.querySelector('[data-alp-intro]');
-  if(iv){var ivv=iv.querySelector('video');iv.querySelector('.alp-video-play').addEventListener('click',function(){iv.classList.add('is-playing');var p=ivv.play();if(p&&p.catch)p.catch(function(){});});ivv.addEventListener('play',function(){iv.classList.add('is-playing');});}
+  var inl=root.querySelectorAll('[data-alp-intro],[data-alp-inline]');
+  inl.forEach(function(iv){var ivv=iv.querySelector('video');iv.querySelector('.alp-video-play').addEventListener('click',function(){iv.classList.add('is-playing');var p=ivv.play();if(p&&p.catch)p.catch(function(){});});ivv.addEventListener('play',function(){iv.classList.add('is-playing');inl.forEach(function(o){var ov=o.querySelector('video');if(ov!==ivv&&!ov.paused)ov.pause();});});});
   /* taste videos modal */
   var m=root.querySelector('[data-alp-modal]'),v=root.querySelector('[data-alp-player]');
   function closeV(){v.pause();v.removeAttribute('src');v.load();m.hidden=true;}
