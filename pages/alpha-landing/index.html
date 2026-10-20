@@ -68,9 +68,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-taste-label i{font-style:normal;font-weight:500;color:#cfc9c5}
 .alp-taste:hover img{transform:scale(1.04);opacity:1}
 .alp-play{width:104px;height:104px;border-radius:50%;background:var(--rust);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.18)}
-.alp-play span{width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-right:30px solid var(--cream);margin-right:6px}
+.alp-play span{width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-left:30px solid var(--cream);margin-left:6px}
 .alp-play--sm{width:72px;height:72px;box-shadow:none;transition:transform .2s}
-.alp-play--sm span{border-top-width:12px;border-bottom-width:12px;border-right-width:20px;margin-right:4px}
+.alp-play--sm span{border-top-width:12px;border-bottom-width:12px;border-left-width:20px;margin-left:4px}
 .alp-taste:hover .alp-play--sm{transform:translate(-50%,-50%) scale(1.08)}
 
 /* ---------- video ---------- */
@@ -110,6 +110,12 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-modal-box{width:min(100%,1040px);aspect-ratio:16/9;max-height:calc(100vh - 120px);background:#000;box-shadow:0 20px 50px rgba(0,0,0,.5)}
 .alp-modal-box video{width:100%;height:100%;display:block;background:#000}
 .alp-modal-x{position:absolute;top:18px;left:18px;width:44px;height:44px;border:0;background:transparent;color:#f7f3f0;font-size:30px;cursor:pointer}
+/* the WordPress theme paints every button pink on hover/focus; keep our own colors */
+.alp .alp-faq-q:hover,.alp .alp-faq-q:focus,.alp .alp-faq-q:active{background:transparent!important;color:var(--ink)!important;border-color:transparent!important;outline:0}
+.alp .alp-faq-q:focus-visible{outline:3px solid var(--rust)!important;outline-offset:-3px}
+.alp .alp-taste:hover,.alp .alp-taste:focus,.alp .alp-taste:active{background:#2a2829!important;color:inherit!important;border-color:#3a3839!important}
+.alp .alp-taste:focus-visible{outline:3px solid var(--rust)!important;outline-offset:2px}
+.alp .alp-modal-x:hover,.alp .alp-modal-x:focus,.alp .alp-modal-x:active{background:transparent!important;color:#fff!important}
 
 /* ---------- the real Elementor forms (placed by the plugin at the olp:form markers) ---------- */
 .alp-form .elementor-form-fields-wrapper{display:flex;flex-direction:column;gap:16px;margin:0!important}
@@ -167,6 +173,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp-faq-a{padding:0 8px 24px 8px;font-size:18px}
   .alp-btn--block-sm{display:flex;width:100%;font-size:19px!important;padding:20px 18px!important}
   .alp .alp-final-title{font-size:34px!important}
+  .alp-about-links .alp-btn--ghost{flex:1 1 0;justify-content:center;text-align:center}
   .alp-float{left:12px;right:12px;bottom:12px;white-space:normal;text-align:center;justify-content:center;font-size:15px}
 }
 @media (prefers-reduced-motion:reduce){.alp *{transition:none!important;scroll-behavior:auto!important}}
@@ -320,7 +327,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
         <p>אני לא כאן כדי להפוך אותך לגבר אחר, אלא לעזור לך לחזור אל הגבר שאתה, ולהביא אותו במלואו אל הקשר עם האישה שאתה אוהב.</p>
         <p class="hb" style="font-weight:800;color:#b8431f">וזאת בדיוק הדרך שנעבור יחד באלפא.</p>
       </div>
-      <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <div class="alp-about-links" style="display:flex;gap:14px;flex-wrap:wrap">
         <a href="#" class="alp-btn alp-btn--ghost" title="פותח את עמוד האינסטגרם של ידידיה">האינסטגרם שלי</a>
         <a href="#" class="alp-btn alp-btn--ghost" title="פותח את הפודקאסט ״המערה״ של ידידיה">הפודקאסט שלי</a>
       </div>
@@ -385,7 +392,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   </div>
 </footer>
 
-<a href="#contact" class="alp-btn alp-btn--rust alp-float" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+<a href="#contact" class="alp-btn alp-btn--rust alp-float is-hidden" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
 
 <div class="alp-modal" hidden data-alp-modal role="dialog" aria-modal="true" aria-label="סרטון טעימה">
   <button type="button" class="alp-modal-x" data-alp-close aria-label="סגירת הסרטון" title="סוגר את הסרטון וחוזר לעמוד">×</button>
