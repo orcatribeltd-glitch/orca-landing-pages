@@ -120,6 +120,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-float.is-hidden{opacity:0;transform:translateY(12px);pointer-events:none}
 .alp-modal{position:fixed;inset:0;z-index:40;background:rgba(20,18,19,.88);display:flex;align-items:center;justify-content:center;padding:32px}
 .alp-modal[hidden]{display:none}
+/* קישור שעוד אין לו יעד: מוסתר עד שידידיה ימסור אותו (ux, 20/10) */
+.alp-pending[hidden]{display:none!important}
 .alp-modal-box{width:min(100%,1040px);aspect-ratio:16/9;max-height:calc(100vh - 120px);background:#000;box-shadow:0 20px 50px rgba(0,0,0,.5)}
 .alp-modal-box video{width:100%;height:100%;display:block;background:#000}
 .alp-modal-x{position:absolute;top:18px;left:18px;width:44px;height:44px;border:0;background:transparent;color:#f7f3f0;font-size:30px;cursor:pointer}
@@ -335,7 +337,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
     <p>בקבוצה משתפים במה שקורה באמת בבית וביניכם, מתרגלים את השפה ומטמיעים את החומר. מקבלים כוח מהחברים, מביאים את המורכבויות וחוגגים יחד את ההצלחות.</p>
     <p class="hb" style="margin-bottom:8px;font-weight:800;font-size:22px;line-height:1.6">ואתה ממש לא חייב לשתף כל הזמן.</p>
     <p style="margin-bottom:48px">הרבה מהלמידה מתרחשת דווקא דרך ההקשבה לחברים, דרך התהליכים שאחרים עוברים, ודרך הכנות, הפתיחות והחברות שמתפתחות בקבוצה.</p>
-    <a href="#" class="alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מוריד את קובץ הסילבוס של תכנית אלפא">להורדת הסילבוס ↓</a>
+    <a href="#" hidden class="alp-pending alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מוריד את קובץ הסילבוס של תכנית אלפא">להורדת הסילבוס ↓</a>
   </div>
 </section>
 
@@ -368,7 +370,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
         <p>אני לא כאן כדי להפוך אותך לגבר אחר, אלא לעזור לך לחזור אל הגבר שאתה, ולהביא אותו במלואו אל הקשר עם האישה שאתה אוהב.</p>
         <p class="hb" style="font-weight:800;color:#b8431f">וזאת בדיוק הדרך שנעבור יחד באלפא.</p>
       </div>
-      <div class="alp-about-links" style="display:flex;gap:14px;flex-wrap:wrap">
+      <div class="alp-about-links alp-pending" hidden style="display:flex;gap:14px;flex-wrap:wrap">
         <a href="#" class="alp-btn alp-btn--ghost" title="פותח את עמוד האינסטגרם של ידידיה">האינסטגרם שלי</a>
         <a href="#" class="alp-btn alp-btn--ghost" title="פותח את הפודקאסט ״המערה״ של ידידיה">הפודקאסט שלי</a>
       </div>
@@ -422,7 +424,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 <footer class="alp-foot" style="background:#1b1a1c;color:#a39d99">
   <div class="alp-wrap" style="padding-top:56px;padding-bottom:110px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:40px;align-items:start">
     <img src="images/alpha-logo-light.webp" alt="אלפא" width="104" height="86" style="width:104px;height:auto;display:block">
-    <div style="display:flex;flex-direction:column;gap:8px;font-size:17px">
+    <div class="alp-pending" hidden style="display:flex;flex-direction:column;gap:8px;font-size:17px">
       <a href="#">תנאי שימוש</a>
       <a href="#">תקנון מדיניות פרטיות</a>
     </div>
