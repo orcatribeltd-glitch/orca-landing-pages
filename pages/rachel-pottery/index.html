@@ -121,8 +121,10 @@
     for(var i=0;i<s.options.length;i++){if(s.options[i].text.trim()===COURSES[c]){s.selectedIndex=i;break;}}
     var f=s.closest("form");
     function go(){var box=f.closest(".rachel-form")||f;window.scrollTo({top:box.getBoundingClientRect().top+window.scrollY-110,behavior:"instant"});}
-    setTimeout(go,300);
-    if(document.readyState!=="complete")window.addEventListener("load",function(){setTimeout(go,200);});
+    /* images above the form load late and push it down: re-align a few times until the visitor scrolls */
+    var moved=false;["wheel","touchstart","keydown"].forEach(function(ev){window.addEventListener(ev,function(){moved=true;},{once:true,passive:true});});
+    [300,900,1600,2500,3500].forEach(function(t){setTimeout(function(){if(!moved)go();},t);});
+    window.addEventListener("load",function(){setTimeout(function(){if(!moved)go();},200);});
     var n=document.getElementById("form-field-name");if(n)setTimeout(function(){n.focus({preventScroll:true});},700);
     return true;
   }
