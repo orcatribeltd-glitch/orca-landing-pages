@@ -120,7 +120,10 @@
     if(!c||!COURSES[c]||!s)return false;
     for(var i=0;i<s.options.length;i++){if(s.options[i].text.trim()===COURSES[c]){s.selectedIndex=i;break;}}
     var f=s.closest("form");
-    setTimeout(function(){f.scrollIntoView({behavior:"smooth",block:"start"});var n=document.getElementById("form-field-name");if(n)setTimeout(function(){n.focus({preventScroll:true});},600);},300);
+    function go(){var box=f.closest(".rachel-form")||f;window.scrollTo({top:box.getBoundingClientRect().top+window.scrollY-110,behavior:"instant"});}
+    setTimeout(go,300);
+    if(document.readyState!=="complete")window.addEventListener("load",function(){setTimeout(go,200);});
+    var n=document.getElementById("form-field-name");if(n)setTimeout(function(){n.focus({preventScroll:true});},700);
     return true;
   }
   function boot(){if(!preselect()){var t=0,iv=setInterval(function(){if(preselect()||++t>20)clearInterval(iv);},250);}}
