@@ -122,6 +122,8 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-modal[hidden]{display:none}
 /* קישור שעוד אין לו יעד: מוסתר עד שידידיה ימסור אותו (ux, 20/10) */
 .alp-pending[hidden]{display:none!important}
+.alp-group .alp-wrap p:has(+ .alp-pending[hidden]){margin-bottom:0!important}
+#about .alp-wrap:has(> .alp-pending[hidden]){max-width:860px}
 .alp-modal-box{width:min(100%,1040px);aspect-ratio:16/9;max-height:calc(100vh - 120px);background:#000;box-shadow:0 20px 50px rgba(0,0,0,.5)}
 .alp-modal-box video{width:100%;height:100%;display:block;background:#000}
 .alp-modal-x{position:absolute;top:18px;left:18px;width:44px;height:44px;border:0;background:transparent;color:#f7f3f0;font-size:30px;cursor:pointer}
@@ -357,7 +359,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 
 <section id="about" class="alp-sec" style="background:#f7f3f0;padding-top:110px">
   <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:64px;align-items:start">
-    <div style="position:relative;aspect-ratio:3/4;max-height:560px;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5">
+    <div class="alp-pending" hidden style="position:relative;aspect-ratio:3/4;max-height:560px;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5">
       <div class="alp-mono" style="position:absolute;bottom:22px;right:24px;font-size:13px;letter-spacing:.25em">[ תמונה של ידידיה ]</div>
     </div>
     <div>
@@ -428,7 +430,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
       <a href="#">תנאי שימוש</a>
       <a href="#">תקנון מדיניות פרטיות</a>
     </div>
-    <div class="alp-mono" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#77726f">
+    <div class="alp-mono alp-pending" hidden style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#77726f">
       <span>[ שם החברה ]</span>
       <span>[ כתובת מייל ליצירת קשר ]</span>
     </div>
