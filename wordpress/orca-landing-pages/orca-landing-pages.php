@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.14.2
+ * Version:     1.14.3
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION = '1.14.0';
+    const VERSION = '1.14.3';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1934,6 +1934,67 @@ final class Orca_Landing_Pages
                 $meta = $req->get_param('metadata');
                 $meta = $meta === null ? null : array_values(array_intersect(array_filter(array_map('trim', explode(',', (string) $meta))), ['date', 'time', 'page_url', 'user_agent', 'remote_ip', 'credit']));
                 return new WP_REST_Response(['ok' => true] + self::set_form_actions($pid, $list($req->get_param('remove')), $list($req->get_param('add')), $webhook, $adv, $meta, sanitize_text_field((string) $req->get_param('form_name')), $redirect), 200);
+            },
+        ]);
+        register_rest_route('olp/v1', '/pys-event', [
+            'methods'             => ['GET', 'POST'],
+            'permission_callback' => '__return_true',
+            'callback'            => static function (WP_REST_Request $req) {
+                $s      = self::settings();
+                $secret = (string) $s['webhook_secret'];
+                $given  = (string) ($req->get_header('x-olp-secret') ?: $req->get_param('secret'));
+                if ($secret === '' || !hash_equals($secret, $given)) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'bad secret'], 403);
+                }
+                // One PixelYourSite custom event (post type pys_event). GET reads it; POST renames
+                // only the Meta event (standard -> custom name) or restores the saved copy.
+                $id   = (int) $req->get_param('id');
+                $post = $id > 0 ? get_post($id) : null;
+                if (!$post || $post->post_type !== 'pys_event') {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'not a pys_event'], 404);
+                }
+                $find = static function () use ($id) {
+                    foreach ((array) get_post_meta($id) as $k => $vals) {
+                        $v = maybe_unserialize($vals[0] ?? '');
+                        if (is_array($v) && array_key_exists('facebook_event_type', $v)) { return [$k, $v]; }
+                    }
+                    return [null, null];
+                };
+                [$key, $data] = $find();
+                $fb = static function ($d) {
+                    $out = [];
+                    foreach ((array) $d as $k => $v) {
+                        if (preg_match('/^(facebook_|enabled$|title$|trigger|enable_time_window|time_window)/', (string) $k)) { $out[$k] = $v; }
+                    }
+                    return $out;
+                };
+                if ($req->get_method() === 'GET') {
+                    return new WP_REST_Response(['ok' => true, 'id' => $id, 'title' => $post->post_title, 'status' => $post->post_status, 'meta_key' => $key, 'facebook' => $fb($data), 'has_backup' => (bool) get_post_meta($id, '_olp_pys_backup', true)], 200);
+                }
+                if ($key === null) {
+                    return new WP_REST_Response(['ok' => false, 'error' => 'event data not found'], 409);
+                }
+                if ($req->get_param('restore')) {
+                    $bak = get_post_meta($id, '_olp_pys_backup', true);
+                    if (!is_array($bak)) { return new WP_REST_Response(['ok' => false, 'error' => 'no backup'], 409); }
+                    update_post_meta($id, $key, $bak);
+                } else {
+                    $name = preg_replace('/[^A-Za-z0-9_]/', '', (string) $req->get_param('fb_custom_name'));
+                    if ($name === '' || strlen($name) > 50) {
+                        return new WP_REST_Response(['ok' => false, 'error' => 'fb_custom_name required (letters, digits, _)'], 400);
+                    }
+                    if (!get_post_meta($id, '_olp_pys_backup', true)) { add_post_meta($id, '_olp_pys_backup', $data, true); }
+                    $data['facebook_event_type']        = 'CustomEvent';
+                    $data['facebook_custom_event_type'] = $name;
+                    update_post_meta($id, $key, $data);
+                }
+                clean_post_cache($id);
+                $purged = [];
+                foreach (array_filter(array_map('intval', explode(',', (string) $req->get_param('purge')))) as $pid) {
+                    $purged[$pid] = self::purge_page_cache_plugins($pid);
+                }
+                [, $after] = $find();
+                return new WP_REST_Response(['ok' => true, 'id' => $id, 'meta_key' => $key, 'facebook' => $fb($after), 'purged' => $purged], 200);
             },
         ]);
         register_rest_route('olp/v1', '/form-info', [
