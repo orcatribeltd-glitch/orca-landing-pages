@@ -192,6 +192,10 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp .alp-arrow{width:52px;height:52px;background:var(--ink);color:var(--cream);border:0;border-radius:0;padding:0;font-size:22px;line-height:1;cursor:pointer}
 .alp .alp-arrow:hover,.alp .alp-arrow:focus,.alp .alp-arrow:active{background:#000!important;color:var(--cream)!important;border:0!important}
 .alp .alp-arrow:focus-visible{outline:3px solid var(--rust)!important;outline-offset:2px}
+/* arrows: dimmed at the end of the rail, hidden when every card already fits (ux 25/10) */
+.alp .alp-arrow:disabled,.alp .alp-arrow:disabled:hover{opacity:.3;cursor:default;background:var(--ink)!important}
+.alp-arrows[hidden]{display:none}
+.alp .alp-story-more{display:none}
 .alp-rail{scrollbar-width:none;scroll-behavior:smooth}
 .alp-rail::-webkit-scrollbar{display:none}
 .alp-story-card{flex:none;position:relative;width:clamp(260px,calc((100vw - 112px) / 3),378px);min-height:460px;margin:0;scroll-snap-align:start;overflow:hidden;background:#3a2620;box-shadow:0 10px 24px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:44px 34px;text-align:center}
@@ -262,7 +266,11 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp .alp-final-call{font-size:26px;margin-bottom:40px}
   .alp-story-card{width:min(82vw,340px)}
   /* the long testimonial is ~2x taller on a phone; the photo cards keep their own height instead of stretching to it */
-  #stories .alp-rail-in{align-items:flex-start!important}
+  /* the long testimonial is folded to 5 lines on a phone, so all three cards share one height and no empty band is left under the short ones (ux 25/10) */
+  .alp-story-card--full:not(.is-open) .alp-story-card-full{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+  .alp .alp-story-more{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;min-height:44px;padding:0;margin:0;background:transparent;border:0;font-family:'Heebo',sans-serif;font-weight:700;font-size:16px;color:var(--gold);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+  .alp .alp-story-more:hover,.alp .alp-story-more:focus,.alp .alp-story-more:active{background:transparent!important;color:var(--gold)!important;border:0!important}
+  #stories .alp-rail-in:has(.is-open){align-items:flex-start!important}
   .alp-float{left:12px;right:12px;bottom:12px;white-space:normal;text-align:center;justify-content:center;font-size:15px}
   /* one CTA at a time on a phone: while the floating button shows, the header button fades (same text twice took ~17% of the screen) */
   .alp-head .alp-btn{transition:opacity .25s}
@@ -439,7 +447,7 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
       </figure>
       <figure class="alp-story-card alp-story-card--full">
         <img src="images/alpha-couple-1.webp" alt="" loading="lazy" width="760" height="1009">
-        <blockquote><span class="alp-qmark" aria-hidden="true">״</span><p class="alp-story-card-q">זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר.</p><p class="alp-story-card-full">מזה כשנתיים אני בקבוצה "דרך גבר" של ידידי ידידיה אנקרי, הקבוצה היוותה מרחב בטוח לשיתוף והתיעצות בנושאי זוגיות ולא רק, גם שיתוף אישי של סיפור חיים בהשליך על הזוגיות הצלחתי לפתוח בקבוצה ולקבל מקום ולב פתוח ודיוקים חשובים, בנוסף בקבוצה עולים תכנים על בסיס קבוע שנוגעים לזוגיות תכנים מעשירים מחכימים ובעיקר מעוררים לזוגיות בריאה אוהבת ומכילה, זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר, תכנים שעוזרים להבין את המקום של הגבר מול אשה, שעוזרים לחדד את עניין החיזור וההשלכות החיוביות שלו, אני ממליץ בחום על הקבוצות, על המרחב הבטוח ועל ידידיה היקר באופן אישי. באהבה</p></blockquote>
+        <blockquote><span class="alp-qmark" aria-hidden="true">״</span><p class="alp-story-card-q">זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר.</p><p class="alp-story-card-full">מזה כשנתיים אני בקבוצה "דרך גבר" של ידידי ידידיה אנקרי, הקבוצה היוותה מרחב בטוח לשיתוף והתיעצות בנושאי זוגיות ולא רק, גם שיתוף אישי של סיפור חיים בהשליך על הזוגיות הצלחתי לפתוח בקבוצה ולקבל מקום ולב פתוח ודיוקים חשובים, בנוסף בקבוצה עולים תכנים על בסיס קבוע שנוגעים לזוגיות תכנים מעשירים מחכימים ובעיקר מעוררים לזוגיות בריאה אוהבת ומכילה, זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר, תכנים שעוזרים להבין את המקום של הגבר מול אשה, שעוזרים לחדד את עניין החיזור וההשלכות החיוביות שלו, אני ממליץ בחום על הקבוצות, על המרחב הבטוח ועל ידידיה היקר באופן אישי. באהבה</p><button type="button" class="alp-story-more" aria-expanded="false" title="פותח את כל מה שיאיר כתב לידידיה. לחיצה נוספת מקפלת בחזרה.">להמשך העדות של יאיר ▾</button></blockquote>
         <figcaption>יאיר</figcaption>
       </figure>
     </div>
@@ -586,6 +594,15 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   /* written testimonials rail: arrows scroll one card (RTL: "prev" moves toward the start) */
   var rt=root.querySelector('[data-alp-rail-track]');
   root.querySelectorAll('[data-alp-rail]').forEach(function(b){b.addEventListener('click',function(){if(!rt)return;var d=b.getAttribute('data-alp-rail')==='prev'?1:-1;rt.scrollBy({left:d*Math.min(440,rt.clientWidth*.85),behavior:'smooth'});});});
+  /* arrows reflect where the rail is: dimmed at each end, hidden when all cards are already on screen */
+  if(rt){var ar=root.querySelector('.alp-arrows'),bp=root.querySelector('[data-alp-rail="prev"]'),bn=root.querySelector('[data-alp-rail="next"]');
+    var railUpd=function(){var tr=rt.getBoundingClientRect(),all=true;rt.querySelectorAll('.alp-story-card').forEach(function(c){var r=c.getBoundingClientRect();if(r.left<tr.left-2||r.right>tr.right+2)all=false;});
+      if(ar)ar.hidden=all;var max=rt.scrollWidth-rt.clientWidth,pos=Math.abs(rt.scrollLeft),cards=rt.querySelectorAll('.alp-story-card'),first=cards[0],last=cards[cards.length-1];
+      if(bp)bp.disabled=first?first.getBoundingClientRect().right<=tr.right+2:pos<4;
+      if(bn)bn.disabled=last?last.getBoundingClientRect().left>=tr.left-2:pos>=max-4;};
+    rt.addEventListener('scroll',function(){clearTimeout(rt._t);rt._t=setTimeout(railUpd,80);},{passive:true});window.addEventListener('resize',railUpd);window.addEventListener('load',railUpd);railUpd();}
+  /* long written testimonial: fold / unfold on a phone */
+  root.querySelectorAll('.alp-story-more').forEach(function(b){b.addEventListener('click',function(){var c=b.closest('.alp-story-card'),open=c.classList.toggle('is-open');b.setAttribute('aria-expanded',open?'true':'false');b.textContent=open?'קפל את העדות ▴':'להמשך העדות של יאיר ▾';if(rt&&typeof railUpd==='function')setTimeout(railUpd,50);});});
   /* placeholders for the Elementor fields (design shows placeholders, not labels) */
   var ph={hero:{full_name:'שם',phone:'טלפון',email:'מייל'},final:{full_name:'שם מלא',phone:'נייד ליצירת קשר',email:'אימייל'}};
   ['hero','final'].forEach(function(k){var w=root.querySelector('.alp-form--'+k);if(!w)return;
