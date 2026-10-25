@@ -1,4 +1,4 @@
-<!-- תכנית אלפא – דף נחיתה (שיחת התאמה). נבנה מעיצוב קלוד דיזיין ״ידידיה תכנית אלפא v2״ (יהונתן, 19/10/2026). טפסים = טפסי אלמנטור אמיתיים במקום olp:form:1 ו-olp:form:2. עורכים את הקובץ הזה ישירות. -->
+<!-- תכנית אלפא – דף נחיתה (שיחת התאמה). נבנה מעיצוב קלוד דיזיין ״ידידיה תכנית אלפא v2״ (יהונתן, 19/10/2026), ועודכן לגרסה הסופית של העיצוב (יהונתן, 25/10/2026). טפסים = טפסי אלמנטור אמיתיים במקום olp:form:1 ו-olp:form:2. עורכים את הקובץ הזה ישירות. -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +171,53 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 .alp-form--final .elementor-message{color:#fbeee8}
 .alp-form--hero .elementor-message{color:var(--ink)}
 
+/* ---------- final design (25/10): hero subtitle, story, what-is, written testimonials, portrait ---------- */
+.alp .alp-hero h1{color:var(--gold);font-size:clamp(40px,5.4vw,66px);line-height:1.08;margin-bottom:22px}
+.alp-hero-text img{margin-bottom:30px}
+.alp .alp-hero-sub{font-family:'Heebo',sans-serif;font-weight:700;font-size:clamp(22px,2.4vw,30px);line-height:1.4;color:var(--cream);text-wrap:balance;max-width:560px}
+.alp-hero-card > p:first-child{margin-bottom:8px!important}
+.alp .alp-hero-card > p.alp-hero-card-sub{margin:0 0 26px!important;font-family:'Assistant',sans-serif;font-weight:400;font-size:17px;line-height:1.5;color:var(--body)}
+.alp-story-txt{display:flex;flex-direction:column;gap:22px;font-size:22px;line-height:1.85;color:var(--body)}
+.alp .alp-story-lead{font-family:'Heebo',sans-serif;font-weight:800;font-size:30px;line-height:1.4;color:var(--ink)}
+.alp .alp-story-q{font-family:'Heebo',sans-serif;font-weight:800;font-size:28px;color:var(--rust)}
+.alp .alp-story-rule{padding:28px 0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font-family:'Heebo',sans-serif;font-weight:900;font-size:30px;line-height:1.4;color:var(--ink);text-wrap:balance}
+.alp-story-box{background:#3a2620;color:#e8dcd5;padding:52px 48px;display:flex;flex-direction:column;gap:22px;font-size:21px;line-height:1.85;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.alp .alp-story-box-h{font-family:'Heebo',sans-serif;font-weight:900;font-size:32px;line-height:1.3;color:var(--gold);text-wrap:balance}
+.alp .alp-story-box-b{font-family:'Heebo',sans-serif;font-weight:700;font-size:23px;line-height:1.6;color:var(--cream)}
+.alp .alp-story-box-end{margin-top:12px;font-family:'Heebo',sans-serif;font-weight:900;font-size:30px;line-height:1.4;color:var(--cream)}
+.alp .alp-story-box-end span{color:var(--gold)}
+.alp .alp-h3{margin-bottom:12px;font-family:'Heebo',sans-serif;font-weight:900;font-size:30px;line-height:1.2;color:var(--ink)}
+.alp-rail-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:36px}
+.alp-arrows{display:flex;gap:8px}
+.alp .alp-arrow{width:52px;height:52px;background:var(--ink);color:var(--cream);border:0;border-radius:0;padding:0;font-size:22px;line-height:1;cursor:pointer}
+.alp .alp-arrow:hover,.alp .alp-arrow:focus,.alp .alp-arrow:active{background:#000!important;color:var(--cream)!important;border:0!important}
+.alp .alp-arrow:focus-visible{outline:3px solid var(--rust)!important;outline-offset:2px}
+.alp-rail{scrollbar-width:none;scroll-behavior:smooth}
+.alp-rail::-webkit-scrollbar{display:none}
+.alp-story-card{flex:none;position:relative;width:clamp(260px,calc((100vw - 112px) / 3),378px);min-height:460px;margin:0;scroll-snap-align:start;overflow:hidden;background:#3a2620;box-shadow:0 10px 24px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:44px 34px;text-align:center}
+.alp-story-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block;z-index:0}
+.alp-story-card::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(35,22,18,.15) 0%,rgba(35,22,18,.55) 50%,rgba(35,22,18,.85) 100%)}
+.alp-story-card blockquote{position:relative;z-index:2;margin:0;display:flex;flex-direction:column;align-items:center;gap:20px}
+.alp .alp-qmark{font-family:'Heebo',sans-serif;font-weight:900;font-size:72px;line-height:.6;height:30px;color:var(--gold)}
+.alp .alp-story-card blockquote p{font-family:'Heebo',sans-serif;font-weight:900;font-size:clamp(24px,2.3vw,30px);line-height:1.3;color:var(--cream);text-wrap:balance}
+.alp .alp-story-card figcaption{position:relative;z-index:2;font-family:'Heebo',sans-serif;font-weight:700;font-size:19px;color:var(--gold)}
+.alp-story-card--full{background:#24180f;justify-content:flex-start;align-items:stretch;text-align:right;padding:230px 32px 36px;gap:18px}
+.alp-story-card--full img{height:360px;bottom:auto}
+.alp-story-card--full::before{bottom:auto;height:362px;background:linear-gradient(180deg,rgba(36,24,15,.05) 0%,rgba(36,24,15,.55) 55%,#24180f 100%)}
+.alp-story-card--full blockquote{align-items:stretch;gap:18px}
+.alp-story-card--full .alp-qmark{font-size:64px;height:28px}
+.alp .alp-story-card--full .alp-story-card-q{font-weight:800;font-size:25px;line-height:1.4}
+.alp .alp-story-card--full .alp-story-card-full{font-family:'Assistant',sans-serif;font-weight:400;font-size:16px;line-height:1.75;color:#d8cac2;text-wrap:wrap}
+.alp-story-card--full figcaption{margin-top:auto;font-size:18px}
+.alp-portrait{position:relative;padding:0 0 24px 24px;max-width:460px;width:100%;justify-self:center}
+.alp-portrait-bg{position:absolute;left:0;bottom:0;width:calc(100% - 24px);height:calc(100% - 24px);background:var(--gold)}
+.alp-portrait img{position:relative;display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:center 25%;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.alp-portrait-tag{position:absolute;right:16px;bottom:52px;display:flex;flex-direction:column;gap:2px;background:var(--ink);padding:12px 18px;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.alp .alp-portrait-tag b{font-family:'Heebo',sans-serif;font-weight:800;font-size:18px;color:var(--cream)}
+.alp .alp-portrait-tag span{font-family:'Heebo',sans-serif;font-weight:500;font-size:14px;color:var(--gold)}
+.alp .alp-final-pre{margin-bottom:18px;text-align:center;font-weight:700;font-size:26px;line-height:1.5;color:#fbeee8;text-wrap:balance}
+.alp .alp-final-call{margin-bottom:56px;text-align:center;font-weight:900;font-size:32px;line-height:1.3;color:#f2c94c}
+
 /* ---------- small screens ---------- */
 @media (max-width:1000px){.alp-nav{display:none}.alp-head .alp-wrap{justify-content:space-between}}
 @media (max-width:900px) and (min-width:641px){.alp-tastes{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -203,6 +250,19 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   .alp-btn--block-sm{display:flex;width:100%;font-size:19px!important;padding:20px 18px!important}
   .alp .alp-final-title{font-size:34px!important}
   .alp-about-links .alp-btn--ghost{flex:1 1 0;justify-content:center;text-align:center}
+  .alp .alp-hero-sub{margin-inline:auto}
+  .alp-story-txt{font-size:19px;gap:18px}
+  .alp .alp-story-lead,.alp .alp-story-rule{font-size:25px}
+  .alp .alp-story-q{font-size:24px}
+  .alp-story-box{padding:34px 22px;font-size:19px}
+  .alp .alp-story-box-h{font-size:26px}
+  .alp .alp-story-box-b{font-size:20px}
+  .alp .alp-story-box-end{font-size:25px}
+  .alp .alp-final-pre{font-size:21px}
+  .alp .alp-final-call{font-size:26px;margin-bottom:40px}
+  .alp-story-card{width:min(82vw,340px)}
+  /* the long testimonial is ~2x taller on a phone; the photo cards keep their own height instead of stretching to it */
+  #stories .alp-rail-in{align-items:flex-start!important}
   .alp-float{left:12px;right:12px;bottom:12px;white-space:normal;text-align:center;justify-content:center;font-size:15px}
   /* one CTA at a time on a phone: while the floating button shows, the header button fades (same text twice took ~17% of the screen) */
   .alp-head .alp-btn{transition:opacity .25s}
@@ -216,13 +276,14 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   <div class="alp-wrap">
     <a href="#top" class="alp-head-logo" title="חזרה לראש העמוד"><img src="images/alpha-logo-rust.webp" alt="אלפא" width="64" height="53"></a>
     <nav class="alp-nav" aria-label="ניווט בעמוד">
-      <a href="#fit">למי זה מתאים</a>
-      <a href="#program">מה לומדים</a>
-      <a href="#price">עלות</a>
+      <a href="#what">מה זה אלפא</a>
+      <a href="#program">השלבים</a>
       <a href="#about">ידידיה</a>
+      <a href="#fit">למי זה מתאים</a>
+      <a href="#price">עלות</a>
       <a href="#faq">שאלות</a>
     </nav>
-    <a href="#contact" class="alp-btn alp-btn--rust" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+    <a href="#contact" class="alp-btn alp-btn--rust" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה, ללא עלות</a>
   </div>
 </header>
 
@@ -231,29 +292,101 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   <div class="alp-wrap">
     <div class="alp-hero-text">
       <img src="images/alpha-logo-light.webp" alt="אלפא" width="300" height="248">
-      <div class="alp-come">בוא להיות</div>
-      <h1>להחזיר את החיזור. להעיר את התשוקה.</h1>
+      <h1>להעיר את התשוקה בזוגיות.</h1>
+      <p class="alp-hero-sub">תוכנית ליווי לגברים, להחזיר הביתה את החיזור והקרבה.</p>
     </div>
     <div class="alp-hero-card">
-      <p>לשיחת התאמה אישית עם ידידיה לתוכנית, ללא עלות:</p>
+      <p>לשיחת התאמה אישית עם ידידיה, ללא עלות</p>
+      <p class="alp-hero-card-sub">שיחה קצרה של 20 דקות, בלי התחייבות ובדיסקרטיות מלאה.</p>
       <div class="alp-form alp-form--hero"><!--olp:form:1--></div>
     </div>
   </div>
 </section>
 
-<section id="fit" class="alp-sec" style="background:#f7f3f0">
-  <div class="alp-wrap" style="max-width:1000px">
-    <h2 class="alp-h2" style="margin-bottom:44px">למי התוכנית מתאימה</h2>
-    <div class="alp-list">
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שטוב להם ורוצים שיהיה להם מדהים.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לאהוב בטירוף את אשתו.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להחזיר את הניצוץ בעיניים של אשתו.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להרגיש אהוב ומקובל בבית.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להביא את המיניות שלו לקשר באופן מלא, בלי להסתיר חלקים ממנה.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לחזור לאהבה שהייתה בהתחלה — לפני המשכנתא, הילדים, המילואים ומיליוני המשימות.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שהמיניות בקשר שלהם הפכה לנדירה, מורכבת או כואבת.</span></div>
-<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שנמאס לו רק לטפל בקשר ורוצה להתחיל לטפח ולבנות אותו.</span></div>
+<section class="alp-sec" style="background:#f7f3f0;padding-bottom:90px">
+  <div class="alp-wrap" style="text-align:center">
+    <h2 class="alp-h2" style="font-size:clamp(28px,4vw,38px);line-height:1.25;margin-bottom:44px">היי אח, יש לי מסר חשוב אליך לפני שאתה קורא.</h2>
+    <div class="alp-video" data-alp-intro>
+      <video controls playsinline preload="none" poster="https://raw.githubusercontent.com/orcatribeltd-glitch/orca-landing-pages/main/pages/alpha-landing/images/alpha-intro.webp" src="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-intro.mp4"></video>
+      <button type="button" class="alp-video-play" aria-label="נגן את הסרטון האישי של ידידיה" title="מנגן כאן בדף את הסרטון האישי של ידידיה (3:33). אפשר לעצור ולהמשיך מהנגן."><span class="alp-play"><span></span></span><span class="alp-video-len">3:33</span></button>
     </div>
+  </div>
+</section>
+
+<section class="alp-story" style="background:#f7f3f0">
+  <div class="alp-wrap" style="max-width:760px;padding-top:20px;padding-bottom:110px;display:flex;flex-direction:column;gap:56px">
+    <div class="alp-story-txt">
+      <p class="alp-story-lead">אתה חוזר הביתה גמור.</p>
+      <p>ילדים, מקלחות, כלים, משימות. אתם צוות הפקה משומן. אבל איפה הזוגיות?</p>
+      <p>אתה מסתכל עליה ולא זוכר מתי באמת התרגשת ממנה. או גרוע יותר: אתה נמנע מלהתקרב, שלא הכול יתפוצץ שוב. למדת למזער סיכונים.</p>
+      <p class="alp-story-q">ליזום קרבה?</p>
+      <p>זה נהיה כל כך מורכב ונפיץ, שאתה מעדיף לוותר מראש. יש רגעים, אבל בעיקר ברגעי חסד, כשהילדים נרדמו והר המשימות נדחה למחר.</p>
+      <p>ואתה מתגעגע. לא רק לקרבה. לצחוקים, למבטים, לתחושה שהיא רוצה אותך. שהבית הוא המקום שלך, שהלב שלה הוא שלך.</p>
+      <p class="alp-story-rule">אתה אוהב אותה. אז איך לעזאזל הפכתם מזוג אוהבים לצוות שמנהל בית?</p>
+    </div>
+    <div class="alp-story-txt">
+      <p class="alp-story-lead">ואני יודע: עשית הכול.</p>
+      <p>לא נרדמת בשמירה. הלכתם לטיפול, הקשבת, סלחת, שתקת, ליטפת, חיבקת. ושוב חוזרים למתח, לציפיות ולאכזבה.</p>
+      <p class="alp-story-q">אז למה זה לא עובד?</p>
+      <p>כי כדי להיות בריא לא מספיק ללכת לרופא, צריך גם לעשות כושר. טיפול מתקן את מה ששבור, אבל תשוקה לא חוזרת מתיקון. היא נבנית כשהופכים את הביחד שלכם לנעים, מרגש ומענג. לך ולה.</p>
+    </div>
+    <div class="alp-story-box">
+      <p class="alp-story-box-h">הגיע הזמן להפסיק רק לטפל בזוגיות, ולהפוך אותה ללונה פארק של התרגשות.</p>
+      <p>להחזיר את החיזור, המשחק והתשוקה למרכז הקשר. להביא את התשוקה שלך כמו שנעים לך כגבר, כך שהלב שלה ייפתח ויתרגש.</p>
+      <p>לצאת מה״העיקר שנישאר יח.ד״ ולהתחיל לעוף על הביחד שלכם. גם בשבילה, אבל בעיקר בשבילך.</p>
+      <p class="alp-story-box-b">מגיע לך לצאת מהבית בבוקר, אחרי לילה של אהבה, ולראות בעיניים שלה את המבט המאוהב הזה.</p>
+      <p class="alp-story-box-end">איך עושים את זה? <span>ברוך הבא לאלפא.</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="what" class="alp-sec" style="background:#fbf6f3;padding-top:110px">
+  <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px;align-items:start">
+    <div>
+      <h2 class="alp-h2" style="line-height:1.15;margin-bottom:26px">מה זה תוכנית אלפא?</h2>
+      <p class="hb" style="margin-bottom:20px;font-weight:700;font-size:23px;line-height:1.5;color:#232224">אלפא היא תוכנית ליווי לגברים, להעצמת הזוגיות והתשוקה.</p>
+      <p style="margin-bottom:34px;font-size:21px;line-height:1.8;color:#4a4644">עשרות סרטונים קצרים, תרגול בתוך היומיום וקבוצה של גברים שהולכים יחד את הדרך.</p>
+      <p class="hb" style="padding:24px 28px;background:#1b1a1c;font-weight:800;font-size:23px;line-height:1.45;color:#f2a81d">לא עוד ידע על זוגיות, אלא שינוי שנכנס הביתה, ולמיטה.</p>
+    </div>
+    <div>
+      <h3 class="alp-h3">דבר אליי בתכלס</h3>
+      <p style="margin-bottom:24px;font-size:19px;line-height:1.7;color:#4a4644">תוכנית ליווי צמודה לחיים ומותאמת לגברים. כמה שפחות לתפוס לך זמן, החיים שלך מפוצצים גם ככה.</p>
+      <div class="alp-list">
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>שיעורים של עד עשר דקות, שנשלחים פעמיים בשבוע.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפשרות לשאול שאלות אנונימיות.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>זום העמקה אחת לשבועיים: ידידיה עונה על השאלות ואפשר גם לעלות בלייב.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>משימות פרקטיות ותרגול בתוך החיים.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>קבוצת עבודה בוואטסאפ וליווי לאורך התוכנית.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>18 שבועות — כארבעה וחצי חודשים.</span></div>
+<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפליקציה ייעודית שמקפיצה לך ״שעשועי בית״ — משימות קצרות, משחקיות ומהנות, שמכניסות את החיזור, המגע והתשוקה לתוך חיי היום־יום.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="program" class="alp-sec" style="background:#232224;color:#cfc9c5;padding-top:110px;padding-bottom:110px">
+  <div class="alp-wrap">
+    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);line-height:1.1;color:#f7f3f0;margin-bottom:18px">מה השלבים בדרך להיות גבר עלללללפא?</h2>
+    <p class="hb" style="margin-bottom:56px;max-width:700px;font-weight:700;font-size:clamp(19px,2.4vw,23px);line-height:1.5;color:#f2a81d">ארבעה שלבים שמכניסים את מה שלומדים לתוך החיים ולתוך המיטה.</p>
+    <div class="alp-stages">
+<div class="alp-stage"><span class="alp-stage-n">שלב ראשון</span><h3>ההטענה</h3><div class="alp-stage-paras"><p>כדי לצאת לדרך חדשה, צריך אנרגיה. אי אפשר לצאת למסע עם מיכל ריק.</p><p>בשלב הזה נמלא מחדש את המאגרים שלנו במשאבים, בעונג ובדברים שמעניקים לנו כוח וחיות — כל אותם דברים שככל שהחיים הפכו עמוסים וסוערים, שכחנו להעניק לעצמנו.</p><p>במקביל, נבחן מחדש את התפיסות שלנו על זוגיות ומיניות, ונכניס למערכת הבנות חדשות ומעוררות, שיפתחו בפנינו אפשרויות חדשות לקרבה, לחיזור ולתשוקה.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב שני</span><h3>העמקה במיניות הגברית</h3><div class="alp-stage-paras"><p>נלמד איך להתיידד עם העוררות המינית שלנו, לחיות איתה בשלום, בלי להתבייש בה ובלי להילחם בה.</p><p>נגלה איך להביא את האנרגיה המינית שלנו אל המרחב הזוגי בדרך שמקרבת, מעוררת ופותחת את הלב של אהובתנו — במקום לתת לציפיות ולאכזבות לשרוף את הקשר.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב שלישי</span><h3>החיזור</h3><div class="alp-stage-paras"><p>זה הזמן להסתער על החיזור!</p><p>נלמד לחזר אחרי אהובתנו מתוך העוררות והתשוקה שלנו, כשהן מכוונות אל הלב שלה.</p><p>נגלה איך להפוך לסופר־מחזרים, כאלה שנהנים מהחיזור עצמו ולא רק ממה שהוא עשוי להוביל אליו.</p><p>דרך קשר עין, הקשבה, מגע ואיכויות המגע השונות, חיזור ישיר ועקיף — נלמד להפוך את המרחב הזוגי למרחב חי, משחקי ומלא בתשוקה, קרבה וחיבור.</p></div></div>
+<div class="alp-stage"><span class="alp-stage-n">שלב רביעי</span><h3>האינטימי</h3><div class="alp-stage-paras"><p>נכניס את כל הטוב שבנינו לאורך הדרך — את החיזור, העוררות, התשוקה והקרבה — אל חדר השינה שלנו.</p><p>נלמד איך לשהות בעוררות שלנו, בלי למהר לשום מקום, ואיך להזמין את אהובתנו להתחבר עמוק יותר לגוף וללב שלה.</p><p>כל המסע המיני־זוגי שלנו מתנקז אל המרחב האינטימי, באהבה ובסבלנות, כשהוא עטוף בחשק, בתשוקה ובקרבה.</p><p>ככה הופך חדר השינה למרחב מקודש של חיבור, עונג ואהבה.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alp-sec alp-group" style="background:#f2a81d">
+  <div class="alp-wrap" style="max-width:1000px;font-size:20px;line-height:1.9;color:#232224">
+    <div class="hb" style="font-weight:800;font-size:16px;letter-spacing:.2em;margin-bottom:14px">קבוצת העבודה</div>
+    <h2 class="alp-h2" style="line-height:1.15;margin-bottom:32px">עד עכשיו ״טיפלנו״ בזוגיות — הגיע הזמן להעיף אותה למעלה!</h2>
+    <p class="hb" style="margin-bottom:32px;font-weight:700;font-size:23px;line-height:1.5">ללמוד את האהבה שלא לימדו אותנו, ולהפוך אותה לדבר הכי מרגש בחיים שלנו.</p>
+    <p>כמו שלא תהפוך לשרירן מקריאת ספרים על ספורט, גם כאן העבודה היא בתרגול. המשימות פרקטיות והחומר נכנס לחיים.</p>
+    <p>בקבוצה משתפים במה שקורה באמת בבית וביניכם, מתרגלים את השפה ומטמיעים את החומר. מקבלים כוח מהחברים, מביאים את המורכבויות וחוגגים יחד את ההצלחות.</p>
+    <p class="hb" style="margin-bottom:8px;font-weight:800;font-size:22px;line-height:1.6">ואתה ממש לא חייב לשתף כל הזמן.</p>
+    <p style="margin-bottom:48px">הרבה מהלמידה מתרחשת דווקא דרך ההקשבה לחברים, דרך התהליכים שאחרים עוברים, ודרך הכנות, הפתיחות והחברות שמתפתחות בקבוצה.</p>
+    <a href="#" hidden class="alp-pending alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מוריד את קובץ הסילבוס של תכנית אלפא">להורדת הסילבוס ↓</a>
   </div>
 </section>
 
@@ -280,73 +413,36 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 </section>
 
 <section id="stories" style="background:#efc9bd">
-  <div class="alp-wrap" style="padding-top:60px;padding-bottom:90px">
-    <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px);margin-bottom:36px;text-align:center">גברים כותבים לידידיה</h2>
-    <div class="alp-letters">
-      <figure class="alp-letter">
-        <blockquote><p class="alp-letter-lead">אחד הדברים המשמעותיים שקיבלתי מתוכנית אלפא הוא הרשות פשוט להיות גבר ליד אשתי.</p><p>למדתי להרשות לעצמי להרגיש את העוררות שלי, את המשיכה ואת הרצון שלי באשתי, ולהביע אותם בפשטות ובביטחון, בלי להתנצל.</p><p>למדתי גם את החשיבות של המגע הקטן והיומיומי, דווקא בתקופות של ריחוק. ליטוף של הרגליים כשרואים טלוויזיה, מגע שלא בהכרח מוביל למיניות, אבל שומר על החיבור בינינו.</p><p>באופן מפתיע, דווקא החופש הזה, לצד המרחב שנוצר בינינו, חיזק את התשוקה והמשיכה בזוגיות שלנו.</p></blockquote>
-        <figcaption>— דוד, בוגר תוכנית אלפא</figcaption>
+  <div class="alp-wrap" style="padding-top:60px">
+    <div class="alp-rail-head">
+      <div>
+        <h2 class="alp-h2" style="font-size:clamp(30px,4vw,38px);margin-bottom:6px">גברים כותבים לידידיה</h2>
+        <p style="font-size:18px;color:#5e4a44">(בלי שהם מקבלים על זה הנחה)</p>
+      </div>
+      <div class="alp-arrows">
+        <button type="button" class="alp-arrow" data-alp-rail="prev" aria-label="העדות הקודמת" title="גולל לעדות הקודמת">→</button>
+        <button type="button" class="alp-arrow" data-alp-rail="next" aria-label="העדות הבאה" title="גולל לעדות הבאה">←</button>
+      </div>
+    </div>
+  </div>
+  <div class="alp-rail" data-alp-rail-track style="padding:6px 0 90px">
+    <div class="alp-rail-in" style="align-items:stretch">
+      <figure class="alp-story-card">
+        <img src="images/alpha-couple-3.webp" alt="" loading="lazy" width="760" height="1009">
+        <blockquote><span class="alp-qmark" aria-hidden="true">״</span><p>קיבלתי רשות פשוט להיות גבר ליד אשתי.</p></blockquote>
+        <figcaption>דוד</figcaption>
       </figure>
-      <figure class="alp-letter">
-        <blockquote><p class="alp-letter-lead">ידידיה תודה עליך. הפכת לנו את החיים לטובה.</p><p>אנחנו מפוקסים יותר על הזוגיות וקיבלנו מתנות שאין להם מחיר!</p><p>הדרך שלך שאותה אנחנו עושים וחיים משנה חיים ומשנה את כל המרחב בבית. הילדים כמובן כל הזמן מקליטים אותנו ומשדרים תדיר. התדר שלהם גם השתנה לטובה.</p></blockquote>
-        <figcaption>— עמרי, בוגר תוכנית אלפא</figcaption>
+      <figure class="alp-story-card">
+        <img src="images/alpha-couple-2.webp" alt="" loading="lazy" width="760" height="1009">
+        <blockquote><span class="alp-qmark" aria-hidden="true">״</span><p>הפכת לנו את החיים לטובה.</p></blockquote>
+        <figcaption>עמרי</figcaption>
+      </figure>
+      <figure class="alp-story-card alp-story-card--full">
+        <img src="images/alpha-couple-1.webp" alt="" loading="lazy" width="760" height="1009">
+        <blockquote><span class="alp-qmark" aria-hidden="true">״</span><p class="alp-story-card-q">זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר.</p><p class="alp-story-card-full">מזה כשנתיים אני בקבוצה "דרך גבר" של ידידי ידידיה אנקרי, הקבוצה היוותה מרחב בטוח לשיתוף והתיעצות בנושאי זוגיות ולא רק, גם שיתוף אישי של סיפור חיים בהשליך על הזוגיות הצלחתי לפתוח בקבוצה ולקבל מקום ולב פתוח ודיוקים חשובים, בנוסף בקבוצה עולים תכנים על בסיס קבוע שנוגעים לזוגיות תכנים מעשירים מחכימים ובעיקר מעוררים לזוגיות בריאה אוהבת ומכילה, זוגיות שבה לאשה יש מקום להיות אשה ולגבר יש מקום להיות גבר גבר, תכנים שעוזרים להבין את המקום של הגבר מול אשה, שעוזרים לחדד את עניין החיזור וההשלכות החיוביות שלו, אני ממליץ בחום על הקבוצות, על המרחב הבטוח ועל ידידיה היקר באופן אישי. באהבה</p></blockquote>
+        <figcaption>יאיר</figcaption>
       </figure>
     </div>
-  </div>
-</section>
-
-<section class="alp-sec" style="background:#f7f3f0">
-  <div class="alp-wrap" style="text-align:center">
-    <h2 class="alp-h2" style="font-size:clamp(28px,4vw,38px);line-height:1.25;margin-bottom:44px">היי אח, יש לי מסר חשוב אליך לפני שאתה קורא.</h2>
-    <div class="alp-video" data-alp-intro>
-      <video controls playsinline preload="none" poster="https://raw.githubusercontent.com/orcatribeltd-glitch/orca-landing-pages/main/pages/alpha-landing/images/alpha-intro.webp" src="https://yedidya-ankri.com/wp-content/uploads/2026/10/alpha-intro.mp4"></video>
-      <button type="button" class="alp-video-play" aria-label="נגן את הסרטון האישי של ידידיה" title="מנגן כאן בדף את הסרטון האישי של ידידיה (3:33). אפשר לעצור ולהמשיך מהנגן."><span class="alp-play"><span></span></span><span class="alp-video-len">3:33</span></button>
-    </div>
-  </div>
-</section>
-
-<section id="program" class="alp-sec" style="background:#232224;color:#cfc9c5;padding-top:110px;padding-bottom:110px">
-  <div class="alp-wrap">
-    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);line-height:1.1;color:#f7f3f0;margin-bottom:18px">מה לומדים בתוכנית</h2>
-    <p class="hb" style="margin-bottom:56px;max-width:700px;font-weight:700;font-size:clamp(19px,2.4vw,23px);line-height:1.5;color:#f2a81d">ארבעה שלבים שמכניסים את מה שלומדים לתוך החיים ולתוך המיטה.</p>
-    <div class="alp-stages">
-<div class="alp-stage"><span class="alp-stage-n">שלב ראשון</span><h3>ההטענה</h3><div class="alp-stage-paras"><p>כדי לצאת לדרך חדשה, צריך אנרגיה. אי אפשר לצאת למסע עם מיכל ריק.</p><p>בשלב הזה נמלא מחדש את המאגרים שלנו במשאבים, בעונג ובדברים שמעניקים לנו כוח וחיות — כל אותם דברים שככל שהחיים הפכו עמוסים וסוערים, שכחנו להעניק לעצמנו.</p><p>במקביל, נבחן מחדש את התפיסות שלנו על זוגיות ומיניות, ונכניס למערכת הבנות חדשות ומעוררות, שיפתחו בפנינו אפשרויות חדשות לקרבה, לחיזור ולתשוקה.</p></div></div>
-<div class="alp-stage"><span class="alp-stage-n">שלב שני</span><h3>העמקה במיניות הגברית</h3><div class="alp-stage-paras"><p>נלמד איך להתיידד עם העוררות המינית שלנו, לחיות איתה בשלום, בלי להתבייש בה ובלי להילחם בה.</p><p>נגלה איך להביא את האנרגיה המינית שלנו אל המרחב הזוגי בדרך שמקרבת, מעוררת ופותחת את הלב של אהובתנו — במקום לתת לציפיות ולאכזבות לשרוף את הקשר.</p></div></div>
-<div class="alp-stage"><span class="alp-stage-n">שלב שלישי</span><h3>החיזור</h3><div class="alp-stage-paras"><p>זה הזמן להסתער על החיזור!</p><p>נלמד לחזר אחרי אהובתנו מתוך העוררות והתשוקה שלנו, כשהן מכוונות אל הלב שלה.</p><p>נגלה איך להפוך לסופר־מחזרים, כאלה שנהנים מהחיזור עצמו ולא רק ממה שהוא עשוי להוביל אליו.</p><p>דרך קשר עין, הקשבה, מגע ואיכויות המגע השונות, חיזור ישיר ועקיף — נלמד להפוך את המרחב הזוגי למרחב חי, משחקי ומלא בתשוקה, קרבה וחיבור.</p></div></div>
-<div class="alp-stage"><span class="alp-stage-n">שלב רביעי</span><h3>האינטימי</h3><div class="alp-stage-paras"><p>נכניס את כל הטוב שבנינו לאורך הדרך — את החיזור, העוררות, התשוקה והקרבה — אל חדר השינה שלנו.</p><p>נלמד איך לשהות בעוררות שלנו, בלי למהר לשום מקום, ואיך להזמין את אהובתנו להתחבר עמוק יותר לגוף וללב שלה.</p><p>כל המסע המיני־זוגי שלנו מתנקז אל המרחב האינטימי, באהבה ובסבלנות, כשהוא עטוף בחשק, בתשוקה ובקרבה.</p><p>ככה הופך חדר השינה למרחב מקודש של חיבור, עונג ואהבה.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<section class="alp-sec" style="background:#fbf6f3;padding-top:110px">
-  <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px;align-items:start">
-    <div>
-      <h2 class="alp-h2" style="line-height:1.15;margin-bottom:26px">דבר אליי בתכלס</h2>
-      <p style="margin-bottom:34px;font-size:21px;line-height:1.8;color:#4a4644">תוכנית ליווי צמודה לחיים ומותאמת לגברים. כמה שפחות לתפוס לך זמן — החיים שלך מפוצצים גם ככה.</p>
-      <p class="hb" style="padding:24px 28px;background:#1b1a1c;font-weight:800;font-size:23px;line-height:1.45;color:#f2a81d">זו תוכנית ליווי, לא רק קורס אינטרנטי.</p>
-    </div>
-    <div class="alp-list">
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>שיעורים של עד עשר דקות, שנשלחים פעמיים בשבוע.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפשרות לשאול שאלות אנונימיות.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>זום העמקה אחת לשבועיים: ידידיה עונה על השאלות ואפשר גם לעלות בלייב.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>משימות פרקטיות ותרגול בתוך החיים.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>קבוצת עבודה בוואטסאפ וליווי לאורך התוכנית.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>18 שבועות — כארבעה וחצי חודשים.</span></div>
-<div class="alp-check alp-check--sm"><span class="alp-tick" aria-hidden="true">✓</span><span>אפליקציה ייעודית שמקפיצה לך ״שעשועי בית״ — משימות קצרות, משחקיות ומהנות, שמכניסות את החיזור, המגע והתשוקה לתוך חיי היום־יום.</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="alp-sec alp-group" style="background:#f2a81d">
-  <div class="alp-wrap" style="max-width:1000px;font-size:20px;line-height:1.9;color:#232224">
-    <div class="hb" style="font-weight:800;font-size:16px;letter-spacing:.2em;margin-bottom:14px">קבוצת העבודה</div>
-    <h2 class="alp-h2" style="line-height:1.15;margin-bottom:32px">עד עכשיו ״טיפלנו״ בזוגיות — הגיע הזמן להעיף אותה למעלה!</h2>
-    <p class="hb" style="margin-bottom:32px;font-weight:700;font-size:23px;line-height:1.5">ללמוד את האהבה שלא לימדו אותנו, ולהפוך אותה לדבר הכי מרגש בחיים שלנו.</p>
-    <p>כמו שלא תהפוך לשרירן מקריאת ספרים על ספורט, גם כאן העבודה היא בתרגול. המשימות פרקטיות והחומר נכנס לחיים.</p>
-    <p>בקבוצה משתפים במה שקורה באמת בבית וביניכם, מתרגלים את השפה ומטמיעים את החומר. מקבלים כוח מהחברים, מביאים את המורכבויות וחוגגים יחד את ההצלחות.</p>
-    <p class="hb" style="margin-bottom:8px;font-weight:800;font-size:22px;line-height:1.6">ואתה ממש לא חייב לשתף כל הזמן.</p>
-    <p style="margin-bottom:48px">הרבה מהלמידה מתרחשת דווקא דרך ההקשבה לחברים, דרך התהליכים שאחרים עוברים, ודרך הכנות, הפתיחות והחברות שמתפתחות בקבוצה.</p>
-    <a href="#" hidden class="alp-pending alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מוריד את קובץ הסילבוס של תכנית אלפא">להורדת הסילבוס ↓</a>
   </div>
 </section>
 
@@ -366,12 +462,14 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 
 <section id="about" class="alp-sec" style="background:#f7f3f0;padding-top:110px">
   <div class="alp-wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:64px;align-items:start">
-    <div class="alp-pending" hidden style="position:relative;aspect-ratio:3/4;max-height:560px;background:repeating-linear-gradient(135deg,#ece5e0 0 16px,#f5f0ec 16px 32px);border:1px solid #e3dbd5">
-      <div class="alp-mono" style="position:absolute;bottom:22px;right:24px;font-size:13px;letter-spacing:.25em">[ תמונה של ידידיה ]</div>
+    <div class="alp-portrait">
+      <div class="alp-portrait-bg" aria-hidden="true"></div>
+      <img src="images/alpha-yedidya.webp" alt="ידידיה אנקרי" width="800" height="1200">
+      <div class="alp-portrait-tag"><b>ידידיה אנקרי</b><span>מנחה ומאמן לזוגיות</span></div>
     </div>
     <div>
       <h2 class="alp-h2" style="font-size:clamp(34px,4.6vw,46px);line-height:1.12;margin-bottom:30px">נעים מאוד, ידידיה אנקרי.</h2>
-      <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:40px;font-size:19px;line-height:1.8;color:#4a4644">
+      <div style="display:flex;flex-direction:column;gap:18px;font-size:19px;line-height:1.8;color:#4a4644">
         <p>אני נשוי, אבא לחמישה, מנחה ומאמן לזוגיות ומנחה למיניות גברית ואינטגרטיבית, ויוצר הפודקאסט ״המערה – זוגיות מזווית גברית״.</p>
         <p>כבר למעלה מעשור שאני מתפתח, חוקר ומעמיק במרחב הזוגי־מיני. לאורך השנים הנחיתי מאות גברים במאות סדנאות, הרצאות ותהליכי ליווי, מתוך רצון לעזור לגברים לחיות בזוגיות שיש בה אהבה, חיות, קרבה ותשוקה.</p>
         <p>העבודה שלי משלבת בין עומק רגשי, חיבור לגוף ולמיניות וכלים מעשיים שאפשר להביא אל תוך החיים עצמם.</p>
@@ -379,41 +477,52 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
         <p>אני לא כאן כדי להפוך אותך לגבר אחר, אלא לעזור לך לחזור אל הגבר שאתה, ולהביא אותו במלואו אל הקשר עם האישה שאתה אוהב.</p>
         <p class="hb" style="font-weight:800;color:#b8431f">וזאת בדיוק הדרך שנעבור יחד באלפא.</p>
       </div>
-      <div class="alp-about-links alp-pending" hidden style="display:flex;gap:14px;flex-wrap:wrap">
-        <a href="#" class="alp-btn alp-btn--ghost" title="פותח את עמוד האינסטגרם של ידידיה">האינסטגרם שלי</a>
-        <a href="#" class="alp-btn alp-btn--ghost" title="פותח את הפודקאסט ״המערה״ של ידידיה">הפודקאסט שלי</a>
-      </div>
+    </div>
+  </div>
+</section>
+
+<section id="fit" class="alp-sec" style="background:#fbf6f3;padding-bottom:90px">
+  <div class="alp-wrap" style="max-width:1000px">
+    <h2 class="alp-h2" style="margin-bottom:44px">למי התוכנית מתאימה</h2>
+    <div class="alp-list">
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שטוב להם ורוצים שיהיה להם מדהים.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לאהוב בטירוף את אשתו.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להחזיר את הניצוץ בעיניים של אשתו.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להרגיש אהוב ומקובל בבית.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה להביא את המיניות שלו לקשר באופן מלא, בלי להסתיר חלקים ממנה.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שרוצה לחזור לאהבה שהייתה בהתחלה — לפני המשכנתא, הילדים, המילואים ומיליוני המשימות.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>לגברים שהמיניות בקשר שלהם הפכה לנדירה, מורכבת או כואבת.</span></div>
+<div class="alp-check "><span class="alp-tick" aria-hidden="true">✓</span><span>למי שנמאס לו רק לטפל בקשר ורוצה להתחיל לטפח ולבנות אותו.</span></div>
     </div>
   </div>
 </section>
 
 <section id="price" class="alp-sec" style="background:#3a2620;padding-top:110px;padding-bottom:110px">
   <div class="alp-wrap" style="max-width:900px;text-align:center">
-    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);color:#f7f3f0;margin-bottom:50px">עלות התוכנית</h2>
-    <div class="alp-price-card" style="background:#f7f3f0;padding:48px 40px 44px;box-shadow:0 18px 40px rgba(0,0,0,.35)">
-      <div class="hb" style="font-weight:700;font-size:26px;color:#8d8682;text-decoration:line-through;margin-bottom:24px">5,000 ₪</div>
-      <div class="alp-price-grid">
-        <div style="background:#b8431f;color:#fbeee8;padding:28px 20px">
-          <div class="hb" style="font-weight:700;font-size:17px;margin-bottom:8px">מחיר השקה בהרשמה מוקדמת</div>
-          <div class="alp-big">2,832 ₪</div>
-          <div class="hb" style="font-weight:800;font-size:20px;margin-top:12px">566 ₪ ל־5 חודשים</div>
-          <div style="font-size:16px;margin-top:10px;color:#f6d6c8">עד 20 באוקטובר [שנה לאישור]</div>
+    <h2 class="alp-h2" style="font-size:clamp(34px,5vw,48px);color:#f7f3f0;margin-bottom:50px">כמה זוזים כדי לזוז?</h2>
+    <div class="alp-price-card" style="background:#f7f3f0;padding:44px 40px;box-shadow:0 18px 40px rgba(0,0,0,.35)">
+      <div class="alp-price-grid" style="margin-bottom:34px">
+        <div style="background:#b8431f;color:#fbeee8;padding:30px 20px">
+          <div class="hb" style="font-weight:800;font-size:19px;margin-bottom:12px">מכירה מוקדמת</div>
+          <div class="alp-big">566 ₪</div>
+          <div class="hb" style="font-weight:800;font-size:20px;margin-top:8px">לחודש</div>
+          <div style="font-size:17px;line-height:1.5;margin-top:12px;color:#f6d6c8">למשך חמישה חודשים, עד פתיחת המחזור ב־11.1</div>
         </div>
-        <div style="background:#fff;border:1px solid #e4dcd6;color:#232224;padding:28px 20px">
-          <div class="hb" style="font-weight:700;font-size:17px;margin-bottom:8px;color:#4a4644">לאחר מחזור פתיחה</div>
+        <div style="background:#fff;border:1px solid #e4dcd6;color:#232224;padding:30px 20px">
+          <div class="hb" style="font-weight:800;font-size:19px;margin-bottom:12px;color:#4a4644">אחרי פתיחת המחזור</div>
           <div class="alp-big">760 ₪</div>
-          <div class="hb" style="font-weight:700;font-size:17px;margin-top:12px;color:#4a4644">למחזור שאחרי</div>
+          <div class="hb" style="font-weight:800;font-size:20px;margin-top:8px">לחודש</div>
+          <div style="font-size:17px;line-height:1.5;margin-top:12px;color:#4a4644">למשך חמישה חודשים</div>
         </div>
       </div>
-      <p style="font-size:19px;line-height:1.6;color:#4a4644;margin-bottom:34px">תחילת המחזור ב־25 באוקטובר [מועד משוער ושנה לאישור]</p>
-      <a href="#contact" class="alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+      <a href="#contact" class="alp-btn alp-btn--coal alp-btn--block-sm" style="font-size:21px;padding:24px 36px" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה, ללא עלות</a>
     </div>
   </div>
 </section>
 
 <section id="faq" class="alp-sec" style="background:#f7f3f0;padding-top:110px;padding-bottom:110px">
   <div class="alp-wrap" style="max-width:1000px">
-    <h2 class="alp-h2" style="margin-bottom:40px">שאלות על ההשקעה</h2>
+    <h2 class="alp-h2" style="margin-bottom:40px">תירוצים מוכרים</h2>
     <div style="display:flex;flex-direction:column;gap:4px">
 <div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-0" title="לחיצה פותחת את התשובה לשאלה ״אין לי זמן״, ולחיצה נוספת סוגרת אותה"><span>אין לי זמן</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-0" hidden>[תשובה מאושרת של ידידיה להשלמה: התאמת התוכנית ללוח זמנים עמוס]</p></div>
 <div class="alp-faq-item"><button type="button" class="alp-faq-q" aria-expanded="false" aria-controls="alp-faq-1" title="לחיצה פותחת את התשובה לשאלה ״אני חייב לשתף בקבוצה״, ולחיצה נוספת סוגרת אותה"><span>אני חייב לשתף בקבוצה</span><span class="alp-faq-ico" aria-hidden="true"></span></button><p class="alp-faq-a" id="alp-faq-1" hidden>[תשובה מאושרת של ידידיה להשלמה: אפשרויות ההשתתפות בקבוצה]</p></div>
@@ -425,7 +534,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
 
 <section id="contact" class="alp-sec" style="background:#bb4620;padding-top:110px;padding-bottom:120px">
   <div class="alp-wrap" style="max-width:780px">
-    <h2 class="alp-h2 alp-final-title" style="text-align:center;font-size:52px;line-height:1.15;color:#fbeee8;margin-bottom:46px">לשיחת התאמה אישית עם ידידיה — ללא עלות</h2>
+    <p class="hb alp-final-pre">האהבה שלנו לאישה שלנו היא הירושה הכי יקרה לילדים שלנו.</p>
+    <p class="hb alp-final-call">בוא לתת אותה. בוא להיות אלפא.</p>
+    <h2 class="alp-h2 alp-final-title" style="text-align:center;font-size:48px;line-height:1.15;color:#fbeee8;margin-bottom:40px">לשיחת התאמה אישית עם ידידיה, ללא עלות</h2>
     <div class="alp-form alp-form--final"><!--olp:form:2--></div>
   </div>
 </section>
@@ -444,13 +555,14 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   </div>
 </footer>
 
-<a href="#contact" class="alp-btn alp-btn--rust alp-float is-hidden" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה — ללא עלות</a>
+<a href="#contact" class="alp-btn alp-btn--rust alp-float is-hidden" title="מעביר לטופס בתחתית העמוד: משאירים שם, טלפון ומייל, וידידיה חוזר לשיחת התאמה ללא עלות">לשיחת התאמה אישית עם ידידיה, ללא עלות</a>
 
 <div class="alp-modal" hidden data-alp-modal role="dialog" aria-modal="true" aria-label="סרטון טעימה">
   <button type="button" class="alp-modal-x" data-alp-close aria-label="סגירת הסרטון" title="סוגר את הסרטון וחוזר לעמוד">×</button>
   <div class="alp-modal-box"><video data-alp-player controls playsinline preload="none"></video></div>
 </div>
 </div>
+
 
 <script>
 (function(){
@@ -471,6 +583,9 @@ html,body{margin:0;background:#f7f3f0;overflow-x:clip}
   root.querySelectorAll('[data-alp-video]').forEach(function(b){b.addEventListener('click',function(){inl.forEach(function(o){o.querySelector('video').pause();});v.src=b.getAttribute('data-alp-video');m.hidden=false;var p=v.play();if(p&&p.catch)p.catch(function(){});});});
   m.addEventListener('click',function(e){if(e.target===m||e.target.hasAttribute('data-alp-close'))closeV();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!m.hidden)closeV();});
+  /* written testimonials rail: arrows scroll one card (RTL: "prev" moves toward the start) */
+  var rt=root.querySelector('[data-alp-rail-track]');
+  root.querySelectorAll('[data-alp-rail]').forEach(function(b){b.addEventListener('click',function(){if(!rt)return;var d=b.getAttribute('data-alp-rail')==='prev'?1:-1;rt.scrollBy({left:d*Math.min(440,rt.clientWidth*.85),behavior:'smooth'});});});
   /* placeholders for the Elementor fields (design shows placeholders, not labels) */
   var ph={hero:{full_name:'שם',phone:'טלפון',email:'מייל'},final:{full_name:'שם מלא',phone:'נייד ליצירת קשר',email:'אימייל'}};
   ['hero','final'].forEach(function(k){var w=root.querySelector('.alp-form--'+k);if(!w)return;
