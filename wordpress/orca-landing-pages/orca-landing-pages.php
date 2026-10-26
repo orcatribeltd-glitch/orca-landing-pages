@@ -3,7 +3,7 @@
  * Plugin Name: Orca Landing Pages (GitHub)
  * Plugin URI:  https://github.com/orcatribeltd-glitch/orca-landing-pages
  * Description: מציג דפי נחיתה ישירות מריפו GitHub ([landing_page name="…"]), ויוצר עמודים חדשים כטיוטה לפי pages.json בריפו, וממיר עמודי אלמנטור קיימים ל-HTML עם גיבוי כתבנית. כל push מתעדכן באתר, בלי FTP.
- * Version:     1.14.3
+ * Version:     1.14.4
  * Author:      Orca Tribe
  * Text Domain: orca-landing-pages
  */
@@ -17,7 +17,7 @@ final class Orca_Landing_Pages
     const OPTION      = 'olp_settings';
     const CACHE_PFX   = 'olp_page_';
     const STALE_PFX   = 'olp_stale_';
-    const VERSION = '1.14.3';
+    const VERSION = '1.14.4';
     const FOOTER_MAX_CHARS = 1500; // a footer is a few lines; a legal document is thousands of characters
     const PAGE_CACHE_SECONDS = 60;
     const GEN_OPTION  = 'olp_cache_generation';
@@ -1224,7 +1224,20 @@ final class Orca_Landing_Pages
         };
         $walk($data);
         if ($count > 0) {
-            update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            // 26/10/2026: saved as nobody, kses stripped the <script> of the Rav Messer form embed on
+            // influence-club page 26. Any write of Elementor data runs as the first administrator.
+            $admins = get_users(['role' => 'administrator', 'number' => 1, 'orderby' => 'ID', 'fields' => 'ID']);
+            if (!$admins) {
+                return ['page' => $pid, 'error' => 'no administrator to act as — page untouched'];
+            }
+            $prev = get_current_user_id();
+            wp_set_current_user((int) $admins[0]);
+            kses_remove_filters();
+            try {
+                update_post_meta($pid, '_elementor_data', wp_slash(wp_json_encode($data, JSON_UNESCAPED_UNICODE)));
+            } finally {
+                wp_set_current_user($prev);
+            }
             self::clear_elementor_cache($pid);
             self::refresh_plain_text($pid);
             clean_post_cache($pid);
