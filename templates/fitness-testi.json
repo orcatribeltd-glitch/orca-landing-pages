@@ -1,0 +1,40 @@
+{
+  "version": "0.4",
+  "title": "עבודות בתחום הכושר",
+  "type": "page",
+  "page_settings": {
+    "template": "elementor_canvas",
+    "background_background": "classic",
+    "background_color": "#001b3f"
+  },
+  "content": [
+    {
+      "id": "f17e0a01",
+      "elType": "container",
+      "isInner": false,
+      "settings": {
+        "content_width": "full",
+        "flex_direction": "column",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": true
+        }
+      },
+      "elements": [
+        {
+          "id": "f17e0a02",
+          "elType": "widget",
+          "widgetType": "shortcode",
+          "elements": [],
+          "settings": {
+            "shortcode": "[landing_page name=\"fitness-testi\"]"
+          }
+        }
+      ]
+    }
+  ]
+}

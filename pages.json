@@ -110,5 +110,12 @@
     "slug": "alpha",
     "title": "תכנית אלפא",
     "template": "templates/alpha-landing.json"
+  },
+  {
+    "site": "orcatribe.co.il",
+    "name": "fitness-testi",
+    "slug": "fitness-testi",
+    "title": "עבודות בתחום הכושר – אורקה טרייב",
+    "template": "templates/fitness-testi.json"
   }
 ]
